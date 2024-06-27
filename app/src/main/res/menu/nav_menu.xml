@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn = "navigation_view">
+
+    <group
+        android:checkableBehavior="single">
+        <item
+
+            android:id="@+id/nav_home"
+            android:icon="@drawable/baseline_home_24"
+            android:title="Home"/>
+
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/baseline_info_24"
+            android:title="About"/>
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/baseline_logout_24"
+            android:title="Logout"/>
+
+    </group>
+            <item
+                android:title="SENSOR RUMAH">
+
+                <menu>
+                <item
+                    android:id="@+id/nav_taman"
+                    android:icon="@drawable/baseline_sensors_24"
+                    android:title="Taman - LAB"/>
+                    <item
+                        android:id="@+id/nav_taman_p"
+                        android:icon="@drawable/baseline_sensors_24"
+                        android:title="Taman - Production"/>
+                <item
+                    android:id="@+id/nav_tandon_uti"
+                    android:icon="@drawable/baseline_sensors_24"
+                    android:title="Tandon Uti"/>
+                <item
+                    android:id="@+id/nav_tandon_bunda"
+                    android:icon="@drawable/baseline_sensors_24"
+                    android:title="Tandon Bunda"/>
+                </menu>
+            </item>
+
+    <item
+        android:title="SENSOR MASJID">
+        <menu>
+            <item
+                android:id="@+id/nav_masjid"
+                android:icon="@drawable/baseline_sensors_24"
+                android:title="Tandon Masjid"/>
+            <item
+                android:id="@+id/nav_listrik_masjid"
+                android:icon="@drawable/baseline_electric_bolt_24"
+                android:title="Listrik Masjid"/>
+            <item
+                android:id="@+id/nav_grafik"
+                android:icon="@drawable/baseline_image_24"
+                android:title="Grafik Tandon Masjid"/>
+        </menu>
+    </item>
+</menu>

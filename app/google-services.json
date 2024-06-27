@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "507008627074",
+    "project_id": "azka-home-iot",
+    "storage_bucket": "azka-home-iot.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507008627074:android:6149cc1dd677aa0e04df9b",
+        "android_client_info": {
+          "package_name": "com.indodevstudio.azka_home_iot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBA1Zxdi5fKu8dKgLhdtKa31M0uG0Xe6zk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

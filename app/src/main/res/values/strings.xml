@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Azka Home IoT</string>
+    <string name="open_nav">Open Navigation Drawer</string>
+    <string name="close_nav">Close Navigation Drawer</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="error_text">Not empty</string>
+    <string name="emailInfo"></string>
+
+
+</resources>
