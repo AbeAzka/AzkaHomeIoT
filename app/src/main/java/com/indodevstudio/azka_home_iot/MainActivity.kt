@@ -67,6 +67,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .replace(R.id.fragment_container, TamanProdFragment()).commit()
             R.id.nav_about -> supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, AboutFragment()).commit()
+            R.id.nav_listrik_uti -> supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, ListrikUtiFregment()).commit()
+            R.id.nav_listrik_bunda -> supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, ListrikBundaFragment()).commit()
 
             R.id.nav_logout -> {
                 firebaseAuth.signOut()
