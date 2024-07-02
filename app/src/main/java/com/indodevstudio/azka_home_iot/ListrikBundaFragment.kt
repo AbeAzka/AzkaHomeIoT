@@ -90,7 +90,7 @@ class ListrikBundaFragment : Fragment(), View.OnClickListener{
         when(view?.id){
             R.id.status_btn-> {
                 println("STATUS!")
-                val URL : String ="https://abeazka.my.id/telemetri/input-wa.php?type=water02 &value1=listrik"
+                val URL : String ="https://abeazka.my.id/telemetri/input-wa.php?type=water02 &value1=listrik_bunda"
 
                 //myWebView.loadUrl("http://taryem.my.id/Lab01/labx.php?type=on")
                 //myWebView.loadUrl("http://taryem.my.id/Lab01/labx.php?type=on")
