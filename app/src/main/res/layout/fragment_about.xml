@@ -26,5 +26,15 @@
     android:textSize="32dp"
     />
 
+    <TextView
+        android:id="@+id/copy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="300dp"
+        android:gravity="center"
+        android:text="Copyright © 2024 Abe Azka"
+        android:textSize="32dp"
+        />
+
 
 </FrameLayout>
