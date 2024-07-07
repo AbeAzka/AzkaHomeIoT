@@ -1,6 +1,10 @@
 package com.indodevstudio.azka_home_iot
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,15 +14,18 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.ortiz.touchview.TouchImageView
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
+import java.net.URL
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -39,7 +46,9 @@ class TandonUtiFragment : Fragment(), View.OnClickListener{
     lateinit var button : Button
     lateinit var myWebView : WebView
     lateinit var Statustxt : TextView
-
+    lateinit var ImageStats : ImageView
+    lateinit var imageGrafik : TouchImageView
+    var image : Bitmap? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -59,6 +68,7 @@ class TandonUtiFragment : Fragment(), View.OnClickListener{
         Statustxt = view.findViewById(R.id.statusText)
         button.setOnClickListener(this)
         myWebView.getSettings().setJavaScriptEnabled(true);
+        ImageStats = view.findViewById(R.id.imgStats)
         //myWebView.setWebViewClient(WebViewClient())
         myWebView.setWebViewClient(object : WebViewClient() {
             //override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
@@ -121,6 +131,37 @@ class TandonUtiFragment : Fragment(), View.OnClickListener{
                                 getActivity()?.runOnUiThread{
                                     Statustxt.text = results
                                     Toast.makeText(getActivity(),"Success",Toast.LENGTH_SHORT).show();
+                                }
+                                val handler = Handler(Looper.getMainLooper())
+                                val URL2 = URL( "https://abeazka.my.id/telemetri/tandon/level_tandon.png")
+                                try{
+                                    val `in` = URL2.openStream()
+                                    image = BitmapFactory.decodeStream(`in`)
+                                    handler.post{
+                                        //var inflater = LayoutInflater.from(getActivity())
+                                        //var popupview = inflater.inflate(R.layout.popup_grafik, null,false)
+                                        //var imagee = popupview.findViewById<ImageView>(R.id.imageGrafikPop)
+                                        //var close = popupview.findViewById<ImageView>(R.id.close)
+                                        //var builder = PopupWindow(popupview, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true)
+                                        ImageStats.setImageBitmap(image)
+                                        //imagee.setRotation(90f)
+                                        /*builder.setBackgroundDrawable(
+                                            AppCompatResources.getDrawable(
+                                                requireContext(),
+                                                R.drawable.background
+                                            )
+                                        )
+                                        builder.animationStyle=R.style.DialogAnimation
+                                        builder.showAtLocation(getActivity()?.findViewById(R.id.drawer_layout), Gravity.CENTER, 0 ,0)
+                                        close.setOnClickListener{
+                                            builder.dismiss()
+                                        }*/
+                                        //Toast.makeText(getActivity(),"Success",Toast.LENGTH_SHORT).show();
+                                    }
+
+
+                                }catch (e:java.lang.Exception){
+                                    e.printStackTrace()
                                 }
                             }else{
                                 getActivity()?.runOnUiThread {
