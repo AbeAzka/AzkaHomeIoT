@@ -13,7 +13,7 @@ android {
         minSdk = 30
         targetSdk = 34
         versionCode = 1
-        versionName = "1.1.1"
+        versionName = "1.3-BUILD-1-TEST"//Last 1.2
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -51,6 +51,8 @@ dependencies {
     implementation("com.google.firebase:firebase-database:21.0.0")
     implementation("com.google.firebase:firebase-firestore:25.0.0")
     implementation ("com.github.MikeOrtiz:TouchImageView:1.4.1")
+    implementation("com.google.firebase:firebase-messaging:24.0.0")
+    implementation("androidx.test:core-ktx:1.6.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

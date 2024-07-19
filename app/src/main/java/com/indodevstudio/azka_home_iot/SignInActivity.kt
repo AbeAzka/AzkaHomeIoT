@@ -41,11 +41,10 @@ class SignInActivity : AppCompatActivity() {
                     if (it.isSuccessful) {
                         //if (firebaseAuth.currentUser?.isEmailVerified == true){
 
-
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
-                        Toast.makeText(applicationContext, "Welcome back", Toast.LENGTH_SHORT).show()
-                            overridePendingTransition(R.anim.slide_to_left,R.anim.slide_to_right)
+                        Toast.makeText(applicationContext, "Welcome", Toast.LENGTH_SHORT).show()
+                            overridePendingTransition(R.anim.slide_from_left,R.anim.slide_to_right)
                         //}
                         //else{
                             //val intent = Intent(this, VerificationActivity::class.java)
@@ -78,6 +77,7 @@ class SignInActivity : AppCompatActivity() {
         if(firebaseAuth.currentUser != null) {
             startActivity(Intent(this, MainActivity::class.java))
             Toast.makeText(applicationContext, "Welcome back", Toast.LENGTH_SHORT).show()
+            overridePendingTransition(R.anim.slide_from_left,R.anim.slide_to_right)
         }
     }
 
