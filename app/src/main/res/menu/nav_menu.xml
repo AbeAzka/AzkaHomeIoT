@@ -21,6 +21,8 @@
             android:icon="@drawable/baseline_logout_24"
             android:title="Logout"/>
 
+    </group>
+
 
     <item
         android:title="OTOMATISASI RUMAH">
@@ -36,6 +38,7 @@
                 android:title="Taman - Production"/>
         </menu>
     </item>
+
             <item
                 android:title="SENSOR RUMAH">
 
@@ -86,5 +89,5 @@
                 android:title="Grafik Tandon Masjid"/>
         </menu>
     </item>
-    </group>
+
 </menu>
