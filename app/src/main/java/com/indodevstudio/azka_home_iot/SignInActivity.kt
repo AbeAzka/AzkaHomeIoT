@@ -14,10 +14,12 @@ import com.indodevstudio.azka_home_iot.databinding.ActivitySignInBinding
 class SignInActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignInBinding
     private lateinit var firebaseAuth: FirebaseAuth
-
+    lateinit var  userTXT : TextView
+    lateinit var  emailTXT : TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
 
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -75,8 +77,9 @@ class SignInActivity : AppCompatActivity() {
             Toast.makeText(applicationContext, "Please verify your Email first!", Toast.LENGTH_SHORT).show()
         }*/
         if(firebaseAuth.currentUser != null) {
+
             startActivity(Intent(this, MainActivity::class.java))
-            Toast.makeText(applicationContext, "Welcome back", Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, "Welcome back!", Toast.LENGTH_SHORT).show()
             overridePendingTransition(R.anim.slide_from_left,R.anim.slide_to_right)
         }
     }

@@ -2,17 +2,15 @@ package com.indodevstudio.azka_home_iot
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.firestore
 import com.indodevstudio.azka_home_iot.databinding.ActivitySignUpBinding
+
 
 class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding
@@ -81,6 +79,13 @@ class SignUpActivity : AppCompatActivity() {
                                     ?.addOnFailureListener() {
                                         Toast.makeText(applicationContext, "ERROR", Toast.LENGTH_SHORT).show()
                                     }*/
+                            val user = FirebaseAuth.getInstance().currentUser
+
+                            val profileUpdates =
+                                UserProfileChangeRequest.Builder().setDisplayName(username)
+                                    .build()
+
+                            user!!.updateProfile(profileUpdates)
                             Toast.makeText(applicationContext, "Success!", Toast.LENGTH_SHORT)
                                 .show()
                             val intent = Intent(this, SignInActivity::class.java)

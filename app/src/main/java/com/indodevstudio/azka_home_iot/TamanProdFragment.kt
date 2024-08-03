@@ -1,10 +1,25 @@
 package com.indodevstudio.azka_home_iot
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import java.io.IOException
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -13,13 +28,18 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [TamanProdFragment.newInstance] factory method to
+ * Use the [TamanFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class TamanProdFragment : Fragment() {
+
+class TamanProdFragment : Fragment(), View.OnClickListener{
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    lateinit var button : Button
+    lateinit var button2 : Button
+    lateinit var myWebView : WebView
+    lateinit var Statustxt : TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +54,149 @@ class TamanProdFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_taman_prod, container, false)
+        val view =  inflater.inflate(R.layout.fragment_taman_prod, container, false)
+        button = view.findViewById(R.id.on_btn)
+        button2 = view.findViewById(R.id.off_btn)
+        myWebView = view.findViewById(R.id.myWeb)
+        Statustxt = view.findViewById(R.id.statusText)
+        button.setOnClickListener(this)
+        button2.setOnClickListener(this)
+        myWebView.getSettings().setJavaScriptEnabled(true);
+        //myWebView.setWebViewClient(WebViewClient())
+        myWebView.setWebViewClient(object : WebViewClient() {
+            //override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+            //    view.loadUrl(url)
+            //    return true
+            //}
+            override fun onReceivedError(
+                view: WebView?,
+                request: WebResourceRequest?,
+                error: WebResourceError
+            ) {
+
+                super.onReceivedError(view, request, error)
+                Log.e("MainActivity", (error.description as String)!!)
+                Log.e("MainActivity", error.errorCode.toString())
+                Log.d("ERROR","Error code:"+Integer.toString(error.errorCode))
+                println(error.errorCode)
+
+                Toast.makeText(getActivity(),
+                    "Your Internet Connection May not be active Or " + error.description,
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        })
+        return view
     }
+
+    override fun onClick(view: View?) {
+        when(view?.id){
+            R.id.on_btn-> {
+                println("On!")
+                val URL : String ="http://taryem.my.id/Lab01/lab.php?type=on"
+
+                //myWebView.loadUrl("http://taryem.my.id/Lab01/labx.php?type=on")
+                //myWebView.loadUrl("http://taryem.my.id/Lab01/labx.php?type=on")
+                if (URL.isNotEmpty()){
+                    val http = OkHttpClient()
+                    val request = Request.Builder()
+                        .url(URL)
+                        .build()
+                    //myWebView.loadUrl(URL)
+
+                    http.newCall(request).enqueue(object : Callback{
+                        override fun onFailure(call: Call, e: IOException) {
+                            e.printStackTrace();
+                        }
+
+                        override fun onResponse(call: Call, response: Response) {
+                            val response: Response = http.newCall(request).execute()
+                            val responseCode = response.code
+                            println("Success " + response.toString())
+                            println("Success " + response)
+                            Log.i("KODE", "CODE: "+ responseCode)
+                            Log.i("Response", "Received response from server. Response")
+                            if (response.code == 200){
+
+                                getActivity()?.runOnUiThread{
+                                    Statustxt.text = "Turn On"
+                                    Toast.makeText(getActivity(),"Success!",Toast.LENGTH_SHORT).show();
+                                }
+                            }else{
+                                getActivity()?.runOnUiThread {
+                                    Statustxt.text = "ERROR!"
+                                    Log.e(
+                                        "HTTP Error",
+                                        "Something didn't load, or wasn't succesfully"
+                                    )
+                                    Toast.makeText(getActivity(), "Fail", Toast.LENGTH_LONG).show();
+
+                                }
+                                return
+                            }
+                        }
+                    })
+                }
+
+
+            }
+            R.id.off_btn-> {
+                println("Off!")
+                //myWebView.loadUrl("http://taryem.my.id/Lab01/labx.php?type=off")
+                val URL : String ="http://taryem.my.id/Lab01/lab.php?type=off"
+
+                //myWebView.loadUrl("http://taryem.my.id/Lab01/labx.php?type=on")
+                //myWebView.loadUrl("http://taryem.my.id/Lab01/labx.php?type=on")
+                if (URL.isNotEmpty()){
+                    val http = OkHttpClient()
+                    val request = Request.Builder()
+                        .url(URL)
+                        .build()
+                    //myWebView.loadUrl(URL)
+
+
+                    http.newCall(request).enqueue(object : Callback{
+                        override fun onFailure(call: Call, e: IOException) {
+                            e.printStackTrace();
+                        }
+
+                        override fun onResponse(call: Call, response: Response) {
+                            val response: Response = http.newCall(request).execute()
+                            val responseCode = response.code
+                            println("Success " + response.toString())
+                            println("Success " + response.message.toString())
+                            Log.i("KODE", "CODE: "+ responseCode)
+                            Log.i("Response", "Received response from server. Response")
+                            if (response.code == 200){
+                                getActivity()?.runOnUiThread{
+                                    Statustxt.text = "Turn Off"
+                                    Toast.makeText(getActivity(),"Success!",Toast.LENGTH_SHORT).show();
+                                }
+                            }else{
+                                getActivity()?.runOnUiThread {
+                                    Statustxt.text = "ERROR!"
+                                    Log.e(
+                                        "HTTP Error",
+                                        "Something didn't load, or wasn't succesfully"
+                                    )
+                                    Toast.makeText(getActivity(), "Fail", Toast.LENGTH_LONG).show();
+
+                                }
+                                return
+                            }
+                        }
+                    })
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+
 
     companion object {
         /**
@@ -44,7 +205,7 @@ class TamanProdFragment : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment TamanProdFragment.
+         * @return A new instance of fragment TamanFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic

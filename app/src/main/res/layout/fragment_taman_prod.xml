@@ -7,14 +7,6 @@
 
     <!-- TODO: Update blank fragment layout -->
     <!-- TODO: Update blank fragment layout -->
-    <!--<TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Taman Fragment"
-        android:textSize="30sp"
-        android:layout_centerInParent="true"
-        android:textColor="@color/lavender"/>-->
-
     <TextView
         android:id="@+id/statusText"
         android:layout_width="fill_parent"
@@ -22,7 +14,7 @@
         android:layout_marginTop="500dp"
         android:gravity="center"
         android:text=""
-        android:textSize="30sp" />
+        android:textSize="34sp" />
 
     <WebView
         android:id="@+id/myWeb"
@@ -35,15 +27,13 @@
 
     <TextView
         android:id="@+id/textView4"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="200dp"
         android:layout_marginEnd="5dp"
         android:gravity="center"
-        android:layout_gravity="center"
-        android:text="COMING SOON"
+        android:text="Click button below to on and off Taman Depan!"
         android:textSize="34sp" />
-    <!-- android:layout_marginTop="200dp" -->
     <TextView
         android:id="@+id/textView5"
         android:layout_width="match_parent"
@@ -51,10 +41,28 @@
         android:layout_marginTop="100dp"
         android:layout_marginEnd="5dp"
         android:gravity="center"
-        android:text="Taman01 - Production"
+        android:text="Taman - Production"
         android:textColor="@color/cyan"
         android:textStyle="bold"
-        android:textSize="50sp" />
+        android:textSize="34sp" />
+
+    <Button
+        android:id="@+id/on_btn"
+        android:layout_width="300px"
+        android:layout_height="200px"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="400dp"
+        android:text="ON"
+        android:textSize="34sp" />
+
+    <Button
+        android:id="@+id/off_btn"
+        android:layout_width="300px"
+        android:layout_height="200px"
+        android:layout_marginLeft="255dp"
+        android:layout_marginTop="400dp"
+        android:text="OFF"
+        android:textSize="34sp" />
     <!--        android:layout_marginTop="100dp" -->
 
     <!--<Button
