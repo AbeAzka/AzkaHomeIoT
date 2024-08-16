@@ -1,22 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="176dp"
     android:gravity="bottom"
     android:padding="16dp"
+    android:id="@+id/nav_head"
     android:background="@drawable/headerbg"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    tools:context=".MainActivity">
 
     <ImageView
+        android:id="@+id/logo_p"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:src="@drawable/azkahomeiot" />
+        android:background="#CACACA" />
 
     <TextView
+        android:id="@+id/nama"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Menu "
+        android:text=""
         android:textColor="@color/white"
         android:textStyle="bold"/>
 
@@ -24,7 +29,7 @@
         android:id="@+id/emailGet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="List of menu from app"
+        android:text=""
         android:textColor="@color/white"
         android:textSize="14sp"
         android:layout_marginBottom="16dp"/>

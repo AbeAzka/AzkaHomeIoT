@@ -6,6 +6,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="error_text">Not empty</string>
     <string name="emailInfo"></string>
+    <string name="default_web_client_id" translatable="false">507008627074-i044hkon2rcr5oq9doo4eimrgnp7a1dr.apps.googleusercontent.com</string>
 
 
 </resources>

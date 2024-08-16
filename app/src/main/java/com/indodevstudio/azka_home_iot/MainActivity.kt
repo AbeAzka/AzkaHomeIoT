@@ -1,11 +1,20 @@
 package com.indodevstudio.azka_home_iot
 
+
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -16,9 +25,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.navigation.NavigationView
-import com.google.auth.oauth2.GoogleCredentials
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
 import com.indodevstudio.azka_home_iot.utils.FirebaseUtils.firebaseAuth
 import okhttp3.Call
@@ -29,12 +36,16 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.json.JSONObject
-import java.io.FileInputStream
+import java.io.InputStream
+import java.net.URL
 import java.io.IOException
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var drawerLayout: DrawerLayout
+    var image : Bitmap? = null
+    lateinit var inputStream : InputStream
+    private lateinit var auth : FirebaseAuth
     var token = ""
     var key = "AIzaSyBA1Zxdi5fKu8dKgLhdtKa31M0uG0Xe6zk"
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,11 +57,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         requestPermission()
         drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
 
+
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
+        val headerView = navigationView.getHeaderView(0)
+        val nama = headerView.findViewById<TextView>(R.id.nama)
+        val pp = headerView.findViewById<ImageView>(R.id.logo_p)
+        val em = headerView.findViewById<TextView>(R.id.emailGet)
 
         val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav)
 
@@ -67,10 +83,35 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         //emailGet = findViewById(R.layout.nav_header.)
 
+        auth = FirebaseAuth.getInstance()
+        val handler = Handler(Looper.getMainLooper())
+        val email = intent.getStringExtra("email")
+        val displayName = intent.getStringExtra("name")
+        val photo = intent.getStringExtra("photop")
+        val pp2 = URL(FirebaseAuth.getInstance().getCurrentUser()!!.getPhotoUrl().toString())
+        try {
+            val `in` = pp2.openStream()
+            image = BitmapFactory.decodeStream(`in`)
+            handler.post{
+                pp.setImageBitmap(image)
+            }
+        }catch (e:java.lang.Exception){
+            e.printStackTrace()
+        }
 
+
+            nama.text = displayName;
+            em.text = email;
+
+
+        //findViewById<TextView>(R.id.textView).text = email + "\n" + displayName
+
+        /*findViewById<Button>(R.id.signOutBtn).setOnClickListener {
+            auth.signOut()
+            startActivity(Intent(this , MainActivity::class.java))
+        }*/
 
     }
-
 
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -105,6 +146,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
              //   .replace(R.id.fragment_container, UpdateLogFragment()).commit()
 
             R.id.nav_logout -> {
+                //auth.signOut()
+                //startActivity(Intent(this , SignInActivity::class.java))
+
+
                 firebaseAuth.signOut()
                 startActivity(Intent(this, SignInActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_CLEAR_TASK))
                 //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK) //makesure user cant go back
