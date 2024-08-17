@@ -3,12 +3,8 @@ package com.indodevstudio.azka_home_iot
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Typeface
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +12,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.SignInButton
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -28,6 +23,7 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var googleSignInClient : GoogleSignInClient
     lateinit var image_google : ImageView
+    lateinit var acct : GoogleSignInAccount
     //lateinit var  userTXT : TextView
     //lateinit var  emailTXT : TextView
 
@@ -135,17 +131,35 @@ class SignInActivity : AppCompatActivity() {
     }
     override fun onStart() {
         super.onStart()
-
         if(firebaseAuth.currentUser != null) {
             val user = FirebaseAuth.getInstance().currentUser
-            val intent  = Intent(this , MainActivity::class.java)
-            intent.putExtra("email" , user!!.email)
-            intent.putExtra("name" , user!!.displayName)
+            if (GoogleSignIn.getLastSignedInAccount(this) != null) {
 
-            startActivity(intent)
-            Toast.makeText(applicationContext, "Welcome back " + user!!.email, Toast.LENGTH_SHORT).show()
-            overridePendingTransition(R.anim.slide_from_left,R.anim.slide_to_right)
+                val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra("email", user!!.email)
+                intent.putExtra("name", user!!.displayName)
+                startActivity(intent)
+                Toast.makeText(
+                    applicationContext,
+                    "Welcome back " + user!!.email,
+                    Toast.LENGTH_SHORT
+                ).show()
+                overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right)
+                //finish()
+            }
+
         }
+
+//        if(firebaseAuth.currentUser != null) {
+//            val user = FirebaseAuth.getInstance().currentUser
+//            val intent  = Intent(this , MainActivity::class.java)
+//            intent.putExtra("email" , user!!.email)
+//            intent.putExtra("name" , user!!.displayName)
+//
+//            startActivity(intent)
+//            Toast.makeText(applicationContext, "Welcome back " + user!!.email, Toast.LENGTH_SHORT).show()
+//            overridePendingTransition(R.anim.slide_from_left,R.anim.slide_to_right)
+//        }
     }
 
 

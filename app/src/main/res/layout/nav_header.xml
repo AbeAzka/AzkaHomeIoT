@@ -13,6 +13,8 @@
 
     <ImageView
         android:id="@+id/logo_p"
+        android:contentDescription="Profile Picture"
+        android:clickable="true"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:visibility="visible" />

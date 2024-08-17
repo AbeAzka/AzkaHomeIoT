@@ -10,15 +10,19 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -44,6 +48,7 @@ import java.io.IOException
 import com.bumptech.glide.annotation.GlideModule
 import com.bumptech.glide.module.AppGlideModule
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
@@ -54,7 +59,9 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
     lateinit var inputStream : InputStream
     private lateinit var auth : FirebaseAuth
     private lateinit var mFirebaseUser : FirebaseUser
-    private lateinit var googleSignInClient : GoogleSignInClient
+    lateinit var mGoogleSignInClient: GoogleSignInClient
+
+    //private lateinit var googleSignInClient : GoogleSignInClient
     var picture3 = ""
     var token = ""
     var key = "AIzaSyBA1Zxdi5fKu8dKgLhdtKa31M0uG0Xe6zk"
@@ -93,6 +100,13 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
         auth = FirebaseAuth.getInstance()
         mFirebaseUser = auth.currentUser!!;
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        mGoogleSignInClient= GoogleSignIn.getClient(this,gso)
+
         val picture = FirebaseAuth.getInstance().currentUser?.photoUrl
         val picture2 = mFirebaseUser.photoUrl.toString();
         val picture5 = mFirebaseUser.photoUrl
@@ -121,6 +135,30 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         catch (e:java.lang.Exception){
             e.printStackTrace()
         }
+
+        profilepc.setOnClickListener{ view->
+
+
+        var inflater = LayoutInflater.from(this)
+        var popupview = inflater.inflate(R.layout.popup_grafik, null,false)
+        var imagee = popupview.findViewById<ImageView>(R.id.imageGrafikPop)
+        var close = popupview.findViewById<ImageView>(R.id.close)
+        var builder = PopupWindow(popupview, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true)
+        //imagee.setImageBitmap(image)
+        Glide.with(this).load(picture3).into(imagee);
+        builder.setBackgroundDrawable(
+            AppCompatResources.getDrawable(
+                this,
+                R.drawable.background
+            )
+        )
+        builder.animationStyle=R.style.DialogAnimation
+        builder.showAtLocation(this.findViewById(R.id.drawer_layout), Gravity.CENTER, 0 ,0)
+            close.setOnClickListener{
+                builder.dismiss()
+            }
+        }
+
 
 
 
@@ -166,11 +204,17 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
 
                 firebaseAuth.signOut()
+                mGoogleSignInClient.signOut().addOnCompleteListener {
+                    val intent= Intent(this, SignInActivity::class.java)
+                    startActivity(intent)
+                    Toast.makeText(this, "Successfully logout!", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
                 //googleSignInClient.signOut();
-                startActivity(Intent(this, SignInActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                //startActivity(Intent(this, SignInActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_CLEAR_TASK))
                 //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK) //makesure user cant go back
-                finish()
-                Toast.makeText(this, "Logout!", Toast.LENGTH_SHORT).show()
+                //finish()
+
             }
         }
         drawerLayout.closeDrawer(GravityCompat.START)
