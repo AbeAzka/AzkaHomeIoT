@@ -166,7 +166,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
 
                 firebaseAuth.signOut()
-                googleSignInClient.signOut();
+                //googleSignInClient.signOut();
                 startActivity(Intent(this, SignInActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_CLEAR_TASK))
                 //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK) //makesure user cant go back
                 finish()
