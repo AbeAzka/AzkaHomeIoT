@@ -1,9 +1,13 @@
 package com.indodevstudio.azka_home_iot
 
+
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,6 +16,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.SignInButton
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -22,12 +27,12 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignInBinding
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var googleSignInClient : GoogleSignInClient
-    lateinit var  userTXT : TextView
-    lateinit var  emailTXT : TextView
+    lateinit var image_google : ImageView
+    //lateinit var  userTXT : TextView
+    //lateinit var  emailTXT : TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -36,17 +41,20 @@ class SignInActivity : AppCompatActivity() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestProfile()
-
             .requestEmail()
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(this , gso)
-
-        findViewById<Button>(R.id.gSignInBtn).setOnClickListener {
+        image_google = findViewById(R.id.gSignInPct)
+        image_google.isClickable = true
+        binding.gSignInPct.setOnClickListener{ view ->
             signInGoogle()
         }
+//        findViewById<Button>(R.id.gSignInBtn).setOnClickListener {
+//            signInGoogle()
+//        }
 
-        binding.btnRegLogin.setOnClickListener {
+        /*binding.btnRegLogin.setOnClickListener {
             startActivity(Intent(this,SignUpActivity::class.java))
             overridePendingTransition(R.anim.slide_from_right,R.anim.slide_to_left)
         }
@@ -85,7 +93,7 @@ class SignInActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
 
             }
-        }
+        }*/
     }
     private fun signInGoogle(){
         val signInIntent = googleSignInClient.signInIntent
@@ -118,7 +126,6 @@ class SignInActivity : AppCompatActivity() {
                 val intent = Intent(this , MainActivity::class.java)
                 intent.putExtra("email" , account.email)
                 intent.putExtra("name" , account.displayName)
-                intent.putExtra("photop", account.photoUrl)
                 startActivity(intent)
             }else{
                 Toast.makeText(this, it.exception.toString() , Toast.LENGTH_SHORT).show()
@@ -128,22 +135,15 @@ class SignInActivity : AppCompatActivity() {
     }
     override fun onStart() {
         super.onStart()
-        /*if(firebaseAuth.currentUser != null && firebaseAuth.currentUser?.isEmailVerified == true){
 
-            startActivity(Intent(this, MainActivity::class.java))
-            Toast.makeText(applicationContext, "Welcome back", Toast.LENGTH_SHORT).show()
-        }
-        else{
-            Toast.makeText(applicationContext, "Please verify your Email first!", Toast.LENGTH_SHORT).show()
-        }*/
         if(firebaseAuth.currentUser != null) {
             val user = FirebaseAuth.getInstance().currentUser
             val intent  = Intent(this , MainActivity::class.java)
             intent.putExtra("email" , user!!.email)
             intent.putExtra("name" , user!!.displayName)
-            intent.putExtra("photop", user!!.photoUrl)
+
             startActivity(intent)
-            Toast.makeText(applicationContext, "Welcome back!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, "Welcome back " + user!!.email, Toast.LENGTH_SHORT).show()
             overridePendingTransition(R.anim.slide_from_left,R.anim.slide_to_right)
         }
     }

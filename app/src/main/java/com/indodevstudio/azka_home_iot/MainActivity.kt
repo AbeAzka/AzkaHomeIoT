@@ -23,9 +23,11 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.bumptech.glide.Glide
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.messaging.FirebaseMessaging
 import com.indodevstudio.azka_home_iot.utils.FirebaseUtils.firebaseAuth
 import okhttp3.Call
@@ -39,13 +41,21 @@ import org.json.JSONObject
 import java.io.InputStream
 import java.net.URL
 import java.io.IOException
+import com.bumptech.glide.annotation.GlideModule
+import com.bumptech.glide.module.AppGlideModule
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelectedListener {
     private lateinit var drawerLayout: DrawerLayout
     var image : Bitmap? = null
     lateinit var inputStream : InputStream
     private lateinit var auth : FirebaseAuth
+    private lateinit var mFirebaseUser : FirebaseUser
+    private lateinit var googleSignInClient : GoogleSignInClient
+    var picture3 = ""
     var token = ""
     var key = "AIzaSyBA1Zxdi5fKu8dKgLhdtKa31M0uG0Xe6zk"
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,7 +75,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navigationView.setNavigationItemSelectedListener(this)
         val headerView = navigationView.getHeaderView(0)
         val nama = headerView.findViewById<TextView>(R.id.nama)
-        val pp = headerView.findViewById<ImageView>(R.id.logo_p)
+        val profilepc = headerView.findViewById<ImageView>(R.id.logo_p)
         val em = headerView.findViewById<TextView>(R.id.emailGet)
 
         val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav)
@@ -81,36 +91,41 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         mbuh()
 
-        //emailGet = findViewById(R.layout.nav_header.)
-
         auth = FirebaseAuth.getInstance()
-        val handler = Handler(Looper.getMainLooper())
+        mFirebaseUser = auth.currentUser!!;
+        val picture = FirebaseAuth.getInstance().currentUser?.photoUrl
+        val picture2 = mFirebaseUser.photoUrl.toString();
+        val picture5 = mFirebaseUser.photoUrl
         val email = intent.getStringExtra("email")
         val displayName = intent.getStringExtra("name")
         val photo = intent.getStringExtra("photop")
-        val pp2 = URL(FirebaseAuth.getInstance().getCurrentUser()!!.getPhotoUrl().toString())
+        picture3 = FirebaseAuth.getInstance().currentUser!!.photoUrl.toString()
+        //val xxy = URL("https://lh3.googleusercontent.com/a/ACg8ocIdS4yQkO_r9lcFAMcoA1yVFRa3N5IC9rz3CE47mYsenze49A=s96-c")
+        //profilepc.setImageURI(picture)
+        if (picture3 == null) {
+            profilepc.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.azkahomeiot))
+        } else {
+            Glide.with(this).load(picture3).into(profilepc);
+
+        }
+        Log.i("INFO_PC", picture3 + " AND "+ picture)
+        val handler = Handler(Looper.getMainLooper())
+        val ur = URL(picture3)
         try {
-            val `in` = pp2.openStream()
+            val `in` = ur.openStream()
             image = BitmapFactory.decodeStream(`in`)
-            handler.post{
-                pp.setImageBitmap(image)
+            handler.post {
+                profilepc.setImageBitmap(image)
             }
-        }catch (e:java.lang.Exception){
+        }
+        catch (e:java.lang.Exception){
             e.printStackTrace()
         }
 
 
-            nama.text = displayName;
-            em.text = email;
 
-
-        //findViewById<TextView>(R.id.textView).text = email + "\n" + displayName
-
-        /*findViewById<Button>(R.id.signOutBtn).setOnClickListener {
-            auth.signOut()
-            startActivity(Intent(this , MainActivity::class.java))
-        }*/
-
+        nama.text = displayName;
+        em.text = email;
     }
 
 
@@ -151,6 +166,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
                 firebaseAuth.signOut()
+                googleSignInClient.signOut();
                 startActivity(Intent(this, SignInActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_CLEAR_TASK))
                 //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK) //makesure user cant go back
                 finish()

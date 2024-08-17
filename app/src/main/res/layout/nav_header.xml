@@ -13,15 +13,15 @@
 
     <ImageView
         android:id="@+id/logo_p"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:background="#CACACA" />
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:visibility="visible" />
 
     <TextView
         android:id="@+id/nama"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
+        android:text="Menu"
         android:textColor="@color/white"
         android:textStyle="bold"/>
 
@@ -29,7 +29,7 @@
         android:id="@+id/emailGet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
+        android:text="The list menu of app"
         android:textColor="@color/white"
         android:textSize="14sp"
         android:layout_marginBottom="16dp"/>
