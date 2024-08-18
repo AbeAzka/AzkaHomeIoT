@@ -78,12 +78,14 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
+
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
         val headerView = navigationView.getHeaderView(0)
         val nama = headerView.findViewById<TextView>(R.id.nama)
         val profilepc = headerView.findViewById<ImageView>(R.id.logo_p)
         val em = headerView.findViewById<TextView>(R.id.emailGet)
+        val status = headerView.findViewById<ImageView>(R.id.status22)
 
         val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav)
 
@@ -106,6 +108,17 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             .requestEmail()
             .build()
         mGoogleSignInClient= GoogleSignIn.getClient(this,gso)
+
+        if(auth.currentUser!!.isEmailVerified == true){
+            status.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.verified))
+        }else{
+            status.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.unverified))
+            auth.currentUser?.sendEmailVerification()?.addOnCompleteListener {
+                Toast.makeText(this, "Please verify your email!" , Toast.LENGTH_SHORT).show()
+            }?.addOnFailureListener{
+                Toast.makeText(this, "Something went wrong" , Toast.LENGTH_SHORT).show()
+            }
+        }
 
         val picture = FirebaseAuth.getInstance().currentUser?.photoUrl
         val picture2 = mFirebaseUser.photoUrl.toString();

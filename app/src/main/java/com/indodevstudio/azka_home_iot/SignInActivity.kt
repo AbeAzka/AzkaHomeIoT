@@ -4,10 +4,12 @@ package com.indodevstudio.azka_home_iot
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -16,6 +18,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.indodevstudio.azka_home_iot.databinding.ActivitySignInBinding
+import com.indodevstudio.azka_home_iot.utils.FirebaseUtils
 
 
 class SignInActivity : AppCompatActivity() {
@@ -50,47 +53,95 @@ class SignInActivity : AppCompatActivity() {
 //            signInGoogle()
 //        }
 
-        /*binding.btnRegLogin.setOnClickListener {
-            startActivity(Intent(this,SignUpActivity::class.java))
-            overridePendingTransition(R.anim.slide_from_right,R.anim.slide_to_left)
-        }
-
-        binding.textView10.setOnClickListener {
-            startActivity(Intent(this,ResetPwActivity::class.java))
-            overridePendingTransition(R.anim.slide_from_right,R.anim.slide_to_left)
-        }
-
-        binding.button.setOnClickListener {
-            val email = binding.emailET.text.toString()
-            val pass = binding.passET.text.toString()
-
-            if (email.isNotEmpty() && pass.isNotEmpty()) {
-                firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        //if (firebaseAuth.currentUser?.isEmailVerified == true){
-
-                        val intent = Intent(this, MainActivity::class.java)
-                        startActivity(intent)
-                        Toast.makeText(applicationContext, "Welcome", Toast.LENGTH_SHORT).show()
-                            overridePendingTransition(R.anim.slide_from_left,R.anim.slide_to_right)
-                        //}
-                        //else{
-                            //val intent = Intent(this, VerificationActivity::class.java)
-                            //overridePendingTransition(R.anim.slide_to_left,R.anim.slide_to_right)
-                            //startActivity(intent)
-                            //Toast.makeText(applicationContext, "Please verify your Email first!", Toast.LENGTH_SHORT).show()
-                        //}
-                    } else {
-                        Toast.makeText(applicationContext, it.exception.toString(), Toast.LENGTH_SHORT).show()
-
-                    }
-                }
-            } else {
-                Toast.makeText(applicationContext, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
-
-            }
-        }*/
+//        binding.btnRegLogin.setOnClickListener {
+//            startActivity(Intent(this,SignUpActivity::class.java))
+//            overridePendingTransition(R.anim.slide_from_right,R.anim.slide_to_left)
+//        }
+//
+//        binding.tvForgotPassword.setOnClickListener {
+//            startActivity(Intent(this,ResetPwActivity::class.java))
+//            overridePendingTransition(R.anim.slide_from_right,R.anim.slide_to_left)
+//        }
+//
+//        binding.loginbtn.setOnClickListener {
+//            userLogin()
+//            val email = binding.emailET.text.toString()
+//            val pass = binding.passET.text.toString()
+//
+//            if (email.isNotEmpty() && pass.isNotEmpty()) {
+//                firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
+//                    if (it.isSuccessful) {
+//                        //if (firebaseAuth.currentUser?.isEmailVerified == true){
+//
+//                        val intent = Intent(this, MainActivity::class.java)
+//                        startActivity(intent)
+//                        Toast.makeText(applicationContext, "Welcome", Toast.LENGTH_SHORT).show()
+//                            overridePendingTransition(R.anim.slide_from_left,R.anim.slide_to_right)
+//                        //}
+//                        //else{
+//                            //val intent = Intent(this, VerificationActivity::class.java)
+//                            //overridePendingTransition(R.anim.slide_to_left,R.anim.slide_to_right)
+//                            //startActivity(intent)
+//                            //Toast.makeText(applicationContext, "Please verify your Email first!", Toast.LENGTH_SHORT).show()
+//                        //}
+//                    } else {
+//                        Toast.makeText(applicationContext, it.exception.toString(), Toast.LENGTH_SHORT).show()
+//
+//                    }
+//                }
+//            } else {
+//                Toast.makeText(applicationContext, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
+//
+//            }
+//        }
     }
+
+//    private fun userLogin()
+//    {
+//        val email2 = binding?.etSinInEmail?.text.toString()
+//        val password = binding?.etSinInPassword?.text.toString()
+//        if (validateForm(email, password))
+//        {
+//            showProgressBar()
+//            auth.signInWithEmailAndPassword(email, password)
+//                .addOnCompleteListener(this){task->
+//                    if (task.isSuccessful)
+//                    {
+//                        startActivity(Intent(this,MainActivity::class.java))
+//                        finish()
+//                    }
+//                    else
+//                    {
+//                        binding?.btnSignIn?.text = "Login"
+//                        Toast.makeText(this,"Oops! Something went wrong", Toast.LENGTH_SHORT).show()
+//                    }
+//                    hideProgressBar()
+//                }
+//        }
+
+//        val email = binding.emailET.text.toString()
+//        val pass = binding.passET.text.toString()
+//
+//        if (email.isNotEmpty() && pass.isNotEmpty()) {
+//            firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
+//                if (it.isSuccessful) {
+//                    //if (firebaseAuth.currentUser?.isEmailVerified == true){
+//
+//                    val intent = Intent(this, MainActivity::class.java)
+//                    startActivity(intent)
+//                    Toast.makeText(applicationContext, "Welcome", Toast.LENGTH_SHORT).show()
+//                    overridePendingTransition(R.anim.slide_from_left,R.anim.slide_to_right)
+//
+//                } else {
+//                    //Toast.makeText(applicationContext, it.exception.toString(), Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this,"Oops! Something went wrong", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//        } else {
+//            Toast.makeText(applicationContext, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
+//
+//        }
+//    }
     private fun signInGoogle(){
         val signInIntent = googleSignInClient.signInIntent
         launcher.launch(signInIntent)
@@ -122,7 +173,18 @@ class SignInActivity : AppCompatActivity() {
                 val intent = Intent(this , MainActivity::class.java)
                 intent.putExtra("email" , account.email)
                 intent.putExtra("name" , account.displayName)
+                if(firebaseAuth.currentUser!!.isEmailVerified == true){
+                    Log.i("Status", "Account verified for " + account.email)
+                }else{
+                    Log.i("Status", "Account unverified for " + account.email)
+                    firebaseAuth.currentUser?.sendEmailVerification()?.addOnCompleteListener {
+                        Toast.makeText(this, "Please verify your email!" , Toast.LENGTH_SHORT).show()
+                    }?.addOnFailureListener{
+                        Toast.makeText(this, "Something went wrong" , Toast.LENGTH_SHORT).show()
+                    }
+                }
                 startActivity(intent)
+
             }else{
                 Toast.makeText(this, it.exception.toString() , Toast.LENGTH_SHORT).show()
 
