@@ -8,5 +8,13 @@
     <string name="emailInfo"></string>
     <string name="default_web_client_id" translatable="false">507008627074-i044hkon2rcr5oq9doo4eimrgnp7a1dr.apps.googleusercontent.com</string>
 
+    <string name="status_air">Pada saat menekan tombol cek status air, kita akan melihat gambar dibawah yang terdapat 5 warna. Warnanya terdiri dari <b>Hijau</b>, <b>Biru</b>, <b>Kuning</b>, <b>Oranye</b>, dan <b>Merah</b>.
+        Masing-masing warna memiliki arti yang berbeda.<br>\n</br>
+        <br>\n<b>- Hijau</b>\nWarna hijau menandakan air dalam tandon berada pada level diatas 30 cm dan termasuk normal.\n</br>
+        <br> \n<b>- Biru</b>\nWarna biru menandakan air dalam tandon berada pada level diantara 30 - 40 cm dan termasuk normal.\n</br>
+
+     <br>\n<b>- Kuning</b>\nWarna kuning menandakan air dalam tandon berada pada level diantara 40 - 50 cm dan termasuk normal.\n</br>
+     <br>\n<b>- Oranye</b>\nWarna oranye menandakan air dalam tandon berada pada level diantara 50 - 60 cm. Kategori warna ini termasuk peringatan jika tandon tidak mengisi.\n</br>
+     <br>\n<b>- Merah</b>\nWarna merah menandakan air dalam tandon berada pada level diatas 60 cm. Kategori warna ini termasuk error karena tandon tidak mengisi atau sensornya error.\n</br></string>
 
 </resources>

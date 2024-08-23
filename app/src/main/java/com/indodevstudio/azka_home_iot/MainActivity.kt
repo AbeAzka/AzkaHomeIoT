@@ -181,33 +181,121 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+
         when (item.itemId) {
-            R.id.nav_home -> supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, HomeFragment()).commit()
-            R.id.nav_taman -> supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, TamanFragment()).commit()
-            R.id.nav_masjid -> supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, MasjidFragment()).commit()
-            R.id.nav_tandon_uti -> supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, TandonUtiFragment()).commit()
-            R.id.nav_tandon_bunda -> supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, TandonBundaFragment()).commit()
-            R.id.nav_listrik_masjid -> supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, ListrikMasjidFragment()).commit()
-            R.id.nav_grafik -> supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, GrafikMasjidFragment()).commit()
-            R.id.nav_taman_p -> supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, TamanProdFragment()).commit()
-            R.id.nav_about -> supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, AboutFragment()).commit()
-            R.id.nav_listrik_uti -> supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, ListrikUtiFregment()).commit()
-            R.id.nav_listrik_bunda -> supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, ListrikBundaFragment()).commit()
-            R.id.nav_grafik_bunda -> supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, GrafikBundaFragment()).commit()
-            R.id.nav_grafik_uti -> supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, GrafikUtiFregment()).commit()
+
+
+            R.id.nav_home -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, HomeFragment()).commit()
+                navigationView.setCheckedItem(R.id.nav_home);
+            }
+
+            R.id.nav_taman -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, TamanFragment()).commit()
+                navigationView.setCheckedItem(R.id.nav_taman)
+            }
+
+            R.id.nav_masjid -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, MasjidFragment()).commit()
+                navigationView.setCheckedItem(R.id.nav_masjid)
+            }
+
+            R.id.nav_tandon_uti -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, TandonUtiFragment()).commit()
+                navigationView.setCheckedItem(R.id.nav_tandon_uti)
+            }
+
+            R.id.nav_tandon_bunda -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, TandonBundaFragment()).commit()
+                navigationView.setCheckedItem(R.id.nav_tandon_bunda)
+            }
+
+            R.id.nav_listrik_masjid -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, ListrikMasjidFragment()).commit()
+                navigationView.setCheckedItem(R.id.nav_listrik_masjid)
+            }
+
+            R.id.nav_grafik -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, GrafikMasjidFragment()).commit()
+                navigationView.setCheckedItem(R.id.nav_grafik)
+            }
+
+            R.id.nav_taman_p -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, TamanProdFragment()).commit()
+                navigationView.setCheckedItem(R.id.nav_taman_p)
+            }
+
+            R.id.nav_about -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, AboutFragment()).commit()
+                navigationView.setCheckedItem(R.id.nav_about)
+            }
+
+            R.id.nav_listrik_uti -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, ListrikUtiFregment()).commit()
+                navigationView.setCheckedItem(R.id.nav_listrik_uti)
+            }
+
+            R.id.nav_listrik_bunda -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, ListrikBundaFragment()).commit()
+                navigationView.setCheckedItem(R.id.nav_listrik_bunda)
+            }
+
+            R.id.nav_grafik_bunda -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, GrafikBundaFragment()).commit()
+                navigationView.setCheckedItem(R.id.nav_grafik_bunda)
+            }
+
+            R.id.nav_grafik_uti -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, GrafikUtiFregment()).commit()
+                navigationView.setCheckedItem(R.id.nav_grafik_uti)
+            }
+
+            R.id.nav_book -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, manual_book_fragment()).commit()
+                navigationView.setCheckedItem(R.id.nav_book)
+            }
             //R.id.nav_update -> supportFragmentManager.beginTransaction()
              //   .replace(R.id.fragment_container, UpdateLogFragment()).commit()
 
