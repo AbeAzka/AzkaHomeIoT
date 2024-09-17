@@ -21,8 +21,10 @@
             android:id="@+id/toolbar"
             android:elevation="4dp"
             android:background="@color/lavender"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            android:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+            android:theme="@style/Theme.MainActivity"
+            android:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+        </androidx.appcompat.widget.Toolbar>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -38,7 +40,7 @@
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/nav_menu"
-        android:background="@color/white"
+        android:background="?attr/drawerBackground"
         app:itemIconTint="@color/lavender"
         app:itemTextColor="@color/lavender"/>
 

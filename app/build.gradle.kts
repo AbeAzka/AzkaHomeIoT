@@ -16,7 +16,7 @@ android {
         minSdk = 30
         targetSdk = 34
         versionCode = 1
-        versionName = "1.5.2.1"//Last 1.2
+        versionName = "1.7.2 "//Last 1.2
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -44,7 +44,8 @@ android {
 
 dependencies {
     implementation ("com.github.bumptech.glide:glide:4.4.0")
-
+    implementation ("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0")
+    implementation ("org.eclipse.paho:org.eclipse.paho.android.service:1.1.1")
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
@@ -57,6 +58,8 @@ dependencies {
     implementation ("com.github.MikeOrtiz:TouchImageView:1.4.1")
     implementation("com.google.firebase:firebase-messaging:24.0.0")
     implementation("androidx.test:core-ktx:1.6.1")
+    implementation("androidx.preference:preference-ktx:1.2.1")
+    implementation("androidx.preference:preference:1.2.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

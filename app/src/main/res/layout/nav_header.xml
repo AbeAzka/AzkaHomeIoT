@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="176dp"
+    android:layout_height="200dp"
     android:gravity="bottom"
     android:padding="16dp"
     android:id="@+id/nav_head"
-    android:background="@drawable/headerbg"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    android:background="@color/lavender2"
+
     tools:context=".MainActivity">
 
 
@@ -24,8 +25,9 @@
             android:id="@+id/logo_p"
             android:contentDescription="Profile Picture"
             android:clickable="true"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_marginRight="10dp"
             android:visibility="visible" />
         <ImageView
@@ -46,6 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Menu"
+        android:textSize="20dp"
         android:textColor="@color/white"
         android:textStyle="bold"/>
 

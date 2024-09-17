@@ -5,11 +5,11 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -18,7 +18,6 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.indodevstudio.azka_home_iot.databinding.ActivitySignInBinding
-import com.indodevstudio.azka_home_iot.utils.FirebaseUtils
 
 
 class SignInActivity : AppCompatActivity() {
@@ -46,9 +45,14 @@ class SignInActivity : AppCompatActivity() {
         googleSignInClient = GoogleSignIn.getClient(this , gso)
         image_google = findViewById(R.id.gSignInPct)
         image_google.isClickable = true
-        binding.gSignInPct.setOnClickListener{ view ->
-            signInGoogle()
+        binding.gSignInPct.setOnClickListener{view ->
+
+
+                // do whatever we wish!
+                signInGoogle()
+
         }
+
 //        findViewById<Button>(R.id.gSignInBtn).setOnClickListener {
 //            signInGoogle()
 //        }

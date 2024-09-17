@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/Theme.MainActivity"
     tools:context=".HomeFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -23,7 +24,7 @@
         android:layout_marginTop="500dp"
         android:gravity="center"
         android:text="Select menu above to view IoT project."
-        android:textColor="@color/black"
+        android:textColor="?android:textColorPrimary"
         android:textSize="32dp"
         android:textStyle="normal" />
 

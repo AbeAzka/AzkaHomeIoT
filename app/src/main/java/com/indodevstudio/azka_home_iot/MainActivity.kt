@@ -1,19 +1,24 @@
 package com.indodevstudio.azka_home_iot
 
 
+import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.preference.PreferenceFragment
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupWindow
@@ -22,17 +27,24 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.core.view.MenuProvider
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.messaging.FirebaseMessaging
+import com.indodevstudio.azka_home_iot.databinding.ActivityMainBinding
 import com.indodevstudio.azka_home_iot.utils.FirebaseUtils.firebaseAuth
 import okhttp3.Call
 import okhttp3.Callback
@@ -41,42 +53,79 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import org.eclipse.paho.android.service.MqttAndroidClient
+import org.eclipse.paho.client.mqttv3.IMqttActionListener
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
+import org.eclipse.paho.client.mqttv3.IMqttToken
+import org.eclipse.paho.client.mqttv3.MqttCallback
+import org.eclipse.paho.client.mqttv3.MqttException
+import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.json.JSONObject
-import java.io.InputStream
-import java.net.URL
 import java.io.IOException
-import com.bumptech.glide.annotation.GlideModule
-import com.bumptech.glide.module.AppGlideModule
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import java.io.InputStream
+import java.lang.Exception
+import java.net.URL
 
 
 class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelectedListener {
+    val msg = "messageMQTT"
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var binding : ActivityMainBinding
+    var foregoundServiceIntent : Intent? = null
     var image : Bitmap? = null
     lateinit var inputStream : InputStream
     private lateinit var auth : FirebaseAuth
     private lateinit var mFirebaseUser : FirebaseUser
     lateinit var mGoogleSignInClient: GoogleSignInClient
 
+    private lateinit var mqttAndroidClient: MqttAndroidClient
+    var messageMQTT = ""
+
+    //lateinit var binding : ActivityMainBinding
+
+    private val CHANNEL_ID = "channelId"
+    private val CHANNEL_NAME = "channelName"
+    private val NOTIFICATION_ID = 0
+
     //private lateinit var googleSignInClient : GoogleSignInClient
     var picture3 = ""
     var token = ""
     var key = "AIzaSyBA1Zxdi5fKu8dKgLhdtKa31M0uG0Xe6zk"
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+        val test = Intent(this, MQTT_Service::class.java)
+        //startService(test)
 
+        //connect(this)
+        Log.i("MQTT", "MAIN ACTIVITY MQTT RUN")
 
+        //notificationChannel()
+//        mqtt = MQTT()
+//        mqtt.connect(this@MainActivity)
+//        mqtt.receiveMessages()
 
+        //subscribe_mqtt("sending_telemetri2")
+        //connect(this)
         requestPermission()
+        requestPermissionMain()
         drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
 
 
+//        foregoundServiceIntent = Intent(this, MQTT_Service::class.java)
+////        startService(foregoundServiceIntent)
+//        startForegroundService(foregoundServiceIntent)
+        Options()
+
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar)
+
 
 
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
@@ -92,9 +141,30 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
+        addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Add menu items here
+                menuInflater.inflate(R.menu.settings_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+
+
+                // Handle the menu selection
+                when (menuItem.itemId){
+                    R.id.action_settings ->{
+                        val intent = Intent(this@MainActivity, SettingsActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
+                return true
+            }
+        })
+
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, HomeFragment()).commit()
+            Options()
             navigationView.setCheckedItem(R.id.nav_home)
         }
 
@@ -145,7 +215,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                 profilepc.setImageBitmap(image)
             }
         }
-        catch (e:java.lang.Exception){
+        catch (e: Exception){
             e.printStackTrace()
         }
 
@@ -172,12 +242,193 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             }
         }
 
-
-
-
         nama.text = displayName;
         em.text = email;
     }
+
+
+
+    override fun onResume() {
+        Options()
+        super.onResume()
+    }
+
+    private fun Options(){
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val notif = prefs.getBoolean("notif", true)
+        val mqtt = prefs.getBoolean("mqtt", false)
+        binding.apply {
+            if (notif){
+                val test = Intent(this@MainActivity, MQTT_Service::class.java)
+                startService(test)
+//                val service = MQTT_Service()
+//                service.startForegroundService()
+
+                Log.i("MQTT", "SERVICE START FROM SWITCH")
+            }else{
+                val test = Intent(this@MainActivity, MQTT_Service::class.java)
+
+//                val service = MQTT_Service()
+//                service.stopForegroundService()
+
+                stopService(test)
+                Log.i("MQTT", "SERVICE STOP FROM SWITCH")
+            }
+
+//            if (mqtt){
+//                val service = MQTT_Service()
+//                service.connect(this@MainActivity)
+//
+//                Log.i("MQTT", "MQTT START FROM SWITCH")
+//            }else{
+//                val service = MQTT_Service()
+//                service.disconnect()
+//                Log.i("MQTT", "MQTT STOP FROM SWITCH")
+//            }
+
+//            if (mode){
+//               AppCompatDelegate.setDefaultNightMode(
+//                   AppCompatDelegate.MODE_NIGHT_YES
+//               )
+//            }else{
+//                AppCompatDelegate.setDefaultNightMode(
+//                    AppCompatDelegate.MODE_NIGHT_NO
+//                )
+//            }
+        }
+    }
+
+
+
+    /*
+    =====================================================================================
+    ============MQTT MQTT MQTT BEGIN=================
+    =====================================================================================
+    =====================================================================================
+    =====================================================================================
+    =====================================================================================
+     */
+
+    fun connect(applicationContext : Context) {
+
+
+        mqttAndroidClient = MqttAndroidClient ( applicationContext,"tcp://103.127.99.151:1883","19453" )
+        mqttAndroidClient.setCallback(object : MqttCallback{
+            override fun messageArrived(topic: String?, message: MqttMessage?) {
+                Log.d("MQTT", "Receive message: ${message.toString()} from topic: $topic")
+                messageMQTT = message.toString()
+//                notif()
+                val service = CounterNotificationService(applicationContext)
+                service.showNotification(message.toString())
+
+            }
+
+            override fun connectionLost(cause: Throwable?) {
+                Log.d("MQTT", "Connection lost ${cause.toString()}")
+            }
+
+            override fun deliveryComplete(token: IMqttDeliveryToken?) {
+                Log.d("MQTT", "Complete ${token.toString()}")
+            }
+        })
+        try {
+            val token = mqttAndroidClient.connect()
+            token.actionCallback = object : IMqttActionListener {
+                override fun onSuccess(asyncActionToken: IMqttToken)                        {
+                    Log.i("MQTT", "success ")
+                    subscribe("brankas1")
+                    //connectionStatus = true
+                    // Give your callback on connection established here
+                }
+                override fun onFailure(asyncActionToken: IMqttToken, exception: Throwable) {
+                    //connectionStatus = false
+                    Log.i("MQTT", "failure")
+                    // Give your callback on connection failure here
+                    exception.printStackTrace()
+                }
+            }
+        } catch (e: MqttException) {
+            // Give your callback on connection failure here
+            e.printStackTrace()
+        }
+    }
+
+    fun subscribe(topic: String, qos: Int = 1) {
+        try {
+            mqttAndroidClient.subscribe(topic, qos, null, object : IMqttActionListener {
+                override fun onSuccess(asyncActionToken: IMqttToken?) {
+                    Log.d("MQTT", "Subscribed to $topic")
+                }
+
+                override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
+                    Log.d("MQTT", "Failed to subscribe $topic")
+                }
+            })
+        } catch (e: MqttException) {
+            e.printStackTrace()
+        }
+    }
+
+    fun disconnect() {
+        try {
+            mqttAndroidClient.disconnect(null, object : IMqttActionListener {
+                override fun onSuccess(asyncActionToken: IMqttToken?) {
+                    Log.d("MQTT", "Disconnected")
+                }
+
+                override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
+                    Log.d("MQTT", "Failed to disconnect")
+                }
+            })
+        } catch (e: MqttException) {
+            e.printStackTrace()
+        }
+    }
+
+    fun unsubscribe(topic: String) {
+        try {
+            mqttAndroidClient.unsubscribe(topic, null, object : IMqttActionListener {
+                override fun onSuccess(asyncActionToken: IMqttToken?) {
+                    Log.d("MQTT", "Unsubscribed to $topic")
+                }
+
+                override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
+                    Log.d("MQTT", "Failed to unsubscribe $topic")
+                }
+            })
+        } catch (e: MqttException) {
+            e.printStackTrace()
+        }
+    }
+
+    fun publish(topic: String, msg: String, qos: Int = 1, retained: Boolean = false) {
+        try {
+            val message = MqttMessage()
+            message.payload = msg.toByteArray()
+            message.qos = qos
+            message.isRetained = retained
+            mqttAndroidClient.publish(topic, message, null, object : IMqttActionListener {
+                override fun onSuccess(asyncActionToken: IMqttToken?) {
+                    Log.d("MQTT", "$msg published to $topic")
+                }
+
+                override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
+                    Log.d("MQTT", "Failed to publish $msg to $topic")
+                }
+            })
+        } catch (e: MqttException) {
+            e.printStackTrace()
+        }
+    }
+
+    /*
+    =====================================================================================
+    ============MQTT MQTT MQTT END=================
+    =====================================================================================
+    =====================================================================================
+    =====================================================================================
+    =====================================================================================
+     */
 
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -321,19 +572,59 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
+    fun requestPermissionMain(){
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permission is already granted.
+            Log.i("PERMIT", "PERMITED FOR READ_EXTERNAL_STORAGE")
+        } else {
+            Log.i("PERMIT", "NOT PERMITED FOR READ_EXTERNAL_STORAGE")
+            // Permission is not granted.
+            requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permission is already granted.
+            Log.i("PERMIT", "PERMITED FOR WRITE_EXTERNAL_STORAGE")
+        } else {
+            Log.i("PERMIT", "NOT PERMITED FOR WRITE_EXTERNAL_STORAGE")
+            // Permission is not granted.
+            requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
+
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permission is already granted.
+            Log.i("PERMIT", "PERMITED FOR POST_NOTIFICATIONS")
+        } else {
+            Log.i("PERMIT", "NOT PERMITED FOR POST_NOTIFICATIONS")
+            // Permission is not granted.
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
 
     fun requestPermission(){
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) ==
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
                 PackageManager.PERMISSION_GRANTED
             ) {
                 // FCM SDK (and your app) can post notifications.
-            } else if (shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)) {
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
                 //Nothing
             } else {
                 // Directly ask for the permission
-                requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }else{
             FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
@@ -389,6 +680,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
     fun sendPushNotification(token: String, title: String, subtitle: String, body: String, data: Map<String, String> = emptyMap()) {
         val url = "https://fcm.googleapis.com/fcm/send"
 
+
         val bodyJson = JSONObject()
         bodyJson.put("to", token)
         bodyJson.put("notification",
@@ -422,6 +714,46 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                 }
             }
         )
+
+        val URL : String ="https://abeazka.my.id/arduino_keypad/input.php?token=$token"
+
+        if (URL.isNotEmpty()){
+            val http = OkHttpClient()
+            val request = Request.Builder()
+                .url(URL)
+                .build()
+            //myWebView.loadUrl(URL)
+
+            http.newCall(request).enqueue(object : Callback{
+                override fun onFailure(call: Call, e: IOException) {
+                    e.printStackTrace();
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    val response: Response = http.newCall(request).execute()
+                    val responseCode = response.code
+                    val results = response.body!!.string()
+
+                    println("Success " + response.toString())
+                    println("Success " + response.message.toString())
+                    println("Success " + results)
+                    Log.i("KODE", "CODE: "+ responseCode)
+                    Log.i("Response", "Received response from server. Response")
+                    if (response.code == 200){
+
+
+                    }else{
+
+                        Log.e(
+                            "HTTP Error",
+                            "Something didn't load, or wasn't succesfully"
+                        )
+
+                        return
+                    }
+                }
+            })
+        }
 
     }
 }

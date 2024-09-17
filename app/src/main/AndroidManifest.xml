@@ -3,9 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <application
         android:allowBackup="true"
@@ -19,7 +23,14 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".SettingsActivity"
+            android:exported="false"
+
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".DetailActivity"
+            android:theme="@style/Theme.MainActivity"
             android:exported="false" />
         <!--
      Set custom default icon. This is used when no icon is set for incoming notification messages.
@@ -62,6 +73,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="false"
+            android:theme="@style/Theme.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name=".MainActivity" />
@@ -79,6 +91,7 @@
                 android:value="" />
         </activity>
 
+<!--        <service android:name="org.eclipse.paho.android.service.MqttService" />-->
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">
@@ -86,6 +99,19 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <receiver
+            android:name=".MQTT_Receiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".MQTT_Service"
+            android:foregroundServiceType="dataSync" />
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
     </application>
 
 </manifest>

@@ -17,6 +17,7 @@ class DetailActivity : AppCompatActivity() {
         getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
         getSupportActionBar()?.setDisplayShowHomeEnabled(true);
 
+
         toolbar.setNavigationOnClickListener(OnClickListener {
             //What to do on back clicked
             onBackPressed()
@@ -30,6 +31,8 @@ class DetailActivity : AppCompatActivity() {
             detailDesc.text = getData.dataDesc
             //detailImage.setImageResource(getData.dataDetailImage)
         }
+
+        getSupportActionBar()?.setTitle(getData?.dataTitle)
     }
 
     override fun onBackPressed() {

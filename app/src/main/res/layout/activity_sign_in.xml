@@ -183,17 +183,38 @@
 <!--                android:layout_marginBottom="10dp"-->
 <!--                app:layout_constraintTop_toBottomOf="@id/loginbtn" />-->
 
-            <ImageView
+
+
+
+<!--                <ImageView-->
+<!--                android:id="@+id/gSignInPct"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:contentDescription="Continue with Google"-->
+<!--                android:scaleType="center"-->
+<!--                android:layout_gravity="center|top"-->
+<!--                android:layout_marginBottom="20dp"-->
+<!--                android:clickable="true"-->
+<!--                android:src="@drawable/android_google_ctn_2" />-->
+
+
+            <ImageButton
                 android:id="@+id/gSignInPct"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:contentDescription="Continue with Google"
-                android:scaleType="center"
+
                 android:layout_gravity="center|top"
                 android:layout_marginBottom="20dp"
                 android:clickable="true"
-                android:src="@drawable/android_google_ctn_2" />
+
+
+                android:src="@drawable/android_google_ctn_2"
+                android:padding="10dp"
+                android:scaleType="centerInside"
+                android:backgroundTintMode="screen"/>
 
             <TextView
                 android:id="@+id/lgg"

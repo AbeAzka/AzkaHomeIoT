@@ -16,5 +16,22 @@
      <br>\n<b>- Kuning</b>\nWarna kuning menandakan air dalam tandon berada pada level diantara 40 - 50 cm dan termasuk normal.\n</br>
      <br>\n<b>- Oranye</b>\nWarna oranye menandakan air dalam tandon berada pada level diantara 50 - 60 cm. Kategori warna ini termasuk peringatan jika tandon tidak mengisi.\n</br>
      <br>\n<b>- Merah</b>\nWarna merah menandakan air dalam tandon berada pada level diatas 60 cm. Kategori warna ini termasuk error karena tandon tidak mengisi atau sensornya error.\n</br></string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="settings">Settings</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
 
 </resources>

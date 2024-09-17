@@ -10,29 +10,74 @@
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">@color/lavender</item>
+        <item name="android:actionMenuTextColor">@color/black</item>
+
+        <item name="drawerItemBackground">@color/white</item>
+        <item name="drawerItemColorChecked">@color/lavender2</item>
+        <item name="drawerItemColorNormal">@color/white</item>
+        <item name="navHeaderTitleColor">@color/white</item>
+        <item name="navHeaderDescriptionColor">@color/white_2</item>
+        <item name="drawerBackground">@color/white</item>
+
         <!-- Customize your theme here. -->
     </style>
 
     <style name="Theme.MainActivity" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/lavender</item>
-        <item name="colorPrimaryVariant">@color/lavender</item>
+        <item name="colorPrimaryVariant">@color/white</item>
         <item name="colorOnPrimary">@color/white</item>
+
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">@color/color_secondary_light</item>
+        <item name="colorSecondaryVariant">@color/color_secondary_variant_light</item>
+        <item name="colorOnSecondary">@color/color_on_secondary_light</item>
+
+        <!-- Background and text colors for light mode. -->
+        <item name="android:windowBackground">@color/background_light</item>
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorSecondary">@color/black_2</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">@color/lavender</item>
+        <item name="android:actionMenuTextColor">@color/black</item>
+
+        <item name="actionOverflowButtonStyle">@style/OverFlow</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+
+        <item name="drawerItemBackground">@color/white</item>
+        <item name="drawerItemColorChecked">@color/lavender2</item>
+        <item name="drawerItemColorNormal">@color/white</item>
+        <item name="navHeaderTitleColor">@color/white</item>
+        <item name="navHeaderDescriptionColor">@color/white_2</item>
+        <item name="drawerBackground">@color/white</item>
+
+        <item name="textContent">@color/black</item>
+
         <!-- Customize your theme here. -->
 
 
 
+    </style>
+
+
+
+    <style name="OverFlow" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="tint">@color/white</item>
+    </style>
+
+    <style name="DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@android:color/white</item>
     </style>
 
     <style name="DialogAnimation">
         <item name ="android:windowEnterAnimation">@android:anim/fade_in</item>
         <item name ="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
+
+
+
+
 </resources>
