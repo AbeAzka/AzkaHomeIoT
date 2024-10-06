@@ -12,7 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.preference.PreferenceFragment
+import android.os.StrictMode
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -65,6 +65,10 @@ import java.io.IOException
 import java.io.InputStream
 import java.lang.Exception
 import java.net.URL
+import java.sql.Connection
+import java.sql.DriverManager
+import java.sql.ResultSet
+import java.util.concurrent.Executors
 
 
 class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelectedListener {
@@ -93,6 +97,15 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
     var key = "AIzaSyBA1Zxdi5fKu8dKgLhdtKa31M0uG0Xe6zk"
 
 
+    var db = "keypad_ard"
+    var ip = "103.127.99.151"
+    var port = "3306"
+    var username = "azka"
+    var password = "misxB@T.ErHPMS/2"
+
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -102,6 +115,8 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         val test = Intent(this, MQTT_Service::class.java)
         //startService(test)
 
+        val sharedPreferenceManger = SharedPreferenceManger(this)
+        AppCompatDelegate.setDefaultNightMode(sharedPreferenceManger.themeFlag[sharedPreferenceManger.theme])
         //connect(this)
         Log.i("MQTT", "MAIN ACTIVITY MQTT RUN")
 
@@ -110,6 +125,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 //        mqtt.connect(this@MainActivity)
 //        mqtt.receiveMessages()
 
+        connectDB()
         //subscribe_mqtt("sending_telemetri2")
         //connect(this)
         requestPermission()
@@ -145,6 +161,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 // Add menu items here
                 menuInflater.inflate(R.menu.settings_menu, menu)
+                menuInflater.inflate(R.menu.menu_action_bar, menu)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -154,6 +171,10 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                 when (menuItem.itemId){
                     R.id.action_settings ->{
                         val intent = Intent(this@MainActivity, SettingsActivity::class.java)
+                        startActivity(intent)
+                    }
+                    R.id.menu_hotlist ->{
+                        val intent = Intent(this@MainActivity, InboxActivity::class.java)
                         startActivity(intent)
                     }
                 }
@@ -246,11 +267,19 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         em.text = email;
     }
 
+    
+
+
 
 
     override fun onResume() {
         Options()
         super.onResume()
+    }
+
+    fun connectDB(){
+
+
     }
 
     private fun Options(){

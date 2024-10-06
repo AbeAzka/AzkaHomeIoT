@@ -26,10 +26,11 @@
 <!--        app:summaryOff="Light mode set to your app."-->
 <!--        app:summaryOn="Dark mode set to your app."/>-->
 
-        <ListPreference app:title="Dark Mode"
+        <ListPreference app:title="Theme"
             app:key="dark_mode"
             app:useSimpleSummaryProvider="true"
-            app:defaultValue="1"
+            app:defaultValue="0"
+
             app:entries="@array/dark_mode_entries"
             app:entryValues="@array/dark_mode_entries_values"/>
     </PreferenceCategory>

@@ -17,9 +17,11 @@ class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferen
         setContentView(R.layout.settings_activity)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar()?.setDisplayShowHomeEnabled(true);
-        getSupportActionBar()?.setTitle("Settings")
+        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+        supportActionBar?.setDisplayShowHomeEnabled(true);
+        supportActionBar?.title = "Settings"
+
+
 
         toolbar.setNavigationOnClickListener(View.OnClickListener {
             //What to do on back clicked
@@ -51,21 +53,35 @@ class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferen
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
         if (key == "dark_mode"){
-            val prefs = sharedPreferences?.getString(key, "1")
-
+            val prefs = sharedPreferences.getString(key, "0")
+            val sharedPreferenceManger = SharedPreferenceManger(this)
+            var checkedTheme = sharedPreferenceManger.theme
+            if (prefs != null) {
+                checkedTheme = prefs.toInt()
+            }
             when(prefs?.toInt()){
+
+                0 ->{
+                    //AppCompatDelegate.setDefaultNightMode(
+//                   AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+//                    )
+//                    checkedTheme = 1
+                    sharedPreferenceManger.theme = checkedTheme
+                    AppCompatDelegate.setDefaultNightMode(sharedPreferenceManger.themeFlag[checkedTheme])
+                }
                 1 ->{
-                    AppCompatDelegate.setDefaultNightMode(
-                   AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                    )
+                    //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+//                    delegate.applyDayNight()
+//                    checkedTheme = 2
+                    sharedPreferenceManger.theme = checkedTheme
+                    AppCompatDelegate.setDefaultNightMode(sharedPreferenceManger.themeFlag[checkedTheme])
                 }
                 2 ->{
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    delegate.applyDayNight()
-                }
-                3 ->{
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    delegate.applyDayNight()
+                    //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+//                    delegate.applyDayNight()
+//                    checkedTheme = 3
+                    sharedPreferenceManger.theme = checkedTheme
+                    AppCompatDelegate.setDefaultNightMode(sharedPreferenceManger.themeFlag[checkedTheme])
                 }
             }
         }

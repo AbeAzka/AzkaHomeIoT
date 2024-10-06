@@ -22,6 +22,8 @@
         <!-- Customize your theme here. -->
     </style>
     <!-- Base application theme. -->
+
+
     <style name="Theme.MainActivity" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/color_primary_dark</item>
@@ -53,7 +55,7 @@
         <item name="drawerBackground">@color/black</item>
         <item name="textContent">@color/white</item>
 
-
+        <item name="android:alertDialogTheme">@color/white</item>
 
     </style>
 
