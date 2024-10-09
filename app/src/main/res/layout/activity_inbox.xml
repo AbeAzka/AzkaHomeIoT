@@ -69,9 +69,9 @@
     <TextView
         android:id="@+id/title_data_inbox"
         android:layout_width="match_parent"
-        android:layout_height="1800px"
+        android:layout_height="match_parent"
 
-        android:text="No Inbox Yet"
+        android:text="No Inbox Messages Yet"
         android:textSize="50dp"
         android:textStyle="bold"
         android:textAlignment="center"
