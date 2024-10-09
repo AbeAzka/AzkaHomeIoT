@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -26,7 +27,7 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignInBinding
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var googleSignInClient : GoogleSignInClient
-    lateinit var image_google : ImageView
+    lateinit var image_google : TextView
     lateinit var acct : GoogleSignInAccount
     //lateinit var  userTXT : TextView
     //lateinit var  emailTXT : TextView
@@ -49,8 +50,8 @@ class SignInActivity : AppCompatActivity() {
 
         googleSignInClient = GoogleSignIn.getClient(this , gso)
         image_google = findViewById(R.id.gSignInPct)
-        image_google.isClickable = true
-        binding.gSignInPct.setOnClickListener{view ->
+
+        binding.gSignInPct.setOnClickListener{
 
 
                 // do whatever we wish!
@@ -180,6 +181,8 @@ class SignInActivity : AppCompatActivity() {
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful){
                 val intent = Intent(this , MainActivity::class.java)
+                val bundle = Bundle()
+                bundle.putString("name", account.displayName)
                 intent.putExtra("email" , account.email)
                 intent.putExtra("name" , account.displayName)
                 if(firebaseAuth.currentUser!!.isEmailVerified == true){
@@ -207,6 +210,8 @@ class SignInActivity : AppCompatActivity() {
             if (GoogleSignIn.getLastSignedInAccount(this) != null) {
 
                 val intent = Intent(this, MainActivity::class.java)
+                val bundle = Bundle()
+                bundle.putString("name", user!!.displayName)
                 intent.putExtra("email", user!!.email)
                 intent.putExtra("name", user!!.displayName)
                 startActivity(intent)

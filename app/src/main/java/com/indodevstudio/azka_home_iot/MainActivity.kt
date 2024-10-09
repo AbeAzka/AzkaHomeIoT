@@ -12,7 +12,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.os.StrictMode
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -63,12 +62,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.json.JSONObject
 import java.io.IOException
 import java.io.InputStream
-import java.lang.Exception
 import java.net.URL
-import java.sql.Connection
-import java.sql.DriverManager
-import java.sql.ResultSet
-import java.util.concurrent.Executors
 
 
 class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelectedListener {
@@ -148,7 +142,9 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         navigationView.setNavigationItemSelectedListener(this)
         val headerView = navigationView.getHeaderView(0)
         val nama = headerView.findViewById<TextView>(R.id.nama)
+
         val profilepc = headerView.findViewById<ImageView>(R.id.logo_p)
+
         val em = headerView.findViewById<TextView>(R.id.emailGet)
         val status = headerView.findViewById<ImageView>(R.id.status22)
 
@@ -211,6 +207,9 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             }
         }
 
+
+
+
         val picture = FirebaseAuth.getInstance().currentUser?.photoUrl
         val picture2 = mFirebaseUser.photoUrl.toString();
         val picture5 = mFirebaseUser.photoUrl
@@ -218,14 +217,19 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         val displayName = intent.getStringExtra("name")
         val photo = intent.getStringExtra("photop")
         picture3 = FirebaseAuth.getInstance().currentUser!!.photoUrl.toString()
+
+
         //val xxy = URL("https://lh3.googleusercontent.com/a/ACg8ocIdS4yQkO_r9lcFAMcoA1yVFRa3N5IC9rz3CE47mYsenze49A=s96-c")
         //profilepc.setImageURI(picture)
         if (picture3 == null) {
             profilepc.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.azkahomeiot))
+
         } else {
-            Glide.with(this).load(picture3).into(profilepc);
+            Glide.with(this).load(picture3).into(profilepc)
 
         }
+
+
         Log.i("INFO_PC", picture3 + " AND "+ picture)
         val handler = Handler(Looper.getMainLooper())
         val ur = URL(picture3)
@@ -234,6 +238,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             image = BitmapFactory.decodeStream(`in`)
             handler.post {
                 profilepc.setImageBitmap(image)
+
             }
         }
         catch (e: Exception){

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TamanFragment">
+    android:id="@+id/drawer_layout"
+    tools:context=".GrafikMasjidFragment">
 
+    <!-- TODO: Update blank fragment layout -->
     <!-- TODO: Update blank fragment layout -->
     <!--<TextView
         android:layout_width="wrap_content"
@@ -16,6 +17,16 @@
         android:layout_centerInParent="true"
         android:textColor="@color/lavender"/>-->
 
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="250dp"
+        android:layout_centerInParent ="true"
+        android:scaleType="fitCenter"
+ />
+
     <TextView
         android:id="@+id/statusText"
         android:layout_width="fill_parent"
@@ -23,14 +34,17 @@
         android:layout_marginTop="500dp"
         android:gravity="center"
         android:text=""
-        android:textSize="34sp" />
+        android:textSize="30sp"
+        android:visibility="gone"
+        tools:visibility="gone" />
+
 
     <WebView
         android:id="@+id/myWeb"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible"
-        tools:visibility="invisible" >
+        android:visibility="gone"
+        tools:visibility="gone">
 
     </WebView>
 
@@ -38,40 +52,40 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="100dp"
         android:layout_marginEnd="5dp"
-        android:textAlignment="center"
-        android:text="Click button below to on and off the light!"
+        android:gravity="center"
+        android:text="Select button below to check Grafik Tandon Masjid"
         android:textSize="34sp" />
     <TextView
         android:id="@+id/textView5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="5dp"
         android:gravity="center"
-        android:text="Taman01 - Lab"
+        android:text="Grafik Tandon Masjid"
         android:textColor="@color/cyan"
         android:textStyle="bold"
         android:textSize="34sp" />
 
     <Button
-        android:id="@+id/on_btn"
-        android:layout_width="300px"
+        android:id="@+id/status_btn"
+        android:layout_width="400px"
         android:layout_height="200px"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="400dp"
-        android:text="ON"
-        android:textSize="34sp" />
-
-    <Button
+        android:layout_gravity="center"
+        android:layout_marginTop="70dp"
+        android:text="Grafik"
+        android:textSize="25dp" />
+    <!--android:layout_marginLeft="40dp" -->
+    <!--<Button
         android:id="@+id/off_btn"
-        android:layout_width="300px"
+        android:layout_width="400px"
         android:layout_height="200px"
-        android:layout_marginLeft="255dp"
-        android:layout_marginTop="400dp"
-        android:text="OFF"
-        android:textSize="34sp" />
+        android:layout_marginLeft="220dp"
+        android:layout_marginTop="380dp"
+        android:text="NULL"
+        android:textSize="34sp" />-->
 
 
-</RelativeLayout>
+</FrameLayout>

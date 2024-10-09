@@ -6,26 +6,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
-    android:background="@drawable/loginbkg"
+
+    android:background="@drawable/ui_login"
     tools:context=".SignInActivity"
     >
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Azka Home IoT"
         android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Azka Home IoT"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="120dp"
+        android:textColor="@color/white"
         android:textSize="50sp"
-
-        android:textAlignment="center"
-        android:textStyle="bold"
-        android:textColor="@color/lavender2"/>
+        android:textStyle="bold" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="30dp"
+        android:layout_margin="50dp"
+        
         app:cardCornerRadius="30dp"
         app:cardElevation="20dp">
         <LinearLayout
@@ -199,22 +201,39 @@
 <!--                android:src="@drawable/android_google_ctn_2" />-->
 
 
-            <ImageButton
+<!--            <ImageButton-->
+<!--                android:id="@+id/gSignInPct"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:contentDescription="Continue with Google"-->
+<!--                android:layout_gravity="center|top"-->
+<!--                android:layout_marginBottom="20dp"-->
+<!--                android:clickable="true"-->
+
+
+<!--                android:src="@drawable/android_google_ctn_2"-->
+<!--                android:padding="10dp"-->
+<!--                android:scaleType="centerInside"-->
+<!--                android:backgroundTintMode="screen"/>-->
+
+            <Button
+
                 android:id="@+id/gSignInPct"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:contentDescription="Continue with Google"
-
+                android:background="@drawable/roundshp"
+                android:drawableLeft="@drawable/google_pct"
+                android:drawablePadding="8dp"
+                app:backgroundTint="?attr/drawerItemBackground"
                 android:layout_gravity="center|top"
-                android:layout_marginBottom="20dp"
-                android:clickable="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
 
-
-                android:src="@drawable/android_google_ctn_2"
-                android:padding="10dp"
-                android:scaleType="centerInside"
-                android:backgroundTintMode="screen"/>
+                android:text="Sign in with Google"
+                android:textAllCaps="false"
+                android:textColor="?attr/textContent"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/lgg"
@@ -222,7 +241,7 @@
                 android:layout_height="wrap_content"
 
 
-                android:text="Login to continue!"
+                android:text="Sign in to continue!"
                 android:gravity="center"
                 android:textSize="20dp"
                 android:textStyle="bold"
@@ -251,8 +270,8 @@
 
 
 
-    </androidx.cardview.widget.CardView>
 
+    </androidx.cardview.widget.CardView>
 
 
 

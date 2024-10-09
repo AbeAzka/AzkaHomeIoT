@@ -25,12 +25,12 @@
         <activity
             android:name=".InboxActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            />
         <activity
             android:name=".SettingsActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".DetailActivity"
             android:exported="false"
@@ -53,16 +53,16 @@
         <activity
             android:name=".ResetPwActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            />
         <activity
             android:name=".SignUpActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+             />
 
         <activity
             android:name=".SignInActivity"
             android:exported="true"
-            android:screenOrientation="portrait"
+
             android:theme="@style/Theme.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -73,12 +73,12 @@
         <activity
             android:name=".TamanActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
+
             android:theme="@style/Theme.MainActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
+
             android:theme="@style/Theme.MainActivity">
             <intent-filter>
                 <action android:name=".MainActivity" />
