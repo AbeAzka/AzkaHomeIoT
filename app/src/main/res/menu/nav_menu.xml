@@ -27,12 +27,15 @@
             android:icon="@drawable/baseline_logout_24"
             android:title="Logout"/>
 
-
     </group>
+
     <item
         android:title="OTOMATISASI RUMAH">
 
         <menu>
+            <group
+                android:checkableBehavior="single"
+                >
             <item
                 android:id="@+id/nav_taman"
                 android:icon="@drawable/ic_nature_people"
@@ -41,6 +44,8 @@
                 android:id="@+id/nav_taman_p"
                 android:icon="@drawable/ic_nature_people"
                 android:title="Taman - Production"/>
+
+            </group>
         </menu>
     </item>
 
@@ -48,7 +53,9 @@
         android:title="SENSOR RUMAH">
 
         <menu>
-
+            <group
+                android:checkableBehavior="single"
+                >
             <item
                 android:id="@+id/nav_tandon_uti"
                 android:icon="@drawable/baseline_sensors_24"
@@ -73,13 +80,16 @@
                 android:id="@+id/nav_grafik_bunda"
                 android:icon="@drawable/baseline_image_24"
                 android:title="Grafik Tandon Bunda"/>
-
+            </group>
         </menu>
     </item>
 
     <item
         android:title="SENSOR MASJID">
         <menu>
+            <group
+                android:checkableBehavior="single"
+                >
             <item
                 android:id="@+id/nav_masjid"
                 android:icon="@drawable/baseline_sensors_24"
@@ -92,6 +102,7 @@
                 android:id="@+id/nav_grafik"
                 android:icon="@drawable/baseline_image_24"
                 android:title="Grafik Tandon Masjid"/>
+            </group>
         </menu>
     </item>
 

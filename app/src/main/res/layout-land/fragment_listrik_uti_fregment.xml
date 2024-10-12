@@ -19,7 +19,7 @@
         android:id="@+id/statusText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="500dp"
+        android:layout_marginTop="250dp"
         android:gravity="center"
         android:text=""
         android:textSize="30sp" />
@@ -60,7 +60,7 @@
         android:layout_width="400px"
         android:layout_height="200px"
         android:layout_gravity="center"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="50dp"
         android:text="Status"
         android:textSize="25dp" />
     <!--android:layout_marginLeft="40dp" -->

@@ -11,7 +11,8 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import org.eclipse.paho.android.service.MqttAndroidClient
+import info.mqtt.android.service.Ack
+import info.mqtt.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
 import org.eclipse.paho.client.mqttv3.IMqttToken
@@ -41,7 +42,7 @@ class MQTT_Service : Service() {
         Log.i("MQTT", "Foreground is running!")
         val notificationIntent = Intent(this, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
-            this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
@@ -81,7 +82,7 @@ class MQTT_Service : Service() {
         startForegroundService()
         this.connect(this)
         //performLongTask()
-         // If the service is killed, it will be automatically restarted
+         // If the org.eclipse.paho.android.service is killed, it will be automatically restarted
         return START_STICKY
     }
 
@@ -126,7 +127,7 @@ class MQTT_Service : Service() {
      */
 
     fun connect(applicationContext : Context) {
-        mqttAndroidClient = MqttAndroidClient ( applicationContext,"tcp://103.127.99.151:1883","19453" )
+        mqttAndroidClient = MqttAndroidClient ( applicationContext,"tcp://103.127.99.151:1883","19453", Ack.AUTO_ACK)
 
         mqttAndroidClient.setCallback(object : MqttCallback {
             override fun messageArrived(topic: String?, message: MqttMessage?) {

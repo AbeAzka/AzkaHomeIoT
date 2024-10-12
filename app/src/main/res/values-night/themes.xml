@@ -26,7 +26,7 @@
 
     <style name="Theme.MainActivity" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/color_primary_dark</item>
+        <item name="colorPrimary">@color/lavender</item>
         <item name="colorPrimaryVariant">@color/white</item>
         <item name="colorOnPrimary">@color/white</item>
 
@@ -71,6 +71,14 @@
     <style name="DialogAnimation">
         <item name ="android:windowEnterAnimation">@android:anim/fade_in</item>
         <item name ="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+
+    <style name="Theme.App.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/lavender</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/azkahomeiot_288px_white</item>
+
+        <item name="postSplashScreenTheme">@style/Theme.MainActivity</item>
+
     </style>
 
 

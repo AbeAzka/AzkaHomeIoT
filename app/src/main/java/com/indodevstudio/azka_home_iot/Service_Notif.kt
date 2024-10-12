@@ -16,7 +16,9 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import org.eclipse.paho.android.service.MqttAndroidClient
+import info.mqtt.android.service.Ack
+import info.mqtt.android.service.MqttAndroidClient
+
 import org.eclipse.paho.client.mqttv3.IMqttActionListener
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
 import org.eclipse.paho.client.mqttv3.IMqttToken
@@ -47,7 +49,7 @@ class CounterNotificationService(
             context,
             1,
             activityIntent,
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
@@ -81,7 +83,8 @@ class CounterNotificationService(
      */
 
     fun connect(applicationContext : Context) {
-        mqttAndroidClient = MqttAndroidClient ( applicationContext,"tcp://103.127.99.151:1883","19453" )
+        mqttAndroidClient = MqttAndroidClient ( applicationContext,"tcp://103.127.99.151:1883","19453",
+            Ack.AUTO_ACK )
         mqttAndroidClient.setCallback(object : MqttCallback {
             override fun messageArrived(topic: String?, message: MqttMessage?) {
                 Log.d("MQTT", "[SERVICE] Receive message: ${message.toString()} from topic: $topic ")

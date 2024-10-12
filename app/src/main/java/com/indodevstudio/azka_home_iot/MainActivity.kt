@@ -45,6 +45,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.messaging.FirebaseMessaging
 import com.indodevstudio.azka_home_iot.databinding.ActivityMainBinding
 import com.indodevstudio.azka_home_iot.utils.FirebaseUtils.firebaseAuth
+import info.mqtt.android.service.MqttAndroidClient
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaType
@@ -52,7 +53,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
-import org.eclipse.paho.android.service.MqttAndroidClient
+
 import org.eclipse.paho.client.mqttv3.IMqttActionListener
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
 import org.eclipse.paho.client.mqttv3.IMqttToken
@@ -295,28 +296,28 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             if (notif){
                 val test = Intent(this@MainActivity, MQTT_Service::class.java)
                 startService(test)
-//                val service = MQTT_Service()
-//                service.startForegroundService()
+//                val org.eclipse.paho.android.service = MQTT_Service()
+//                org.eclipse.paho.android.service.startForegroundService()
 
                 Log.i("MQTT", "SERVICE START FROM SWITCH")
             }else{
                 val test = Intent(this@MainActivity, MQTT_Service::class.java)
 
-//                val service = MQTT_Service()
-//                service.stopForegroundService()
+//                val org.eclipse.paho.android.service = MQTT_Service()
+//                org.eclipse.paho.android.service.stopForegroundService()
 
                 stopService(test)
                 Log.i("MQTT", "SERVICE STOP FROM SWITCH")
             }
 
 //            if (mqtt){
-//                val service = MQTT_Service()
-//                service.connect(this@MainActivity)
+//                val org.eclipse.paho.android.service = MQTT_Service()
+//                org.eclipse.paho.android.service.connect(this@MainActivity)
 //
 //                Log.i("MQTT", "MQTT START FROM SWITCH")
 //            }else{
-//                val service = MQTT_Service()
-//                service.disconnect()
+//                val org.eclipse.paho.android.service = MQTT_Service()
+//                org.eclipse.paho.android.service.disconnect()
 //                Log.i("MQTT", "MQTT STOP FROM SWITCH")
 //            }
 
