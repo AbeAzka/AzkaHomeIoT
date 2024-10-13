@@ -18,30 +18,30 @@
             android:text="Id"
             android:visibility="gone"
             />
+
         <TextView
             android:id="@+id/v_topic"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Topic"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            />
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/v_message"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="Message"
-            android:textSize="18sp"
+            android:layout_height="wrap_content"
             android:maxLines="2"
-            />
+            android:text="Message"
+            android:textSize="16sp" />
+
         <TextView
 
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text=""
-            android:textSize="15sp"
+            android:layout_height="wrap_content"
             android:maxLines="2"
-            />
+            android:text=""
+            android:textSize="10sp" />
         <TextView
             android:id="@+id/v_date"
             android:layout_height="wrap_content"

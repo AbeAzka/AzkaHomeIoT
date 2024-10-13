@@ -7,4 +7,5 @@
     <attr name="navHeaderDescriptionColor" format="color"/>
     <attr name="drawerBackground" format="color"/>
     <attr name="textContent" format="color"/>
+    <attr name="cardBG" format="color"/>
 </resources>

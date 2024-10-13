@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,7 +7,41 @@
     android:layout_height="match_parent"
     android:theme="@style/Theme.MainActivity"
     tools:context=".HomeFragment"
+    android:background="?attr/drawerBackground"
     android:orientation="vertical">
+
+    <View
+        android:id="@+id/viewHeaderBG"
+        android:layout_width="match_parent"
+        android:layout_height="125sp"
+
+        android:background="@color/lavender"
+        app:layout_constraintTop_toTopOf="parent"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/viewHeaderBG">
+        <ProgressBar
+            android:id="@+id/pb_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"
+            />
+    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16sp"
+        android:layout_marginLeft="16sp"
+        android:layout_marginTop="16sp"
+        android:text="DASHBOARD"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
 
     <!-- TODO: Update blank fragment layout -->
 <!--    <TextView-->
@@ -42,19 +76,25 @@
 <!--        android:visibility="gone"-->
 <!--        tools:visibility="gone" />-->
 
-    <androidx.cardview.widget.CardView
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cards_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="10dp"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginVertical="10dp"
-        android:layout_marginEnd="100dp"
-        app:cardElevation="8dp">
+        android:layout_marginTop="100dp"
+        app:cardCornerRadius="16sp"
+        android:layout_marginStart="16sp"
+        android:layout_marginEnd="16sp"
+        app:cardBackgroundColor="?attr/cardBG"
+        app:cardElevation="8dp"
+        app:layout_constraintBottom_toBottomOf="@id/viewHeaderBG"
+        app:layout_constraintTop_toBottomOf="@id/viewHeaderBG"
+        >
         <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-            android:padding="10dp">
-
+            android:orientation="vertical"
+            android:padding="14dp">
 
             <TextView
                 android:id="@+id/greetings"
@@ -64,21 +104,66 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:text="Title"
+                android:fontFamily="sans-serif"
                 android:textColor="?attr/textContent"
                 android:textSize="20dp"
 
                />
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/purple_500"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout></androidx.cardview.widget.CardView>
+            <TextView
+                android:id="@+id/test"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="Latest Inbox"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif"
+                android:textColor="?attr/textContent"
+                android:textSize="20dp"
 
-    <androidx.cardview.widget.CardView
+                />
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/srl_data"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:visibility="visible"
+                app:reverseLayout="true"
+                app:stackFromEnd="true"
+                tools:visibility="gone">
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:listitem="@layout/card_item" />
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/weh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="20dp"
+        android:layout_marginStart="16sp"
+        android:layout_marginEnd="16sp"
+        android:layout_marginTop="50dp"
 
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginVertical="50dp"
-
+        app:layout_constraintTop_toBottomOf="@id/cards_info"
         app:cardElevation="8dp">
         <LinearLayout
             android:layout_width="match_parent"
@@ -95,7 +180,9 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:text="Latest Graph Data"
+                android:text="Tandon Bunda"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif"
                 android:textColor="?attr/textContent"
                 android:textSize="20dp"
 
@@ -114,6 +201,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 />
 
-        </LinearLayout></androidx.cardview.widget.CardView>
+        </LinearLayout></com.google.android.material.card.MaterialCardView>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

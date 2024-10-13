@@ -17,6 +17,7 @@ import com.indodevstudio.azka_home_iot.API.RetroServer
 import com.indodevstudio.azka_home_iot.Adapter.AdapterData
 import com.indodevstudio.azka_home_iot.Model.DataModel
 import com.indodevstudio.azka_home_iot.Model.ResponseModel
+import com.indodevstudio.azka_home_iot.databinding.ActivityMainBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -24,11 +25,13 @@ import retrofit2.Response
 class InboxActivity : AppCompatActivity() {
 
     var rvData : RecyclerView? = null
+    var test : RecyclerView? = null
     var adData : RecyclerView.Adapter<*>? = null
     var lmData : RecyclerView.LayoutManager? = null
     var listData: List<DataModel> = ArrayList<DataModel>()
     var srlData: SwipeRefreshLayout? = null
     var pbData: ProgressBar? = null
+    private lateinit var binding : ActivityMainBinding
     lateinit var text : TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +47,8 @@ class InboxActivity : AppCompatActivity() {
         rvData = findViewById(R.id.rv_data)
         srlData = findViewById(R.id.srl_data)
         pbData = findViewById(R.id.pb_data)
+
+
 
         lmData = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         (lmData as LinearLayoutManager).setReverseLayout(true);
@@ -106,8 +111,10 @@ class InboxActivity : AppCompatActivity() {
                     adData = AdapterData(this@InboxActivity, listData)
                     rvData!!.smoothScrollToPosition(listData.size-1);
                     rvData!!.visibility = View.VISIBLE
+
                     text.visibility = View.GONE
                     rvData!!.adapter = adData
+
                     adData!!.notifyDataSetChanged()
                     pbData!!.visibility = View.INVISIBLE
                 }
