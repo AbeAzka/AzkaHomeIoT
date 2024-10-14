@@ -8,7 +8,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        Thread.sleep(2000)
+        Thread.sleep(2000)
         installSplashScreen()
         val intent = Intent(this, SignInActivity::class.java)
         startActivity(intent)

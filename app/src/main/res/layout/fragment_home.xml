@@ -134,6 +134,20 @@
                 android:textSize="20dp"
 
                 />
+
+            <TextView
+                android:id="@+id/text_Inbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="No Inbox Message Yet"
+                android:textAlignment="center"
+                android:textColor="?attr/textContent"
+                android:textSize="20dp"
+
+                tools:visibility="visible" />
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/srl_data"
                 android:layout_width="match_parent"
@@ -144,11 +158,13 @@
                 tools:visibility="gone">
 
 
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:listitem="@layout/card_item" />
+                    tools:listitem="@layout/card_item"
+                    tools:visibility="visible" />
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

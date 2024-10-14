@@ -41,6 +41,7 @@ import java.net.URL
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.time.format.TextStyle
 import java.util.Calendar
 
 // TODO: Rename parameter arguments, choose names that match
@@ -63,7 +64,7 @@ class HomeFragment : Fragment() {
     var click = false
     var image : Bitmap? = null
     var image2 : Bitmap? = null
-
+    lateinit var text : TextView
     var rvData : RecyclerView? = null
     var test : RecyclerView? = null
     var adData : RecyclerView.Adapter<*>? = null
@@ -89,6 +90,7 @@ class HomeFragment : Fragment() {
         rvData = view.findViewById(R.id.rv_data)
         srlData = view.findViewById(R.id.srl_data)
         pbData = view.findViewById(R.id.pb_data)
+        text = view.findViewById(R.id.text_Inbox)
 
 
 
@@ -292,8 +294,10 @@ class HomeFragment : Fragment() {
         val tampilData: retrofit2.Call<ResponseModel> = ardData.ardRetrieveData()
         tampilData.enqueue(object: retrofit2.Callback<ResponseModel> {
             override fun onResponse(call: retrofit2.Call<ResponseModel>, response: retrofit2.Response<ResponseModel>) {
-
+                srlData!!.visibility = View.VISIBLE
+                text.visibility = View.GONE
                 if(response.body()?.data == null){
+
                     rvData!!.visibility = View.GONE
 //                    text.visibility = View.VISIBLE
                     pbData!!.visibility = View.INVISIBLE
@@ -315,6 +319,8 @@ class HomeFragment : Fragment() {
             }
 
             override fun onFailure(call: retrofit2.Call<ResponseModel>, t: Throwable) {
+                srlData!!.visibility = View.GONE
+                text.visibility = View.VISIBLE
                 Toast.makeText(
                     context,"Failed to connect: " + t.message, Toast.LENGTH_SHORT
                 ).show()
