@@ -49,6 +49,7 @@ class GrafikBundaFragment : Fragment(), View.OnClickListener{
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    var click = false
     lateinit var button : Button
     lateinit var myWebView : WebView
     lateinit var imageGrafik : TouchImageView
@@ -108,93 +109,124 @@ class GrafikBundaFragment : Fragment(), View.OnClickListener{
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.status_btn -> {
-                println("STATUS!")
-                val URL: String = "https://abeazka.my.id/telemetri/tandongrafikbunda.php"
-                if (URL.isNotEmpty()) {
-                    val http = OkHttpClient()
-                    val request = Request.Builder()
-                        .url(URL)
-                        .build()
-                    //myWebView.loadUrl(URL)
+                if (click == true){
+                    getActivity()?.runOnUiThread {
+                        Toast.makeText(
+                            getActivity(),
+                            "You already click this button!",
+                            Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                }else {
+                    click = true
+                    println("STATUS!")
+                    val URL: String = "https://abeazka.my.id/telemetri/tandongrafikbunda.php"
+                    if (URL.isNotEmpty()) {
+                        val http = OkHttpClient()
+                        val request = Request.Builder()
+                            .url(URL)
+                            .build()
+                        //myWebView.loadUrl(URL)
 
-                    http.newCall(request).enqueue(object : Callback {
-                        override fun onFailure(call: Call, e: IOException) {
-                            e.printStackTrace();
-                        }
+                        http.newCall(request).enqueue(object : Callback {
+                            override fun onFailure(call: Call, e: IOException) {
+                                e.printStackTrace();
+                                click = false
+                            }
 
-                        override fun onResponse(call: Call, response: Response) {
-                            val response: Response = http.newCall(request).execute()
-                            val responseCode = response.code
-                            val results = response.body!!.string()
+                            override fun onResponse(call: Call, response: Response) {
+                                val response: Response = http.newCall(request).execute()
+                                val responseCode = response.code
+                                val results = response.body!!.string()
 
-                            println("Success " + response.toString())
-                            println("Success " + response.message.toString())
-                            println("Success " + results)
-                            Log.i("KODE", "CODE: " + responseCode)
-                            Log.i("Response", "Received response from server. Response")
-                            if (response.code == 200) {
-                                //Thread.sleep(3_000)
-                                println("GAMBAR BERHASIL DIBUILD")
-                                println("TAHAP MUNCULIN GAMBAR.....")
-                                //Popup
+                                println("Success " + response.toString())
+                                println("Success " + response.message.toString())
+                                println("Success " + results)
+                                Log.i("KODE", "CODE: " + responseCode)
+                                Log.i("Response", "Received response from server. Response")
+                                if (response.code == 200) {
+                                    //Thread.sleep(3_000)
+                                    println("GAMBAR BERHASIL DIBUILD")
+                                    println("TAHAP MUNCULIN GAMBAR.....")
+                                    //Popup
 
-                                //Munculin Gambar
-                                val handler = Handler(Looper.getMainLooper())
-                                val URL2 = URL( "https://abeazka.my.id/telemetri/tandon/grafiktandon_bunda-x.php.png")
-                                try{
-                                    val `in` = URL2.openStream()
-                                    image = BitmapFactory.decodeStream(`in`)
-                                    handler.post{
-                                        //imageGrafik.setImageBitmap(image)
+                                    //Munculin Gambar
+                                    val handler = Handler(Looper.getMainLooper())
+                                    val URL2 =
+                                        URL("https://abeazka.my.id/telemetri/tandon/grafiktandon_bunda-x.php.png")
+                                    try {
+                                        val `in` = URL2.openStream()
+                                        image = BitmapFactory.decodeStream(`in`)
+                                        handler.post {
+                                            //imageGrafik.setImageBitmap(image)
 
-                                        var inflater = LayoutInflater.from(getActivity())
-                                        var popupview = inflater.inflate(R.layout.popup_grafik, null,false)
-                                        var imagee = popupview.findViewById<ImageView>(R.id.imageGrafikPop)
-                                        var close = popupview.findViewById<ImageView>(R.id.close)
-                                        var builder = PopupWindow(popupview, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true)
-                                        imagee.setImageBitmap(image)
-                                        //imagee.setRotation(90f)
-                                        builder.setBackgroundDrawable(getDrawable(requireContext(), R.drawable.background))
-                                        builder.animationStyle=R.style.DialogAnimation
-                                        builder.showAtLocation(getActivity()?.findViewById(R.id.drawer_layout), Gravity.CENTER, 0 ,0)
-                                        close.setOnClickListener{
-                                            builder.dismiss()
+                                            var inflater = LayoutInflater.from(getActivity())
+                                            var popupview =
+                                                inflater.inflate(R.layout.popup_grafik, null, false)
+                                            var imagee =
+                                                popupview.findViewById<ImageView>(R.id.imageGrafikPop)
+                                            var close =
+                                                popupview.findViewById<ImageView>(R.id.close)
+                                            var builder = PopupWindow(
+                                                popupview,
+                                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                                true
+                                            )
+                                            imagee.setImageBitmap(image)
+                                            //imagee.setRotation(90f)
+                                            builder.setBackgroundDrawable(
+                                                getDrawable(
+                                                    requireContext(),
+                                                    R.drawable.background
+                                                )
+                                            )
+                                            builder.animationStyle = R.style.DialogAnimation
+                                            builder.showAtLocation(
+                                                getActivity()?.findViewById(R.id.drawer_layout),
+                                                Gravity.CENTER,
+                                                0,
+                                                0
+                                            )
+                                            close.setOnClickListener {
+                                                builder.dismiss()
+                                                click = false
+                                            }
+
                                         }
 
+
+                                    } catch (e: java.lang.Exception) {
+                                        e.printStackTrace()
                                     }
 
 
-                                }catch (e:java.lang.Exception){
-                                    e.printStackTrace()
+
+                                    getActivity()?.runOnUiThread {
+                                        Toast.makeText(
+                                            getActivity(),
+                                            "Success",
+                                            Toast.LENGTH_SHORT
+                                        ).show();
+                                    }
+                                } else {
+                                    getActivity()?.runOnUiThread {
+
+                                        Log.e(
+                                            "HTTP Error",
+                                            "Something didn't load, or wasn't succesfully"
+                                        )
+                                        Toast.makeText(getActivity(), "Fail", Toast.LENGTH_LONG)
+                                            .show();
+
+                                    }
+                                    return
                                 }
-
-
-
-                                getActivity()?.runOnUiThread {
-                                    Toast.makeText(
-                                        getActivity(),
-                                        "Success",
-                                        Toast.LENGTH_SHORT
-                                    ).show();
-                                }
-                            } else {
-                                getActivity()?.runOnUiThread {
-
-                                    Log.e(
-                                        "HTTP Error",
-                                        "Something didn't load, or wasn't succesfully"
-                                    )
-                                    Toast.makeText(getActivity(), "Fail", Toast.LENGTH_LONG)
-                                        .show();
-
-                                }
-                                return
                             }
-                        }
-                    })
+                        })
+                    }
+
                 }
-
-
                 //Thread.sleep(1_000)
 
             }

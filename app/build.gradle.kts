@@ -16,7 +16,7 @@ android {
         minSdk = 30
         targetSdk = 34
         versionCode = 1
-        versionName = "1.8.4 - BETA"//Last 1.2
+        versionName = "1.8.4 KOMODO - BETA"//Last 1.2
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

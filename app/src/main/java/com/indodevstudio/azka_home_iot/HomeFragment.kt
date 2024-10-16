@@ -17,8 +17,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.ProgressBar
+import android.widget.RelativeLayout
+import android.widget.ScrollView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -70,8 +74,10 @@ class HomeFragment : Fragment() {
     var adData : RecyclerView.Adapter<*>? = null
     var lmData : RecyclerView.LayoutManager? = null
     var listData: List<DataModel> = ArrayList<DataModel>()
+    var srlDat: NestedScrollView? = null
     var srlData: SwipeRefreshLayout? = null
     var pbData: ProgressBar? = null
+//    var pbData_BG: ConstraintLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,7 +97,8 @@ class HomeFragment : Fragment() {
         srlData = view.findViewById(R.id.srl_data)
         pbData = view.findViewById(R.id.pb_data)
         text = view.findViewById(R.id.text_Inbox)
-
+        srlDat = view.findViewById(R.id.srl_dta)
+//        pbData_BG = view.findViewById(R.id.load)
 
 
         lmData = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -288,19 +295,21 @@ class HomeFragment : Fragment() {
         retrieveData()
     }
     fun retrieveData(){
+//        pbData_BG!!.visibility = View.VISIBLE
         pbData!!.visibility = View.VISIBLE
 
         val ardData: APIRequestData = RetroServer.konekRetrofit().create(APIRequestData::class.java)
         val tampilData: retrofit2.Call<ResponseModel> = ardData.ardRetrieveData()
         tampilData.enqueue(object: retrofit2.Callback<ResponseModel> {
             override fun onResponse(call: retrofit2.Call<ResponseModel>, response: retrofit2.Response<ResponseModel>) {
-                srlData!!.visibility = View.VISIBLE
+                srlDat!!.visibility = View.VISIBLE
                 text.visibility = View.GONE
                 if(response.body()?.data == null){
 
                     rvData!!.visibility = View.GONE
 //                    text.visibility = View.VISIBLE
                     pbData!!.visibility = View.INVISIBLE
+//                    pbData_BG!!.visibility = View.INVISIBLE
                 }else{
 
                     listData = response.body()!!.data
@@ -312,6 +321,7 @@ class HomeFragment : Fragment() {
                     rvData!!.adapter = adData
 
                     adData!!.notifyDataSetChanged()
+//                    pbData_BG!!.visibility = View.INVISIBLE
                     pbData!!.visibility = View.INVISIBLE
                 }
 
@@ -319,13 +329,14 @@ class HomeFragment : Fragment() {
             }
 
             override fun onFailure(call: retrofit2.Call<ResponseModel>, t: Throwable) {
-                srlData!!.visibility = View.GONE
+                srlDat!!.visibility = View.GONE
                 text.visibility = View.VISIBLE
                 Toast.makeText(
                     context,"Failed to connect: " + t.message, Toast.LENGTH_SHORT
                 ).show()
                 Log.i("ERROR", "Failed to connect: " + t.message)
                 pbData!!.visibility = View.INVISIBLE
+//                pbData_BG!!.visibility = View.INVISIBLE
             }
 
         })

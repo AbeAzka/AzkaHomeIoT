@@ -18,6 +18,7 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupWindow
@@ -76,6 +77,9 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
     private lateinit var auth : FirebaseAuth
     private lateinit var mFirebaseUser : FirebaseUser
     lateinit var mGoogleSignInClient: GoogleSignInClient
+
+    private var hot_number = 0
+    private var ui_hot: TextView? = null
 
     private lateinit var mqttAndroidClient: MqttAndroidClient
     var messageMQTT = ""
@@ -178,6 +182,12 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                 return true
             }
         })
+
+        ui_hot = view.findViewById(R.id.hotlist_hot)
+
+
+
+
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
@@ -286,6 +296,17 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
     fun connectDB(){
 
 
+    }
+
+    fun updateHotCount(new_hot_number : Int){
+        hot_number = new_hot_number
+        if(ui_hot == null) return
+        runOnUiThread {
+            if (new_hot_number === 0) ui_hot!!.visibility = View.INVISIBLE else {
+                ui_hot!!.visibility = View.VISIBLE
+                ui_hot!!.text = Integer.toString(new_hot_number)
+            }
+        }
     }
 
     private fun Options(){
@@ -646,6 +667,37 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             // Permission is not granted.
             requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
+
+//        if (ContextCompat.checkSelfPermission(
+//                this,
+//                Manifest.permission.REQUEST_COMPANION_START_FOREGROUND_SERVICES_FROM_BACKGROUND
+//            ) == PackageManager.PERMISSION_GRANTED
+//        ) {
+//            // Permission is already granted.
+//            Log.i("PERMIT", "PERMITED FOR POST_NOTIFICATIONS")
+//        } else {
+//            Log.i("PERMIT", "NOT PERMITED FOR POST_NOTIFICATIONS")
+//            // Permission is not granted.
+//            requestPermissionLauncher.launch(Manifest.permission.REQUEST_COMPANION_START_FOREGROUND_SERVICES_FROM_BACKGROUND)
+//        }
+
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.REORDER_TASKS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permission is already granted.
+            Log.i("PERMIT", "PERMITED FOR POST_NOTIFICATIONS")
+        } else {
+            Log.i("PERMIT", "NOT PERMITED FOR POST_NOTIFICATIONS")
+            // Permission is not granted.
+            requestPermissionLauncher.launch(Manifest.permission.REORDER_TASKS)
+
+
+        }
+
+
+
     }
 
     fun requestPermission(){
