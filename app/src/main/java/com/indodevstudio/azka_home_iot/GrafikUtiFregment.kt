@@ -118,6 +118,7 @@ class GrafikUtiFregment : Fragment(), View.OnClickListener{
                         ).show();
                     }
                 }else {
+                    click = true
                     println("STATUS!")
                     val URL: String = "https://abeazka.my.id/telemetri/tandongrafikuti.php"
                     if (URL.isNotEmpty()) {

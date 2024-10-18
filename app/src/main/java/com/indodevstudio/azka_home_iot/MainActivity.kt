@@ -2,6 +2,10 @@ package com.indodevstudio.azka_home_iot
 
 
 import android.Manifest
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
+import java.net.InetAddress
+import java.net.NetworkInterface
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -78,8 +82,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
     private lateinit var mFirebaseUser : FirebaseUser
     lateinit var mGoogleSignInClient: GoogleSignInClient
 
-    private var hot_number = 0
-    private var ui_hot: TextView? = null
+
 
     private lateinit var mqttAndroidClient: MqttAndroidClient
     var messageMQTT = ""
@@ -147,8 +150,11 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         navigationView.setNavigationItemSelectedListener(this)
         val headerView = navigationView.getHeaderView(0)
         val nama = headerView.findViewById<TextView>(R.id.nama)
-
+        val ipAddress = headerView.findViewById<TextView>(R.id.ipAddress)
         val profilepc = headerView.findViewById<ImageView>(R.id.logo_p)
+
+        val localIpAddresses = getLocalUnicastIpAddresses()
+        ipAddress.text = "$localIpAddresses"
 
         val em = headerView.findViewById<TextView>(R.id.emailGet)
         val status = headerView.findViewById<ImageView>(R.id.status22)
@@ -183,7 +189,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             }
         })
 
-        ui_hot = view.findViewById(R.id.hotlist_hot)
+//        ui_hot = view.findViewById(R.id.hotlist_hot)
 
 
 
@@ -280,10 +286,62 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         }
 
         nama.text = displayName;
-        em.text = email;
+
+        val obfuscatedEmail = email?.let { obfuscateEmail(it) }
+        em.text = obfuscatedEmail;
     }
 
-    
+    fun obfuscateEmail(email: String): String {
+        val parts = email.split("@")
+        if (parts.size != 2) return email  // Return the email as is if it's not in a valid format
+
+        val username = parts[0]
+        val domain = parts[1]
+
+        // Keep the first two characters of the username and replace the rest with asterisks
+        val obfuscatedUsername = if (username.length > 2) {
+            username.substring(0, 2) + "*".repeat(username.length - 2)
+        } else {
+            username
+        }
+
+        return "$obfuscatedUsername@$domain"
+    }
+
+
+    private fun getLocalUnicastIpAddresses(): String {
+        val ipAddresses = StringBuilder()
+        try {
+            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val activeNetworkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
+
+            if (activeNetworkInfo != null && activeNetworkInfo.isConnected) {
+                val networkInterfaces = NetworkInterface.getNetworkInterfaces()
+                while (networkInterfaces.hasMoreElements()) {
+                    val networkInterface = networkInterfaces.nextElement()
+                    val inetAddresses = networkInterface.inetAddresses
+                    while (inetAddresses.hasMoreElements()) {
+                        val inetAddress = inetAddresses.nextElement()
+                        // Check if the address is not a loopback and is a unicast address
+                        if (!inetAddress.isLoopbackAddress && !inetAddress.isLinkLocalAddress) {
+                            if (inetAddress is InetAddress) {
+                                if (inetAddress.hostAddress.indexOf(':') == -1) {
+                                    // IPv4
+                                    ipAddresses.append("IPv4: ${inetAddress.hostAddress}\n")
+                                } else {
+                                    // IPv6
+                                    ipAddresses.append("IPv6: ${inetAddress.hostAddress}\n")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return if (ipAddresses.isNotEmpty()) ipAddresses.toString() else "No Unicast IP Address found"
+    }
 
 
 
@@ -298,20 +356,11 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
     }
 
-    fun updateHotCount(new_hot_number : Int){
-        hot_number = new_hot_number
-        if(ui_hot == null) return
-        runOnUiThread {
-            if (new_hot_number === 0) ui_hot!!.visibility = View.INVISIBLE else {
-                ui_hot!!.visibility = View.VISIBLE
-                ui_hot!!.text = Integer.toString(new_hot_number)
-            }
-        }
-    }
+
 
     private fun Options(){
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val notif = prefs.getBoolean("notif", true)
+        val notif = prefs.getBoolean("notif", false)
         val mqtt = prefs.getBoolean("mqtt", false)
         binding.apply {
             if (notif){

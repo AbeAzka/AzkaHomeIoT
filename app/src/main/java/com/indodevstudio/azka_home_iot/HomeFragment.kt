@@ -1,32 +1,29 @@
 package com.indodevstudio.azka_home_iot
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.ProgressBar
-import android.widget.RelativeLayout
 import android.widget.ScrollView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.cardview.widget.CardView
 import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.indodevstudio.azka_home_iot.API.APIRequestData
 import com.indodevstudio.azka_home_iot.API.RetroServer
@@ -39,14 +36,14 @@ import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
+import java.io.InputStreamReader
+import java.net.URI
 import java.net.URL
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.time.format.TextStyle
 import java.util.Calendar
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -74,9 +71,12 @@ class HomeFragment : Fragment() {
     var adData : RecyclerView.Adapter<*>? = null
     var lmData : RecyclerView.LayoutManager? = null
     var listData: List<DataModel> = ArrayList<DataModel>()
-    var srlDat: NestedScrollView? = null
+    var srlDat: ScrollView? = null
     var srlData: SwipeRefreshLayout? = null
     var pbData: ProgressBar? = null
+    var cards2: CardView? = null
+
+    lateinit var text_card : TextView
 //    var pbData_BG: ConstraintLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,8 +98,10 @@ class HomeFragment : Fragment() {
         pbData = view.findViewById(R.id.pb_data)
         text = view.findViewById(R.id.text_Inbox)
         srlDat = view.findViewById(R.id.srl_dta)
+        cards2 = view.findViewById(R.id.cards_info2)
+        text_card = view.findViewById(R.id.pp)
 //        pbData_BG = view.findViewById(R.id.load)
-
+         val imageGraphSample = view.findViewById<ImageView>(R.id.imageGrafikSample)
 
         lmData = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         (lmData as LinearLayoutManager).setReverseLayout(true);
@@ -110,6 +112,8 @@ class HomeFragment : Fragment() {
             this?.setOnRefreshListener {
                 setRefreshing(true)
                 retrieveData()
+//                getNotice()
+                retrieveImage()
                 setRefreshing(false)
 
             }
@@ -119,105 +123,105 @@ class HomeFragment : Fragment() {
         val greeting = view.findViewById<TextView>(R.id.greetings)
 
         val displayName = getArguments()?.getString("name")
-        val imageGraphSample = view.findViewById<ImageView>(R.id.imageGrafikSample)
+
 //        val imageGraphSample2 = view.findViewById<ImageView>(R.id.imageGrafikSampleHehe)
         val namee = user!!.displayName
 
 
-        //START OF GET IMAGE
-        val URL: String = "https://abeazka.my.id/telemetri/tandongrafikbunda.php"
-        if (URL.isNotEmpty()) {
-            val http = OkHttpClient()
-            val request = Request.Builder()
-                .url(URL)
-                .build()
-            //myWebView.loadUrl(URL)
-
-            http.newCall(request).enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    e.printStackTrace();
-                }
-
-                override fun onResponse(call: Call, response: Response) {
-                    val response: Response = http.newCall(request).execute()
-                    val responseCode = response.code
-                    val results = response.body!!.string()
-
-                    println("Success " + response.toString())
-                    println("Success " + response.message.toString())
-                    println("Success " + results)
-                    Log.i("KODE", "CODE: " + responseCode)
-                    Log.i("Response", "Received response from server. Response")
-                    if (response.code == 200) {
-                        //Thread.sleep(3_000)
-                        println("GAMBAR BERHASIL DIBUILD")
-                        println("TAHAP MUNCULIN GAMBAR.....")
-                        //Popup
-
-                        //Munculin Gambar
-                        val handler = Handler(Looper.getMainLooper())
-                        val URL2 = URL( "https://abeazka.my.id/telemetri/tandon/grafiktandon_bunda-x.php.png")
-                        try{
-                            val `in` = URL2.openStream()
-                            image = BitmapFactory.decodeStream(`in`)
-                            handler.post{
-                                //imageGrafik.setImageBitmap(image)
-
-//                                var inflater = LayoutInflater.from(getActivity())
-//                                var popupview = inflater.inflate(R.layout.popup_grafik, null,false)
-//                                var imagee = popupview.findViewById<ImageView>(R.id.imageGrafikPop)
-//                                var close = popupview.findViewById<ImageView>(R.id.close)
-//                                var builder = PopupWindow(popupview, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true)
-//                                imagee.setImageBitmap(image)
-
-                                imageGraphSample.setImageBitmap(image)
-                                //imagee.setRotation(90f)
-//                                builder.setBackgroundDrawable(
-//                                    AppCompatResources.getDrawable(
-//                                        requireContext(),
-//                                        R.drawable.background
-//                                    )
-//                                )
-//                                builder.animationStyle=R.style.DialogAnimation
-//                                builder.showAtLocation(getActivity()?.findViewById(R.id.drawer_layout), Gravity.CENTER, 0 ,0)
-//                                close.setOnClickListener{
-//                                    builder.dismiss()
-//                                }
-
-                            }
-
-
-                        }catch (e:java.lang.Exception){
-                            e.printStackTrace()
-                        }
-
-
-
-
-
-//                        getActivity()?.runOnUiThread {
-//                            Toast.makeText(
-//                                getActivity(),
-//                                "Success",
-//                                Toast.LENGTH_SHORT
-//                            ).show();
+//        //START OF GET IMAGE
+//        val URL: String = "https://abeazka.my.id/telemetri/tandongrafikbunda.php"
+//        if (URL.isNotEmpty()) {
+//            val http = OkHttpClient()
+//            val request = Request.Builder()
+//                .url(URL)
+//                .build()
+//            //myWebView.loadUrl(URL)
+//
+//            http.newCall(request).enqueue(object : Callback {
+//                override fun onFailure(call: Call, e: IOException) {
+//                    e.printStackTrace();
+//                }
+//
+//                override fun onResponse(call: Call, response: Response) {
+//                    val response: Response = http.newCall(request).execute()
+//                    val responseCode = response.code
+//                    val results = response.body!!.string()
+//
+//                    println("Success " + response.toString())
+//                    println("Success " + response.message.toString())
+//                    println("Success " + results)
+//                    Log.i("KODE", "CODE: " + responseCode)
+//                    Log.i("Response", "Received response from server. Response")
+//                    if (response.code == 200) {
+//                        //Thread.sleep(3_000)
+//                        println("GAMBAR BERHASIL DIBUILD")
+//                        println("TAHAP MUNCULIN GAMBAR.....")
+//                        //Popup
+//
+//                        //Munculin Gambar
+//                        val handler = Handler(Looper.getMainLooper())
+//                        val URL2 = URL( "https://abeazka.my.id/telemetri/tandon/grafiktandon_bunda-x.php.png")
+//                        try{
+//                            val `in` = URL2.openStream()
+//                            image = BitmapFactory.decodeStream(`in`)
+//                            handler.post{
+//                                //imageGrafik.setImageBitmap(image)
+//
+////                                var inflater = LayoutInflater.from(getActivity())
+////                                var popupview = inflater.inflate(R.layout.popup_grafik, null,false)
+////                                var imagee = popupview.findViewById<ImageView>(R.id.imageGrafikPop)
+////                                var close = popupview.findViewById<ImageView>(R.id.close)
+////                                var builder = PopupWindow(popupview, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true)
+////                                imagee.setImageBitmap(image)
+//
+//                                imageGraphSample.setImageBitmap(image)
+//                                //imagee.setRotation(90f)
+////                                builder.setBackgroundDrawable(
+////                                    AppCompatResources.getDrawable(
+////                                        requireContext(),
+////                                        R.drawable.background
+////                                    )
+////                                )
+////                                builder.animationStyle=R.style.DialogAnimation
+////                                builder.showAtLocation(getActivity()?.findViewById(R.id.drawer_layout), Gravity.CENTER, 0 ,0)
+////                                close.setOnClickListener{
+////                                    builder.dismiss()
+////                                }
+//
+//                            }
+//
+//
+//                        }catch (e:java.lang.Exception){
+//                            e.printStackTrace()
 //                        }
-                    } else {
-                        getActivity()?.runOnUiThread {
-
-                            Log.e(
-                                "HTTP Error",
-                                "Something didn't load, or wasn't succesfully"
-                            )
-                            Toast.makeText(getActivity(), "Fail", Toast.LENGTH_LONG)
-                                .show();
-
-                        }
-                        return
-                    }
-                }
-            })
-        }
+//
+//
+//
+//
+//
+////                        getActivity()?.runOnUiThread {
+////                            Toast.makeText(
+////                                getActivity(),
+////                                "Success",
+////                                Toast.LENGTH_SHORT
+////                            ).show();
+////                        }
+//                    } else {
+//                        getActivity()?.runOnUiThread {
+//
+//                            Log.e(
+//                                "HTTP Error",
+//                                "Something didn't load, or wasn't succesfully"
+//                            )
+//                            Toast.makeText(getActivity(), "Fail", Toast.LENGTH_LONG)
+//                                .show();
+//
+//                        }
+//                        return
+//                    }
+//                }
+//            })
+//        }
 
         //END OF MAKE IMG
 
@@ -285,6 +289,7 @@ class HomeFragment : Fragment() {
 //        val formatted = current.format(formatter)
         val email2 = user!!.email
 
+
 //        println("Current Date is: $formatted")
 
 
@@ -293,7 +298,195 @@ class HomeFragment : Fragment() {
     override fun onResume(){
         super.onResume()
         retrieveData()
+        retrieveImage()
     }
+
+
+
+//    fun getNotice(){
+//        val URL: String = "https://abeazka.my.id/arduino_keypad/tes.txt"
+//        if (URL.isNotEmpty()) {
+//            val http = OkHttpClient()
+//            val request = Request.Builder()
+//                .url(URL)
+//                .build()
+//            //myWebView.loadUrl(URL)
+//
+//            http.newCall(request).enqueue(object : Callback {
+//                override fun onFailure(call: Call, e: IOException) {
+//                    e.printStackTrace();
+//                }
+//
+//                override fun onResponse(call: Call, response: Response) {
+//                    val response: Response = http.newCall(request).execute()
+//                    val responseCode = response.code
+//                    val results = response.body!!.string()
+//
+//                    println("Success " + response.toString())
+//                    println("Success " + response.message.toString())
+//                    println("Success " + results)
+//                    Log.i("KODE", "CODE: " + responseCode)
+//                    Log.i("Response", "Received response from server. Response")
+//                    if (response.code == 200) {
+//                        Thread.sleep(3_000)
+//                        println("MENERIMA PESAN")
+//                        println("TAHAP MUNCULIN PESAN.....")
+//
+//                        val content = StringBuilder()
+//                        try{
+//                            val url = URL("https://abeazka.my.id/arduino_keypad/tes.txt")
+//                            val urlConnection = url.openConnection()
+//                            val bufferedReader =
+//                                BufferedReader(InputStreamReader(urlConnection.getInputStream()))
+//                            var line: String?
+////                            while (bufferedReader.readLine().also { line = it } != null) {
+////                                content.append(line).append("\n")
+////                            }
+//
+//                                if(content.toString().isNullOrBlank() || content.toString().isNullOrEmpty()){
+//                                    cards2!!.visibility = View.VISIBLE
+//                                    text_card.text = content.toString()
+//                                }else{
+//                                    cards2!!.visibility = View.GONE
+//                                }
+//
+//                            bufferedReader.close()
+//
+//
+//
+////                            BufferedReader(InputStreamReader(u.openStream())).use { r ->
+////                                text_card.text = r.lines().toString()
+////                            }
+//
+////                            val `in` = URL2.openStream()
+////                            image = BitmapFactory.decodeStream(`in`)
+////                            handler.post{
+////
+////
+////                            }
+//
+//
+//                        }catch (e:java.lang.Exception){
+//                            e.printStackTrace()
+//                        }
+//                    } else {
+//                        getActivity()?.runOnUiThread {
+//
+//                            Log.e(
+//                                "HTTP Error",
+//                                "Something didn't load, or wasn't succesfully"
+//                            )
+//                            Toast.makeText(getActivity(), "Fail", Toast.LENGTH_LONG)
+//                                .show();
+//
+//                        }
+//                        return
+//                    }
+//                }
+//            })
+//        }
+//    }
+
+    fun retrieveImage(){
+        //START OF GET IMAGE
+        val imageGraphSample = view?.findViewById<ImageView>(R.id.imageGrafikSample)
+        val URL: String = "https://abeazka.my.id/telemetri/tandongrafikbunda.php"
+        if (URL.isNotEmpty()) {
+            val http = OkHttpClient()
+            val request = Request.Builder()
+                .url(URL)
+                .build()
+            //myWebView.loadUrl(URL)
+
+            http.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    e.printStackTrace();
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    val response: Response = http.newCall(request).execute()
+                    val responseCode = response.code
+                    val results = response.body!!.string()
+
+                    println("Success " + response.toString())
+                    println("Success " + response.message.toString())
+                    println("Success " + results)
+                    Log.i("KODE", "CODE: " + responseCode)
+                    Log.i("Response", "Received response from server. Response")
+                    if (response.code == 200) {
+                        //Thread.sleep(3_000)
+                        println("GAMBAR BERHASIL DIBUILD")
+                        println("TAHAP MUNCULIN GAMBAR.....")
+                        //Popup
+
+                        //Munculin Gambar
+                        val handler = Handler(Looper.getMainLooper())
+                        val URL2 = URL( "https://abeazka.my.id/telemetri/tandon/grafiktandon_bunda-x.php.png")
+                        try{
+                            val `in` = URL2.openStream()
+                            image = BitmapFactory.decodeStream(`in`)
+                            handler.post{
+                                //imageGrafik.setImageBitmap(image)
+
+//                                var inflater = LayoutInflater.from(getActivity())
+//                                var popupview = inflater.inflate(R.layout.popup_grafik, null,false)
+//                                var imagee = popupview.findViewById<ImageView>(R.id.imageGrafikPop)
+//                                var close = popupview.findViewById<ImageView>(R.id.close)
+//                                var builder = PopupWindow(popupview, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true)
+//                                imagee.setImageBitmap(image)
+
+                                if (imageGraphSample != null) {
+                                    imageGraphSample.setImageBitmap(image)
+                                }
+                                //imagee.setRotation(90f)
+//                                builder.setBackgroundDrawable(
+//                                    AppCompatResources.getDrawable(
+//                                        requireContext(),
+//                                        R.drawable.background
+//                                    )
+//                                )
+//                                builder.animationStyle=R.style.DialogAnimation
+//                                builder.showAtLocation(getActivity()?.findViewById(R.id.drawer_layout), Gravity.CENTER, 0 ,0)
+//                                close.setOnClickListener{
+//                                    builder.dismiss()
+//                                }
+
+                            }
+
+
+                        }catch (e:java.lang.Exception){
+                            e.printStackTrace()
+                        }
+
+
+
+
+
+//                        getActivity()?.runOnUiThread {
+//                            Toast.makeText(
+//                                getActivity(),
+//                                "Success",
+//                                Toast.LENGTH_SHORT
+//                            ).show();
+//                        }
+                    } else {
+                        getActivity()?.runOnUiThread {
+
+                            Log.e(
+                                "HTTP Error",
+                                "Something didn't load, or wasn't succesfully"
+                            )
+                            Toast.makeText(getActivity(), "Fail", Toast.LENGTH_LONG)
+                                .show();
+
+                        }
+                        return
+                    }
+                }
+            })
+        }
+    }
+
     fun retrieveData(){
 //        pbData_BG!!.visibility = View.VISIBLE
         pbData!!.visibility = View.VISIBLE
@@ -331,9 +524,12 @@ class HomeFragment : Fragment() {
             override fun onFailure(call: retrofit2.Call<ResponseModel>, t: Throwable) {
                 srlDat!!.visibility = View.GONE
                 text.visibility = View.VISIBLE
-                Toast.makeText(
-                    context,"Failed to connect: " + t.message, Toast.LENGTH_SHORT
-                ).show()
+                getActivity()?.runOnUiThread {
+                    Toast.makeText(
+                        context, "Failed to connect: " + t.message, Toast.LENGTH_SHORT
+                    ).show()
+                }
+                return
                 Log.i("ERROR", "Failed to connect: " + t.message)
                 pbData!!.visibility = View.INVISIBLE
 //                pbData_BG!!.visibility = View.INVISIBLE

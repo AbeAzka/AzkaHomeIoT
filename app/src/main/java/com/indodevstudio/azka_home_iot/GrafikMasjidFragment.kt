@@ -118,6 +118,7 @@ class GrafikMasjidFragment : Fragment(), View.OnClickListener{
                         ).show();
                     }
                 }else {
+                    click = true
                     println("STATUS!")
                     val URL: String = "https://abeazka.my.id/telemetri/tandongrafik.php"
                     if (URL.isNotEmpty()) {
