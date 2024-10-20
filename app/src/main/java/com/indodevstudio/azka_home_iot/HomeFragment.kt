@@ -76,7 +76,7 @@ class HomeFragment : Fragment() {
     var cards2: CardView? = null
     var chart: LineChart? = null
 
-
+    lateinit var textTime : TextView
     lateinit var textHum : TextView
     lateinit var textTemo : TextView
 
@@ -105,7 +105,7 @@ class HomeFragment : Fragment() {
         srlDat = view.findViewById(R.id.srl_dta)
         cards2 = view.findViewById(R.id.cards_info2)
         text_card = view.findViewById(R.id.pp)
-
+        textTime = view.findViewById(R.id.last_update)
         textHum = view.findViewById(R.id.humidity_txt)
         textTemo = view.findViewById(R.id.temperature_txt)
 //        chart = view.findViewById(R.id.chart)
@@ -566,8 +566,9 @@ class HomeFragment : Fragment() {
                 if(response.body()?.data != null){
 //                    val dataset: BarDataSet = BarDataSet(yVals, r.get(0).);
 
-                    textHum.text = listLaundry[r.lastIndex].kelembapan.toString()
-                    textTemo.text = listLaundry[r.lastIndex].suhu.toString()
+                    textHum.text = listLaundry[r.lastIndex].kelembapan.toString() + "%"
+                    textTemo.text = listLaundry[r.lastIndex].suhu.toString() + "\u2103"
+                    textTime.text = "Last update: "+ listLaundry[r.lastIndex].date.toString()
                 }
                 //else{
 //                    text.visibility = View.GONE

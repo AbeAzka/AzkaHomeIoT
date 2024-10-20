@@ -70,7 +70,7 @@
         android:layout_height="wrap_content"
         android:text="null"
         android:textColor="@color/white"
-        android:textSize="14sp"
+        android:textSize="11sp"
         android:layout_marginBottom="20dp"/>
 
 
