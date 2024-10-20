@@ -16,7 +16,7 @@ android {
         minSdk = 30
         targetSdk = 34
         versionCode = 1
-        versionName = "1.8.5 GARUDA - BETA"//Last 1.2
+        versionName = "1.9"//Last 1.2
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -43,6 +43,7 @@ android {
 }
 
 dependencies {
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation ("com.github.bumptech.glide:glide:4.4.0")
     implementation ("androidx.core:core-splashscreen:1.0.0")
     implementation ("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0")

@@ -97,7 +97,7 @@ class InboxActivity : AppCompatActivity() {
         pbData!!.visibility = View.VISIBLE
 
         val ardData: APIRequestData = RetroServer.konekRetrofit().create(APIRequestData::class.java)
-        val tampilData: Call<ResponseModel> = ardData.ardRetrieveData()
+        val tampilData: Call<ResponseModel> = ardData.ardRetrieveData2()
         tampilData.enqueue(object: Callback<ResponseModel>{
             override fun onResponse(call: Call<ResponseModel>, response: Response<ResponseModel>) {
 

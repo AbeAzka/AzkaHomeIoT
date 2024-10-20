@@ -11,6 +11,12 @@ public interface APIRequestData {
     @GET("retrieve.php")
     Call<ResponseModel> ardRetrieveData();
 
+    @GET("retrieve2.php")
+    Call<ResponseModel> ardRetrieveData2();
+
+    @GET("retrieve_dht.php")
+    Call<ResponseModel> ardRetrieveTemp();
+
     @FormUrlEncoded
     @POST("get.php")
     Call<ResponseModel> ardGetData(

@@ -19,11 +19,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.github.mikephil.charting.charts.LineChart
 import com.google.firebase.auth.FirebaseAuth
 import com.indodevstudio.azka_home_iot.API.APIRequestData
 import com.indodevstudio.azka_home_iot.API.RetroServer
@@ -36,11 +36,8 @@ import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
-import java.io.InputStreamReader
-import java.net.URI
 import java.net.URL
 import java.util.Calendar
 
@@ -59,6 +56,8 @@ class HomeFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    lateinit var listLaundry: List<DataModel>
+
 
     lateinit var imageGrafik : TouchImageView
     lateinit var inputStream : InputStream
@@ -75,6 +74,12 @@ class HomeFragment : Fragment() {
     var srlData: SwipeRefreshLayout? = null
     var pbData: ProgressBar? = null
     var cards2: CardView? = null
+    var chart: LineChart? = null
+
+
+    lateinit var textHum : TextView
+    lateinit var textTemo : TextView
+
 
     lateinit var text_card : TextView
 //    var pbData_BG: ConstraintLayout? = null
@@ -100,6 +105,10 @@ class HomeFragment : Fragment() {
         srlDat = view.findViewById(R.id.srl_dta)
         cards2 = view.findViewById(R.id.cards_info2)
         text_card = view.findViewById(R.id.pp)
+
+        textHum = view.findViewById(R.id.humidity_txt)
+        textTemo = view.findViewById(R.id.temperature_txt)
+//        chart = view.findViewById(R.id.chart)
 //        pbData_BG = view.findViewById(R.id.load)
          val imageGraphSample = view.findViewById<ImageView>(R.id.imageGrafikSample)
 
@@ -113,6 +122,7 @@ class HomeFragment : Fragment() {
                 setRefreshing(true)
                 retrieveData()
 //                getNotice()
+                retrieveTemp()
                 retrieveImage()
                 setRefreshing(false)
 
@@ -298,6 +308,7 @@ class HomeFragment : Fragment() {
     override fun onResume(){
         super.onResume()
         retrieveData()
+        retrieveTemp()
         retrieveImage()
     }
 
@@ -495,16 +506,18 @@ class HomeFragment : Fragment() {
         val tampilData: retrofit2.Call<ResponseModel> = ardData.ardRetrieveData()
         tampilData.enqueue(object: retrofit2.Callback<ResponseModel> {
             override fun onResponse(call: retrofit2.Call<ResponseModel>, response: retrofit2.Response<ResponseModel>) {
-                srlDat!!.visibility = View.VISIBLE
+
                 text.visibility = View.GONE
                 if(response.body()?.data == null){
-
+                    text.visibility = View.VISIBLE
+                    srlDat!!.visibility = View.GONE
                     rvData!!.visibility = View.GONE
 //                    text.visibility = View.VISIBLE
                     pbData!!.visibility = View.INVISIBLE
 //                    pbData_BG!!.visibility = View.INVISIBLE
                 }else{
-
+                    text.visibility = View.GONE
+                    srlDat!!.visibility = View.VISIBLE
                     listData = response.body()!!.data
                     adData = AdapterData(context, listData)
                     rvData!!.smoothScrollToPosition(listData.size-1);
@@ -524,6 +537,60 @@ class HomeFragment : Fragment() {
             override fun onFailure(call: retrofit2.Call<ResponseModel>, t: Throwable) {
                 srlDat!!.visibility = View.GONE
                 text.visibility = View.VISIBLE
+                getActivity()?.runOnUiThread {
+                    Toast.makeText(
+                        context, "Failed to connect: " + t.message, Toast.LENGTH_SHORT
+                    ).show()
+                }
+                return
+                Log.i("ERROR", "Failed to connect: " + t.message)
+                pbData!!.visibility = View.INVISIBLE
+//                pbData_BG!!.visibility = View.INVISIBLE
+            }
+
+        })
+    }
+
+
+    fun retrieveTemp(){
+        pbData!!.visibility = View.VISIBLE
+
+        val ardData: APIRequestData = RetroServer.konekRetrofit().create(APIRequestData::class.java)
+        val tampilData: retrofit2.Call<ResponseModel> = ardData.ardRetrieveTemp()
+        tampilData.enqueue(object: retrofit2.Callback<ResponseModel> {
+            override fun onResponse(call: retrofit2.Call<ResponseModel>, response: retrofit2.Response<ResponseModel>) {
+                val r = response.body()!!.data
+
+                listLaundry = response.body()!!.data
+                //text.visibility = View.GONE
+                if(response.body()?.data != null){
+//                    val dataset: BarDataSet = BarDataSet(yVals, r.get(0).);
+
+                    textHum.text = listLaundry[r.lastIndex].kelembapan.toString()
+                    textTemo.text = listLaundry[r.lastIndex].suhu.toString()
+                }
+                //else{
+//                    text.visibility = View.GONE
+//                    srlDat!!.visibility = View.VISIBLE
+//                    listData = response.body()!!.data
+//                    adData = AdapterData(context, listData)
+//                    rvData!!.smoothScrollToPosition(listData.size-1);
+//                    rvData!!.visibility = View.VISIBLE
+//
+////                    text.visibility = View.GONE
+//                    rvData!!.adapter = adData
+//
+//                    adData!!.notifyDataSetChanged()
+////                    pbData_BG!!.visibility = View.INVISIBLE
+//                    pbData!!.visibility = View.INVISIBLE
+//                }
+
+
+            }
+
+            override fun onFailure(call: retrofit2.Call<ResponseModel>, t: Throwable) {
+//                srlDat!!.visibility = View.GONE
+//                text.visibility = View.VISIBLE
                 getActivity()?.runOnUiThread {
                     Toast.makeText(
                         context, "Failed to connect: " + t.message, Toast.LENGTH_SHORT

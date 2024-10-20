@@ -2,7 +2,7 @@ package com.indodevstudio.azka_home_iot.Model;
 
 public class DataModel {
     private int no;
-    private String date, message, topic;
+    private String date, message, topic, suhu, kelembapan;
 
 
     public int getNo(){
@@ -17,4 +17,12 @@ public class DataModel {
     public String getTopic(){
         return topic;
     }
+
+    public String getSuhu(){
+        return suhu;
+    }
+    public String getKelembapan(){
+        return kelembapan;
+    }
+
 }

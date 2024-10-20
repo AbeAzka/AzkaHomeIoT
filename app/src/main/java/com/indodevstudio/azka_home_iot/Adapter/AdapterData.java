@@ -37,9 +37,24 @@ public class AdapterData extends RecyclerView.Adapter<AdapterData.HolderData> {
     @Override
     public HolderData onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View layout = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_item,parent,false);
+
+        View layout2 = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_home, parent, false);
         HolderData holder = new HolderData(layout);
+
+        HolderData holder2 =  new HolderData(layout2);
         return holder;
     }
+
+//    @NonNull
+//    @Override
+//    public HolderData onCreateViewHolder2(@NonNull ViewGroup parent, int viewType) {
+//
+//        View layout2 = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_home, parent, false);
+//
+//
+//        HolderData holder2 =  new HolderData(layout2);
+//        return holder2;
+//    }
 
     @Override
     public void onBindViewHolder(@NonNull HolderData holder, int position) {
@@ -85,6 +100,9 @@ public class AdapterData extends RecyclerView.Adapter<AdapterData.HolderData> {
                     String varMessage = listLaundry.get(0).getMessage();
                     String varTopic = listLaundry.get(0).getTopic();
                     String varDate = listLaundry.get(0).getDate();
+
+                    String varTemp = listLaundry.get(0).getSuhu();
+                    String varHumi = listLaundry.get(0).getKelembapan();
 
 
                 }

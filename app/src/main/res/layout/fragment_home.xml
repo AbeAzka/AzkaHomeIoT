@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -49,6 +49,7 @@
                 android:layout_marginStart="16sp"
                 android:layout_marginLeft="16sp"
                 android:layout_marginTop="16sp"
+                android:layout_marginBottom="10sp"
                 android:text="DASHBOARD"
                 android:textStyle="bold"
                 android:textSize="30sp"
@@ -124,14 +125,17 @@
         android:layout_marginEnd="16sp"
         app:cardBackgroundColor="?attr/cardBG"
         app:cardElevation="8dp"
-        app:layout_constraintBottom_toBottomOf="@id/viewHeaderBG"
-        app:layout_constraintTop_toBottomOf="@id/viewHeaderBG"
+        app:layout_constraintBottom_toTopOf="@id/weh"
+        app:layout_constraintTop_toBottomOf="@id/dash"
         >
-        <LinearLayout
+
+        <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
             android:orientation="vertical"
-            android:padding="14dp">
+            android:padding="14dp"
+            >
 
             <TextView
                 android:id="@+id/greetings"
@@ -139,7 +143,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
+
                 android:text="Title"
                 android:fontFamily="sans-serif"
                 android:textColor="?attr/textContent"
@@ -150,11 +154,90 @@
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
+                android:layout_marginTop="10dp"
                 android:background="@color/purple_500"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/tess"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/greetings" />
+
+            <LinearLayout
+
+                android:id="@+id/tess"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="14dp"
+                
+                app:layout_constraintEnd_toStartOf="@id/tesss"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:accessibilityPaneTitle="test"
+                    android:src="@drawable/ic_temperature" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Temperature"
+                    android:textSize="18sp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/temperature_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="null"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tesss"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="14dp"
+                app:layout_constraintTop_toBottomOf="@id/divider"
+                app:layout_constraintStart_toEndOf="@id/tess"
+                app:layout_constraintEnd_toEndOf="parent"
+                >
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:accessibilityPaneTitle="test"
+                    android:src="@drawable/ic_humidity"/>
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textSize="18sp"
+                    android:text="Humidity"
+                    android:textStyle="normal"
+                    />
+                <TextView
+                    android:id="@+id/humidity_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:textSize="20sp"
+                    android:text="null"
+                    android:textStyle="bold"
+                    />
+
+            </LinearLayout>
+
+
+
 
             <TextView
                 android:id="@+id/test"
@@ -168,8 +251,20 @@
                 android:fontFamily="sans-serif"
                 android:textColor="?attr/textContent"
                 android:textSize="20dp"
-
+                app:layout_constraintTop_toBottomOf="@id/tess"
                 />
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="20dp"
+
+                android:background="@color/purple_500"
+                app:layout_constraintBottom_toTopOf="@id/text_Inbox"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/test" />
 
             <TextView
                 android:id="@+id/text_Inbox"
@@ -182,20 +277,19 @@
                 android:textAlignment="center"
                 android:textColor="?attr/textContent"
                 android:textSize="20dp"
-
+                app:layout_constraintTop_toBottomOf="@id/test"
                 tools:visibility="visible" />
             <ScrollView
                 android:id="@+id/srl_dta"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:visibility="visible"
+                android:layout_marginTop="10dp"
                 app:reverseLayout="true"
                 app:stackFromEnd="true"
                 android:scrollbars="none"
-
+                app:layout_constraintTop_toBottomOf="@id/divider2"
                 tools:visibility="gone">
-
-
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_data"
@@ -206,7 +300,9 @@
 
             </ScrollView>
 
-        </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -259,7 +355,61 @@
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
+<!--            <com.google.android.material.card.MaterialCardView-->
+<!--                android:id="@+id/weh2"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:cardCornerRadius="20dp"-->
+<!--                android:layout_marginStart="16sp"-->
+<!--                android:layout_marginEnd="16sp"-->
+<!--                android:layout_marginTop="50dp"-->
 
+<!--                app:layout_constraintTop_toBottomOf="@id/weh"-->
+
+<!--                app:cardElevation="8dp">-->
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+
+<!--                    android:padding="10dp"-->
+<!--                    android:orientation="vertical">-->
+
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/weh22"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:layout_marginStart="20dp"-->
+<!--                        android:layout_marginTop="10dp"-->
+<!--                        android:layout_marginBottom="10dp"-->
+<!--                        android:text="Suhu"-->
+<!--                        android:textStyle="bold"-->
+<!--                        android:fontFamily="sans-serif"-->
+<!--                        android:textColor="?attr/textContent"-->
+<!--                        android:textSize="20dp"-->
+
+<!--                        />-->
+
+<!--&lt;!&ndash;                    <ImageView&ndash;&gt;-->
+<!--&lt;!&ndash;                        android:id="@+id/image"&ndash;&gt;-->
+<!--&lt;!&ndash;                        android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;                        android:layout_height="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;                        android:layout_centerInParent="true"&ndash;&gt;-->
+<!--&lt;!&ndash;                        android:layout_gravity="center"&ndash;&gt;-->
+<!--&lt;!&ndash;                        android:clickable="true"&ndash;&gt;-->
+<!--&lt;!&ndash;                        app:layout_constraintBottom_toBottomOf="parent"&ndash;&gt;-->
+<!--&lt;!&ndash;                        app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
+<!--&lt;!&ndash;                        app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
+<!--&lt;!&ndash;                        app:layout_constraintTop_toTopOf="parent"&ndash;&gt;-->
+<!--&lt;!&ndash;                        />&ndash;&gt;-->
+<!--                    <com.github.mikephil.charting.charts.LineChart-->
+<!--                        android:id="@+id/chart"-->
+
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent" />-->
+
+<!--                </LinearLayout>-->
+<!--            </com.google.android.material.card.MaterialCardView>-->
         </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
@@ -278,8 +428,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:layout_gravity="center"
         android:visibility="invisible"
-
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/lavender"
         />
 <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
