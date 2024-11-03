@@ -103,8 +103,8 @@ class HomeFragment : Fragment() {
         pbData = view.findViewById(R.id.pb_data)
         text = view.findViewById(R.id.text_Inbox)
         srlDat = view.findViewById(R.id.srl_dta)
-        cards2 = view.findViewById(R.id.cards_info2)
-        text_card = view.findViewById(R.id.pp)
+//        cards2 = view.findViewById(R.id.cards_info2)
+//        text_card = view.findViewById(R.id.pp)
         textTime = view.findViewById(R.id.last_update)
         textHum = view.findViewById(R.id.humidity_txt)
         textTemo = view.findViewById(R.id.temperature_txt)
@@ -566,9 +566,17 @@ class HomeFragment : Fragment() {
                 if(response.body()?.data != null){
 //                    val dataset: BarDataSet = BarDataSet(yVals, r.get(0).);
 
+                    var chanceRain = ""
+
+                    if (listLaundry[r.lastIndex].kelembapan.toString() > "65"){
+                        chanceRain = "Berpotensi hujan!"
+                    }else{
+                        chanceRain = "Berpotensi tidak hujan!"
+                    }
+
                     textHum.text = listLaundry[r.lastIndex].kelembapan.toString() + "%"
                     textTemo.text = listLaundry[r.lastIndex].suhu.toString() + "\u2103"
-                    textTime.text = "Last update: "+ listLaundry[r.lastIndex].date.toString()
+                    textTime.text = "Last update: "+ listLaundry[r.lastIndex].date.toString() + "\n $chanceRain"
                 }
                 //else{
 //                    text.visibility = View.GONE
