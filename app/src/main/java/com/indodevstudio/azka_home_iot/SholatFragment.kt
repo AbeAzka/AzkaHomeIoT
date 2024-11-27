@@ -80,7 +80,7 @@ class SholatFragment : Fragment() {
 
         executeUrlButton3.setOnClickListener {
             // Execute the URL request in the background
-            val url3 = "https://abeazka.my.id/$email/inputperf.php?type=$peh&value1=1" // Replace with your desired URL
+            val url3 = "https://abeazka.my.id/$peh/inputperf.php?type=$peh&value1=1" // Replace with your desired URL
             Log.i("P", url3)
             //webView.loadUrl(url)
             webView2.webViewClient = object : WebViewClient() {
@@ -127,7 +127,7 @@ class SholatFragment : Fragment() {
 
         executeUrlButton4.setOnClickListener {
             // Execute the URL request in the background
-            val url4 = "https://abeazka.my.id/$email/inputperf.php?type=$peh&value1=0.5" // Replace with your desired URL
+            val url4 = "https://abeazka.my.id/$peh/inputperf.php?type=$peh&value1=0.5" // Replace with your desired URL
             //webView.loadUrl(url)
             webView2.webViewClient = object : WebViewClient() {
 
@@ -174,7 +174,7 @@ class SholatFragment : Fragment() {
 
         executeUrlButton5.setOnClickListener {
             // Execute the URL request in the background
-            val url5 = "https://abeazka.my.id/$email/inputperf.php?type=$peh&value1=-0.5" // Replace with your desired URL
+            val url5 = "https://abeazka.my.id/$peh/inputperf.php?type=$peh&value1=-0.5" // Replace with your desired URL
             //webView.loadUrl(url)
             webView2.webViewClient = object : WebViewClient() {
 
@@ -221,7 +221,7 @@ class SholatFragment : Fragment() {
 
         executeUrlButton6.setOnClickListener {
             // Execute the URL request in the background
-            val url6 = "https://abeazka.my.id/$email/inputperf.php?type=$peh&value1=-1" // Replace with your desired URL
+            val url6 = "https://abeazka.my.id/$peh/inputperf.php?type=$peh&value1=-1" // Replace with your desired URL
             //webView.loadUrl(url)
             webView2.webViewClient = object : WebViewClient() {
 
@@ -268,11 +268,11 @@ class SholatFragment : Fragment() {
 
         executeUrlButton7.setOnClickListener {
             webView.clearCache(true)
-            webView.clearHistory()
+            /*webView.clearHistory()*/
             // Execute the URL request in the background
-            val url71 = "https://abeazka.my.id/$email/perfgrafik.php"
+            val url71 = "https://abeazka.my.id/$peh/perfgrafik.php"
             webView2.loadUrl(url71)
-            val url7 = "https://abeazka.my.id/$email/grafik/grafikperf.php.png" // Replace with your desired URL
+            val url7 = "https://abeazka.my.id/$peh/grafik/grafikperf.php.png" // Replace with your desired URL
             //webView.loadUrl(url)
 
             webView.webViewClient = object : WebViewClient() {
@@ -324,6 +324,7 @@ class SholatFragment : Fragment() {
         }
         val username = parts.first()
         return "$username"
+        //azka.jsiswanto@gmail.com
     }
 
     companion object {

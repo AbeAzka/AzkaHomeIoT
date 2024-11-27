@@ -106,7 +106,7 @@
         </menu>
     </item>
     <item
-        android:title="KEAGAMAAN">
+        android:title="IBADAH">
         <menu>
             <group
                 android:checkableBehavior="single"
