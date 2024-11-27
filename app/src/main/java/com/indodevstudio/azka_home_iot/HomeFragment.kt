@@ -138,100 +138,7 @@ class HomeFragment : Fragment() {
         val namee = user!!.displayName
 
 
-//        //START OF GET IMAGE
-//        val URL: String = "https://abeazka.my.id/telemetri/tandongrafikbunda.php"
-//        if (URL.isNotEmpty()) {
-//            val http = OkHttpClient()
-//            val request = Request.Builder()
-//                .url(URL)
-//                .build()
-//            //myWebView.loadUrl(URL)
-//
-//            http.newCall(request).enqueue(object : Callback {
-//                override fun onFailure(call: Call, e: IOException) {
-//                    e.printStackTrace();
-//                }
-//
-//                override fun onResponse(call: Call, response: Response) {
-//                    val response: Response = http.newCall(request).execute()
-//                    val responseCode = response.code
-//                    val results = response.body!!.string()
-//
-//                    println("Success " + response.toString())
-//                    println("Success " + response.message.toString())
-//                    println("Success " + results)
-//                    Log.i("KODE", "CODE: " + responseCode)
-//                    Log.i("Response", "Received response from server. Response")
-//                    if (response.code == 200) {
-//                        //Thread.sleep(3_000)
-//                        println("GAMBAR BERHASIL DIBUILD")
-//                        println("TAHAP MUNCULIN GAMBAR.....")
-//                        //Popup
-//
-//                        //Munculin Gambar
-//                        val handler = Handler(Looper.getMainLooper())
-//                        val URL2 = URL( "https://abeazka.my.id/telemetri/tandon/grafiktandon_bunda-x.php.png")
-//                        try{
-//                            val `in` = URL2.openStream()
-//                            image = BitmapFactory.decodeStream(`in`)
-//                            handler.post{
-//                                //imageGrafik.setImageBitmap(image)
-//
-////                                var inflater = LayoutInflater.from(getActivity())
-////                                var popupview = inflater.inflate(R.layout.popup_grafik, null,false)
-////                                var imagee = popupview.findViewById<ImageView>(R.id.imageGrafikPop)
-////                                var close = popupview.findViewById<ImageView>(R.id.close)
-////                                var builder = PopupWindow(popupview, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true)
-////                                imagee.setImageBitmap(image)
-//
-//                                imageGraphSample.setImageBitmap(image)
-//                                //imagee.setRotation(90f)
-////                                builder.setBackgroundDrawable(
-////                                    AppCompatResources.getDrawable(
-////                                        requireContext(),
-////                                        R.drawable.background
-////                                    )
-////                                )
-////                                builder.animationStyle=R.style.DialogAnimation
-////                                builder.showAtLocation(getActivity()?.findViewById(R.id.drawer_layout), Gravity.CENTER, 0 ,0)
-////                                close.setOnClickListener{
-////                                    builder.dismiss()
-////                                }
-//
-//                            }
-//
-//
-//                        }catch (e:java.lang.Exception){
-//                            e.printStackTrace()
-//                        }
-//
-//
-//
-//
-//
-////                        getActivity()?.runOnUiThread {
-////                            Toast.makeText(
-////                                getActivity(),
-////                                "Success",
-////                                Toast.LENGTH_SHORT
-////                            ).show();
-////                        }
-//                    } else {
-//                        getActivity()?.runOnUiThread {
-//
-//                            Log.e(
-//                                "HTTP Error",
-//                                "Something didn't load, or wasn't succesfully"
-//                            )
-//                            Toast.makeText(getActivity(), "Fail", Toast.LENGTH_LONG)
-//                                .show();
-//
-//                        }
-//                        return
-//                    }
-//                }
-//            })
-//        }
+
 
         //END OF MAKE IMG
 
@@ -568,10 +475,16 @@ class HomeFragment : Fragment() {
 
                     var chanceRain = ""
 
+
+
                     if (listLaundry[r.lastIndex].kelembapan.toString() > "65"){
-                        chanceRain = "Berpotensi hujan!"
-                    }else{
-                        chanceRain = "Berpotensi tidak hujan!"
+                        chanceRain = "Diperkirakan hujan/setelah hujan!"
+                    }
+                    else if(listLaundry[r.lastIndex].kelembapan.toString() == "100"){
+                        chanceRain = "Sedang hujan!"
+                    }
+                    else{
+                        chanceRain = "Diperkirakan tidak hujan!"
                     }
 
                     textHum.text = listLaundry[r.lastIndex].kelembapan.toString() + "%"

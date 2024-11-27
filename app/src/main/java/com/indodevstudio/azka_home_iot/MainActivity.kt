@@ -363,21 +363,29 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         val notif = prefs.getBoolean("notif", false)
         val mqtt = prefs.getBoolean("mqtt", false)
         binding.apply {
-            if (notif){
-                val test = Intent(this@MainActivity, MQTT_Service::class.java)
-                startService(test)
-//                val org.eclipse.paho.android.service = MQTT_Service()
-//                org.eclipse.paho.android.service.startForegroundService()
+            if (ContextCompat.checkSelfPermission(this@MainActivity, Manifest.permission.FOREGROUND_SERVICE) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this@MainActivity, Manifest.permission.FOREGROUND_SERVICE_DATA_SYNC) == PackageManager.PERMISSION_GRANTED
+            ) {
+                    if (notif){
 
-                Log.i("MQTT", "SERVICE START FROM SWITCH")
+                            val test = Intent(this@MainActivity, MQTT_Service::class.java)
+                            startService(test)
+        //                val org.eclipse.paho.android.service = MQTT_Service()
+        //                org.eclipse.paho.android.service.startForegroundService()
+
+                            Log.i("MQTT", "SERVICE START FROM SWITCH")
+
+                    }else{
+                        val test = Intent(this@MainActivity, MQTT_Service::class.java)
+
+        //                val org.eclipse.paho.android.service = MQTT_Service()
+        //                org.eclipse.paho.android.service.stopForegroundService()
+
+                        stopService(test)
+                        Log.i("MQTT", "SERVICE STOP FROM SWITCH")
+                    }
             }else{
-                val test = Intent(this@MainActivity, MQTT_Service::class.java)
-
-//                val org.eclipse.paho.android.service = MQTT_Service()
-//                org.eclipse.paho.android.service.stopForegroundService()
-
-                stopService(test)
-                Log.i("MQTT", "SERVICE STOP FROM SWITCH")
+                Log.i("MQTT", "No permissions FOREGROUND_SERVICE and FOREGROUND_SERVICE_DATA_SYNC!")
             }
 
 //            if (mqtt){
@@ -651,6 +659,13 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, manual_book_fragment()).commit()
                 navigationView.setCheckedItem(R.id.nav_book)
+            }
+            R.id.peforma_sholat -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, SholatFragment()).commit()
+                navigationView.setCheckedItem(R.id.peforma_sholat)
             }
             //R.id.nav_update -> supportFragmentManager.beginTransaction()
              //   .replace(R.id.fragment_container, UpdateLogFragment()).commit()
