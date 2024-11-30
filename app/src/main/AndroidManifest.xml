@@ -26,7 +26,7 @@
         tools:targetApi="34">
         <activity
             android:name=".SplashActivity"
-            android:theme="@style/Theme.App.SplashScreen"
+            android:theme="@style/Theme.MainActivity"
             android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>

@@ -104,6 +104,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
     var port = "3306"
     var username = "azka"
     var password = "misxB@T.ErHPMS/2"
+    var email = ""
 
 
 
@@ -230,7 +231,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         val picture = FirebaseAuth.getInstance().currentUser?.photoUrl
         val picture2 = mFirebaseUser.photoUrl.toString();
         val picture5 = mFirebaseUser.photoUrl
-        val email = intent.getStringExtra("email")
+        email = intent.getStringExtra("email").toString()
         val displayName = intent.getStringExtra("name")
         val photo = intent.getStringExtra("photop")
         picture3 = FirebaseAuth.getInstance().currentUser!!.photoUrl.toString()
@@ -289,6 +290,9 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
         val obfuscatedEmail = email?.let { obfuscateEmail(it) }
         em.text = obfuscatedEmail;
+
+
+
     }
 
     fun obfuscateEmail(email: String): String {
@@ -660,13 +664,26 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                     .replace(R.id.fragment_container, manual_book_fragment()).commit()
                 navigationView.setCheckedItem(R.id.nav_book)
             }
-            R.id.peforma_sholat -> {
-                val navigationView = findViewById<NavigationView>(R.id.nav_view)
-                navigationView.setNavigationItemSelectedListener(this)
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, SholatFragment()).commit()
-                navigationView.setCheckedItem(R.id.peforma_sholat)
-            }
+
+
+                R.id.peforma_sholat -> {
+                    if (email == "azka.jsiswanto@gmail.com" || email == "linda.jsiswanto@gmail.com" || email == "jsusilo4444@gmail.com") {
+                        val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                        navigationView.setNavigationItemSelectedListener(this)
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, SholatFragment()).commit()
+                        navigationView.setCheckedItem(R.id.peforma_sholat)
+                    }else{
+                        val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                        navigationView.setNavigationItemSelectedListener(this)
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, Sholat2Fragment()).commit()
+                        navigationView.setCheckedItem(R.id.peforma_sholat)
+                    }
+
+
+                }
+
             //R.id.nav_update -> supportFragmentManager.beginTransaction()
              //   .replace(R.id.fragment_container, UpdateLogFragment()).commit()
 
