@@ -2,16 +2,17 @@ package com.indodevstudio.azka_home_iot
 
 
 import android.Manifest
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
-import java.net.InetAddress
-import java.net.NetworkInterface
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -22,7 +23,6 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupWindow
@@ -47,7 +47,12 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.messaging.FirebaseMessaging
+import com.indodevstudio.azka_home_iot.Model.UnderMaintenance
 import com.indodevstudio.azka_home_iot.databinding.ActivityMainBinding
 import com.indodevstudio.azka_home_iot.utils.FirebaseUtils.firebaseAuth
 import info.mqtt.android.service.MqttAndroidClient
@@ -58,7 +63,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
-
 import org.eclipse.paho.client.mqttv3.IMqttActionListener
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
 import org.eclipse.paho.client.mqttv3.IMqttToken
@@ -68,6 +72,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.json.JSONObject
 import java.io.IOException
 import java.io.InputStream
+import java.net.InetAddress
+import java.net.NetworkInterface
 import java.net.URL
 
 
@@ -117,7 +123,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         setContentView(view)
         val test = Intent(this, MQTT_Service::class.java)
         //startService(test)
-
+        connectToFirebase()
         val sharedPreferenceManger = SharedPreferenceManger(this)
         AppCompatDelegate.setDefaultNightMode(sharedPreferenceManger.themeFlag[sharedPreferenceManger.theme])
         //connect(this)
@@ -924,4 +930,69 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         }
 
     }
+
+    private fun connectToFirebase() {
+        val database = FirebaseDatabase.getInstance()
+        val reference = database.reference
+        reference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val underMaintenance = dataSnapshot.getValue(
+                    UnderMaintenance::class.java
+                ) ?: return
+                if (underMaintenance.is_under_maintenance) {
+                    showUnderMaintenanceDialog(underMaintenance.under_maintenance_message)
+                } else {
+                    dismissUnderMaintenanceDialog()
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {}
+        })
+    }
+
+    private fun showUnderMaintenanceDialog(underMaintenanceMessage: String) {
+
+        val builder = AlertDialog.Builder(this)
+
+        builder.setTitle("AzkaHomeIoT")
+        builder.setMessage("$underMaintenanceMessage")
+
+//        builder.setPositiveButton("OK") { dialog, which ->
+//            // handle OK button click
+//        }
+
+
+
+        builder.setCancelable(false)
+        val dialog = builder.create()
+
+        dialog.show()
+
+        /*//Inflate the dialog as custom view
+        val messageBoxView = LayoutInflater.from(this).inflate(R.layout.message_box, null)
+        val x = messageBoxView.findViewById<TextView>(R.id.message_box_header)
+        val y = messageBoxView.findViewById<TextView>(R.id.message_box_content)
+        //AlertDialogBuilder
+        val messageBoxBuilder = AlertDialog.Builder(this).setView(messageBoxView)
+
+        //setting text values
+        x.text = "AzkaHomeIoT"
+        y.text = "$underMaintenanceMessage"
+
+
+        //show dialog
+        val  messageBoxInstance = messageBoxBuilder.show()
+
+        //set Listener
+        messageBoxView.setOnClickListener(){
+            //close dialog
+            messageBoxInstance.dismiss()
+        }*/
+    }
+    private fun dismissUnderMaintenanceDialog() {
+        val dialog = Dialog(this)
+        if (dialog != null && dialog.isShowing) dialog.dismiss()
+    }
+
+
 }

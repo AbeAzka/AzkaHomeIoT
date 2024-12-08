@@ -23,6 +23,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.facebook.shimmer.Shimmer
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.github.mikephil.charting.charts.LineChart
 import com.google.firebase.auth.FirebaseAuth
 import com.indodevstudio.azka_home_iot.API.APIRequestData
@@ -76,6 +78,8 @@ class HomeFragment : Fragment() {
     var cards2: CardView? = null
     var chart: LineChart? = null
 
+
+
     lateinit var textTime : TextView
     lateinit var textHum : TextView
     lateinit var textTemo : TextView
@@ -98,16 +102,19 @@ class HomeFragment : Fragment() {
     ): View? {
         val view =  inflater.inflate(R.layout.fragment_home, container, false)
 
+
         rvData = view.findViewById(R.id.rv_data)
         srlData = view.findViewById(R.id.srl_data)
         pbData = view.findViewById(R.id.pb_data)
         text = view.findViewById(R.id.text_Inbox)
         srlDat = view.findViewById(R.id.srl_dta)
+
 //        cards2 = view.findViewById(R.id.cards_info2)
 //        text_card = view.findViewById(R.id.pp)
         textTime = view.findViewById(R.id.last_update)
         textHum = view.findViewById(R.id.humidity_txt)
         textTemo = view.findViewById(R.id.temperature_txt)
+
 //        chart = view.findViewById(R.id.chart)
 //        pbData_BG = view.findViewById(R.id.load)
          val imageGraphSample = view.findViewById<ImageView>(R.id.imageGrafikSample)
@@ -120,6 +127,7 @@ class HomeFragment : Fragment() {
         with (srlData){
             this?.setOnRefreshListener {
                 setRefreshing(true)
+
                 retrieveData()
 //                getNotice()
                 retrieveTemp()
@@ -217,93 +225,8 @@ class HomeFragment : Fragment() {
         retrieveData()
         retrieveTemp()
         retrieveImage()
+
     }
-
-
-
-//    fun getNotice(){
-//        val URL: String = "https://abeazka.my.id/arduino_keypad/tes.txt"
-//        if (URL.isNotEmpty()) {
-//            val http = OkHttpClient()
-//            val request = Request.Builder()
-//                .url(URL)
-//                .build()
-//            //myWebView.loadUrl(URL)
-//
-//            http.newCall(request).enqueue(object : Callback {
-//                override fun onFailure(call: Call, e: IOException) {
-//                    e.printStackTrace();
-//                }
-//
-//                override fun onResponse(call: Call, response: Response) {
-//                    val response: Response = http.newCall(request).execute()
-//                    val responseCode = response.code
-//                    val results = response.body!!.string()
-//
-//                    println("Success " + response.toString())
-//                    println("Success " + response.message.toString())
-//                    println("Success " + results)
-//                    Log.i("KODE", "CODE: " + responseCode)
-//                    Log.i("Response", "Received response from server. Response")
-//                    if (response.code == 200) {
-//                        Thread.sleep(3_000)
-//                        println("MENERIMA PESAN")
-//                        println("TAHAP MUNCULIN PESAN.....")
-//
-//                        val content = StringBuilder()
-//                        try{
-//                            val url = URL("https://abeazka.my.id/arduino_keypad/tes.txt")
-//                            val urlConnection = url.openConnection()
-//                            val bufferedReader =
-//                                BufferedReader(InputStreamReader(urlConnection.getInputStream()))
-//                            var line: String?
-////                            while (bufferedReader.readLine().also { line = it } != null) {
-////                                content.append(line).append("\n")
-////                            }
-//
-//                                if(content.toString().isNullOrBlank() || content.toString().isNullOrEmpty()){
-//                                    cards2!!.visibility = View.VISIBLE
-//                                    text_card.text = content.toString()
-//                                }else{
-//                                    cards2!!.visibility = View.GONE
-//                                }
-//
-//                            bufferedReader.close()
-//
-//
-//
-////                            BufferedReader(InputStreamReader(u.openStream())).use { r ->
-////                                text_card.text = r.lines().toString()
-////                            }
-//
-////                            val `in` = URL2.openStream()
-////                            image = BitmapFactory.decodeStream(`in`)
-////                            handler.post{
-////
-////
-////                            }
-//
-//
-//                        }catch (e:java.lang.Exception){
-//                            e.printStackTrace()
-//                        }
-//                    } else {
-//                        getActivity()?.runOnUiThread {
-//
-//                            Log.e(
-//                                "HTTP Error",
-//                                "Something didn't load, or wasn't succesfully"
-//                            )
-//                            Toast.makeText(getActivity(), "Fail", Toast.LENGTH_LONG)
-//                                .show();
-//
-//                        }
-//                        return
-//                    }
-//                }
-//            })
-//        }
-//    }
 
     fun retrieveImage(){
         //START OF GET IMAGE
@@ -407,7 +330,7 @@ class HomeFragment : Fragment() {
 
     fun retrieveData(){
 //        pbData_BG!!.visibility = View.VISIBLE
-        pbData!!.visibility = View.VISIBLE
+        pbData?.visibility = View.VISIBLE
 
         val ardData: APIRequestData = RetroServer.konekRetrofit().create(APIRequestData::class.java)
         val tampilData: retrofit2.Call<ResponseModel> = ardData.ardRetrieveData()
@@ -417,32 +340,33 @@ class HomeFragment : Fragment() {
                 text.visibility = View.GONE
                 if(response.body()?.data == null){
                     text.visibility = View.VISIBLE
-                    srlDat!!.visibility = View.GONE
-                    rvData!!.visibility = View.GONE
+                    srlDat?.visibility = View.GONE
+                    rvData?.visibility = View.GONE
 //                    text.visibility = View.VISIBLE
-                    pbData!!.visibility = View.INVISIBLE
+                    pbData?.visibility = View.INVISIBLE
 //                    pbData_BG!!.visibility = View.INVISIBLE
                 }else{
+
                     text.visibility = View.GONE
-                    srlDat!!.visibility = View.VISIBLE
+                    srlDat?.visibility = View.VISIBLE
                     listData = response.body()!!.data
                     adData = AdapterData(context, listData)
-                    rvData!!.smoothScrollToPosition(listData.size-1);
-                    rvData!!.visibility = View.VISIBLE
+                    rvData?.smoothScrollToPosition(listData.size-1);
+                    rvData?.visibility = View.VISIBLE
 
 //                    text.visibility = View.GONE
-                    rvData!!.adapter = adData
+                    rvData?.adapter = adData
 
-                    adData!!.notifyDataSetChanged()
+                    adData?.notifyDataSetChanged()
 //                    pbData_BG!!.visibility = View.INVISIBLE
-                    pbData!!.visibility = View.INVISIBLE
+                    pbData?.visibility = View.INVISIBLE
                 }
 
 
             }
 
             override fun onFailure(call: retrofit2.Call<ResponseModel>, t: Throwable) {
-                srlDat!!.visibility = View.GONE
+                srlDat?.visibility = View.GONE
                 text.visibility = View.VISIBLE
                 getActivity()?.runOnUiThread {
                     Toast.makeText(
@@ -451,7 +375,7 @@ class HomeFragment : Fragment() {
                 }
                 return
                 Log.i("ERROR", "Failed to connect: " + t.message)
-                pbData!!.visibility = View.INVISIBLE
+                pbData?.visibility = View.INVISIBLE
 //                pbData_BG!!.visibility = View.INVISIBLE
             }
 
@@ -460,7 +384,7 @@ class HomeFragment : Fragment() {
 
 
     fun retrieveTemp(){
-        pbData!!.visibility = View.VISIBLE
+        pbData?.visibility = View.VISIBLE
 
         val ardData: APIRequestData = RetroServer.konekRetrofit().create(APIRequestData::class.java)
         val tampilData: retrofit2.Call<ResponseModel> = ardData.ardRetrieveTemp()

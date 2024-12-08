@@ -6,7 +6,7 @@
     tools:context=".SettingsActivity">
     <PreferenceCategory></PreferenceCategory>
     <PreferenceCategory></PreferenceCategory>
-    <PreferenceCategory app:title="Basic">
+    <PreferenceCategory app:title="Notification">
         <SwitchPreferenceCompat
             app:defaultValue="false"
             app:key="notif"
@@ -33,6 +33,14 @@
 
             app:entries="@array/dark_mode_entries"
             app:entryValues="@array/dark_mode_entries_values"/>
+        <Preference android:title="Website"
+            app:key="link"
+            android:summary="Open website!">
+            <intent android:action="android.intent.action.VIEW"
+                android:data="https://www.abeazka.my.id"/>
+
+        </Preference>
     </PreferenceCategory>
+
 
 </PreferenceScreen>

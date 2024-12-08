@@ -44,6 +44,7 @@ android {
 
 dependencies {
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation("com.facebook.shimmer:shimmer:0.5.0")
     implementation ("com.github.bumptech.glide:glide:4.4.0")
     implementation ("androidx.core:core-splashscreen:1.0.0")
     implementation ("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0")

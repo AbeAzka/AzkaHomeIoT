@@ -12,6 +12,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.indodevstudio.azka_home_iot.API.APIRequestData
 import com.indodevstudio.azka_home_iot.API.RetroServer
 import com.indodevstudio.azka_home_iot.Adapter.AdapterData
@@ -24,7 +25,7 @@ import retrofit2.Response
 
 class InboxActivity : AppCompatActivity() {
 
-    var rvData : RecyclerView? = null
+    lateinit var rvData : RecyclerView
     var test : RecyclerView? = null
     var adData : RecyclerView.Adapter<*>? = null
     var lmData : RecyclerView.LayoutManager? = null
@@ -32,6 +33,7 @@ class InboxActivity : AppCompatActivity() {
     var srlData: SwipeRefreshLayout? = null
     var pbData: ProgressBar? = null
     private lateinit var binding : ActivityMainBinding
+    lateinit var shimmerFrame : ShimmerFrameLayout
     lateinit var text : TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +45,9 @@ class InboxActivity : AppCompatActivity() {
         supportActionBar?.title = "Inbox"
 
         text = findViewById(R.id.title_data_inbox)
-
+        shimmerFrame = findViewById(R.id.shimmerLayout);
+        shimmerFrame.startShimmer();
+        shimmerFrame.setVisibility(View.VISIBLE);
         rvData = findViewById(R.id.rv_data)
         srlData = findViewById(R.id.srl_data)
         pbData = findViewById(R.id.pb_data)
@@ -58,6 +62,9 @@ class InboxActivity : AppCompatActivity() {
         with (srlData){
             this?.setOnRefreshListener {
                 setRefreshing(true)
+                shimmerFrame.startShimmer();
+                shimmerFrame.setVisibility(View.VISIBLE);
+                rvData.removeAllViewsInLayout()
                 retrieveData()
                 setRefreshing(false)
 
@@ -106,7 +113,8 @@ class InboxActivity : AppCompatActivity() {
                     text.visibility = View.VISIBLE
                     pbData!!.visibility = View.INVISIBLE
                 }else{
-
+                    shimmerFrame.stopShimmer();
+                    shimmerFrame.setVisibility(View.GONE);
                     listData = response.body()!!.data
                     adData = AdapterData(this@InboxActivity, listData)
                     rvData!!.smoothScrollToPosition(listData.size-1);
