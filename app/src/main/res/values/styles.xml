@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <resources>
+    <!-- Default style for AlertDialog -->
+<style name="CustomAlertDialogStyle" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+    <item name="android:background">@android:color/white</item> <!-- Background color -->
+    <item name="android:padding">16dp</item> <!-- Padding inside the dialog -->
+    <item name="android:maxWidth">600dp</item> <!-- Limit max width to 600dp -->
+</style>
+
+    <!-- Dark mode specific style -->
+<style name="CustomAlertDialogStyle.Night" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
+<item name="android:background">@android:color/black</item> <!-- Dark background for night mode -->
+<item name="android:padding">16dp</item>
+<item name="android:maxWidth">600dp</item> <!-- Limit max width to 600dp -->
+</style>
+
+    <style name="spinnerItemStyle" parent="android:Widget.TextView.SpinnerItem">
+
+</style>
+
+    <style name="spinnerDropDownItemStyle" parent="android:TextAppearance.Widget.TextView.SpinnerItem">
+
+    </style>
+
+    <style name="SpinnerDropDownStyle" parent="Widget.AppCompat.Spinner.DropDown">
+        <item name="android:popupBackground">?attr/cardBG</item>
+        <item name="android:divider">@android:color/darker_gray</item>
+        <item name="android:padding">8dp</item>
+    </style>
+    </resources>

@@ -12,7 +12,7 @@
     android:background="?attr/drawerBackground"
     android:orientation="vertical">
 
-    3
+
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/srl_data"

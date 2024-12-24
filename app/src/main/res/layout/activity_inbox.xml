@@ -40,6 +40,10 @@
             <include layout="@layout/card_item_shimmer"/>
             <include layout="@layout/card_item_shimmer"/>
             <include layout="@layout/card_item_shimmer"/>
+            <include layout="@layout/card_item_shimmer"/>
+            <include layout="@layout/card_item_shimmer"/>
+            <include layout="@layout/card_item_shimmer"/>
+            <include layout="@layout/card_item_shimmer"/>
 
         </LinearLayout>
     </com.facebook.shimmer.ShimmerFrameLayout>

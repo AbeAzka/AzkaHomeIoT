@@ -26,6 +26,7 @@
 
     <style name="Theme.MainActivity" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
+<!--        <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownStyle</item>-->
         <item name="colorPrimary">@color/lavender</item>
         <item name="colorPrimaryVariant">@color/white</item>
         <item name="colorOnPrimary">@color/white</item>
@@ -55,6 +56,7 @@
         <item name="drawerBackground">@color/black</item>
         <item name="cardBG">@color/black_2</item>
         <item name="textContent">@color/white</item>
+        <item name="stroke_Spin">@color/white</item>
 
         <item name="android:alertDialogTheme">@color/white</item>
 

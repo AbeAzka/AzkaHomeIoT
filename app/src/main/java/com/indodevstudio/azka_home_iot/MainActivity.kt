@@ -689,6 +689,14 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
 
                 }
+            R.id.finansial_plan -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, FinansialFragment()).commit()
+                navigationView.setCheckedItem(R.id.finansial_plan)
+            }
+
 
             //R.id.nav_update -> supportFragmentManager.beginTransaction()
              //   .replace(R.id.fragment_container, UpdateLogFragment()).commit()
