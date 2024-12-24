@@ -38,11 +38,17 @@
             <item>Bensin_Xenia</item>
             <item>Kebutuhan_Alat_Mandi</item>
             <item>Jajan_Anak</item>
+            <item>Makan_Bunda_Di_Kantor</item>
+            <item>Kebutuhan_Sarapan_dan_Sayuran</item>
+            <item>Kebutuhan_Cadangan_Bunda</item>
         </string-array>
     <string-array name="boolean_options_values">
         <item>0</item>
         <item>1</item>
         <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
     </string-array>
 
 </resources>

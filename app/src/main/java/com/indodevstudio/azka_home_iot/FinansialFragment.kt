@@ -67,12 +67,36 @@ class FinansialFragment : Fragment() {
     private lateinit var creditValueDisplay3: TextView
     private lateinit var cardView3: CardView
 
+    private lateinit var valueInput4: EditText
+    private lateinit var descInput4: EditText
+    private lateinit var submitCredit4: Button
+    private lateinit var submitDebit4: Button
+    private lateinit var creditValueDisplay4: TextView
+    private lateinit var cardView4: CardView
+
+    private lateinit var valueInput5: EditText
+    private lateinit var descInput5: EditText
+    private lateinit var submitCredit5: Button
+    private lateinit var submitDebit5: Button
+    private lateinit var creditValueDisplay5: TextView
+    private lateinit var cardView5: CardView
+
+    private lateinit var valueInput6: EditText
+    private lateinit var descInput6: EditText
+    private lateinit var submitCredit6: Button
+    private lateinit var submitDebit6: Button
+    private lateinit var creditValueDisplay6: TextView
+    private lateinit var cardView6: CardView
+
     private lateinit var spinner: Spinner
     private val api = Server.instance.create(ApiService::class.java)
     val userTokens = mapOf(
         "bensin_x" to "xujaTb51bh",
         "sabun" to "3MNWbZwEdY",
-        "jajan" to "l7DXScUPSK"
+        "jajan" to "l7DXScUPSK",
+        "makan" to "ZizaZCZz6W",
+        "ss" to "tZ2sAr9Jyx",
+        "cadangan" to "GTcypTZSuP"
     )
 
     var bensin = false
@@ -119,7 +143,26 @@ class FinansialFragment : Fragment() {
         creditValueDisplay3 = view.findViewById(R.id.creditValueDisplay3)
         cardView3 = view.findViewById(R.id.cards_info3)
 
+        valueInput4 = view.findViewById(R.id.creditInput4)
+        descInput4 = view.findViewById(R.id.inputDsc4)
+        submitCredit4= view.findViewById(R.id.submitCredit4)
+        submitDebit4 = view.findViewById(R.id.submitDebit4)
+        creditValueDisplay4 = view.findViewById(R.id.creditValueDisplay4)
+        cardView4 = view.findViewById(R.id.cards_info4)
 
+        valueInput5 = view.findViewById(R.id.creditInput5)
+        descInput5 = view.findViewById(R.id.inputDsc5)
+        submitCredit5= view.findViewById(R.id.submitCredit5)
+        submitDebit5 = view.findViewById(R.id.submitDebit5)
+        creditValueDisplay5 = view.findViewById(R.id.creditValueDisplay5)
+        cardView5 = view.findViewById(R.id.cards_info5)
+
+        valueInput6 = view.findViewById(R.id.creditInput6)
+        descInput6 = view.findViewById(R.id.inputDsc6)
+        submitCredit6= view.findViewById(R.id.submitCredit6)
+        submitDebit6 = view.findViewById(R.id.submitDebit6)
+        creditValueDisplay6 = view.findViewById(R.id.creditValueDisplay6)
+        cardView6 = view.findViewById(R.id.cards_info6)
 
         srlData = view.findViewById(R.id.srl_data)
         pbData = view.findViewById(R.id.pb_data)
@@ -155,7 +198,10 @@ class FinansialFragment : Fragment() {
                         cardView1.visibility = View.VISIBLE
                         cardView2.visibility = View.GONE
                         cardView3.visibility = View.GONE
-                        Toast.makeText(requireContext(), "You selected $selectedItem", Toast.LENGTH_SHORT).show()
+                        cardView4.visibility = View.GONE
+                        cardView5.visibility = View.GONE
+                        cardView6.visibility = View.GONE
+                        //Toast.makeText(requireContext(), "You selected $selectedItem", Toast.LENGTH_SHORT).show()
                     }
                     "Kebutuhan_Alat_Mandi" -> {
                         // Action for "Bensin"
@@ -164,7 +210,10 @@ class FinansialFragment : Fragment() {
                         cardView1.visibility = View.GONE
                         cardView2.visibility = View.VISIBLE
                         cardView3.visibility = View.GONE
-                        Toast.makeText(requireContext(), "You selected $selectedItem", Toast.LENGTH_SHORT).show()
+                        cardView4.visibility = View.GONE
+                        cardView5.visibility = View.GONE
+                        cardView6.visibility = View.GONE
+                        //Toast.makeText(requireContext(), "You selected $selectedItem", Toast.LENGTH_SHORT).show()
                     }
                     "Jajan_Anak" -> {
                         // Action for "Bensin"
@@ -173,7 +222,46 @@ class FinansialFragment : Fragment() {
                         cardView1.visibility = View.GONE
                         cardView2.visibility = View.GONE
                         cardView3.visibility = View.VISIBLE
-                        Toast.makeText(requireContext(), "You selected $selectedItem", Toast.LENGTH_SHORT).show()
+                        cardView4.visibility = View.GONE
+                        cardView5.visibility = View.GONE
+                        cardView6.visibility = View.GONE
+                        //Toast.makeText(requireContext(), "You selected $selectedItem", Toast.LENGTH_SHORT).show()
+                    }
+                    "Makan_Bunda_Di_Kantor" -> {
+                        // Action for "Bensin"
+                        val makan = userTokens["makan"].toString()
+                        fetchCreditData4(makan)
+                        cardView1.visibility = View.GONE
+                        cardView2.visibility = View.GONE
+                        cardView3.visibility = View.GONE
+                        cardView4.visibility = View.VISIBLE
+                        cardView5.visibility = View.GONE
+                        cardView6.visibility = View.GONE
+                        //Toast.makeText(requireContext(), "You selected $selectedItem", Toast.LENGTH_SHORT).show()
+                    }
+                    "Kebutuhan_Sarapan_dan_Sayuran" -> {
+                        // Action for "Bensin"
+                        val ss = userTokens["ss"].toString()
+                        fetchCreditData5(ss)
+                        cardView1.visibility = View.GONE
+                        cardView2.visibility = View.GONE
+                        cardView3.visibility = View.GONE
+                        cardView4.visibility = View.GONE
+                        cardView5.visibility = View.VISIBLE
+                        cardView6.visibility = View.GONE
+                        //Toast.makeText(requireContext(), "You selected $selectedItem", Toast.LENGTH_SHORT).show()
+                    }
+                    "Kebutuhan_Cadangan_Bunda" -> {
+                        // Action for "Bensin"
+                        val cadangan = userTokens["cadangan"].toString()
+                        fetchCreditData6(cadangan)
+                        cardView1.visibility = View.GONE
+                        cardView2.visibility = View.GONE
+                        cardView3.visibility = View.GONE
+                        cardView4.visibility = View.GONE
+                        cardView5.visibility = View.GONE
+                        cardView6.visibility = View.VISIBLE
+                        //Toast.makeText(requireContext(), "You selected $selectedItem", Toast.LENGTH_SHORT).show()
                     }
                     else -> {
                         // Action for other selections, if any
@@ -193,10 +281,15 @@ class FinansialFragment : Fragment() {
                 val bensinx = userTokens["bensin_x"].toString()
                 val sabun = userTokens["sabun"].toString()
                 val jajan = userTokens["jajan"].toString()
+                val makan = userTokens["makan"].toString()
+                val ss = userTokens["ss"].toString()
+                val cadangan = userTokens["cadangan"].toString()
                 fetchCreditData(bensinx)
                 fetchCreditData2(sabun)
                 fetchCreditData3(jajan)
-
+                fetchCreditData4(makan)
+                fetchCreditData5(ss)
+                fetchCreditData6(cadangan)
                 setRefreshing(false)
 
             }
@@ -285,6 +378,84 @@ class FinansialFragment : Fragment() {
             }
         }
 
+        submitCredit4.setOnClickListener {
+            val creditValue = valueInput4.text.toString()
+            val msg = descInput4.text.toString()
+            if (creditValue != null) {
+                val makan = userTokens["makan"].toString()
+                postCredit(creditValue,msg, makan)
+                valueInput4.text.clear()
+                descInput4.text.clear()
+            } else {
+                Toast.makeText(context, "Please enter a valid value", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        submitDebit4.setOnClickListener {
+            val debitValue = valueInput4.text.toString()
+            if (debitValue != null) {
+                val msg = descInput4.text.toString()
+                val makan = userTokens["makan"].toString()
+                postDebit(debitValue, msg, makan)
+                valueInput4.text.clear()
+                descInput4.text.clear()
+            } else {
+                Toast.makeText(activity, "Please enter a valid value", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        submitCredit5.setOnClickListener {
+            val creditValue = valueInput5.text.toString()
+            val msg = descInput5.text.toString()
+            if (creditValue != null) {
+                val ss = userTokens["ss"].toString()
+                postCredit(creditValue,msg, ss)
+                valueInput5.text.clear()
+                descInput5.text.clear()
+            } else {
+                Toast.makeText(context, "Please enter a valid value", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        submitDebit5.setOnClickListener {
+            val debitValue = valueInput5.text.toString()
+            if (debitValue != null) {
+                val msg = descInput5.text.toString()
+                val ss = userTokens["ss"].toString()
+                postDebit(debitValue, msg, ss)
+                valueInput5.text.clear()
+                descInput5.text.clear()
+            } else {
+                Toast.makeText(activity, "Please enter a valid value", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        submitCredit6.setOnClickListener {
+            val creditValue = valueInput6.text.toString()
+            val msg = descInput6.text.toString()
+            if (creditValue != null) {
+                val cadangan = userTokens["cadangan"].toString()
+                postCredit(creditValue,msg, cadangan)
+                valueInput6.text.clear()
+                descInput6.text.clear()
+            } else {
+                Toast.makeText(context, "Please enter a valid value", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        submitDebit6.setOnClickListener {
+            val debitValue = valueInput6.text.toString()
+            if (debitValue != null) {
+                val msg = descInput6.text.toString()
+                val cadangan = userTokens["cadangan"].toString()
+                postDebit(debitValue, msg, cadangan)
+                valueInput6.text.clear()
+                descInput6.text.clear()
+            } else {
+                Toast.makeText(activity, "Please enter a valid value", Toast.LENGTH_SHORT).show()
+            }
+        }
+
 
 
 
@@ -334,6 +505,12 @@ class FinansialFragment : Fragment() {
                         fetchCreditData2(token)
                     }else if(token == "l7DXScUPSK") {
                         fetchCreditData3(token)
+                    }else if(token == "ZizaZCZz6W") {
+                        fetchCreditData4(token)
+                    }else if(token == "tZ2sAr9Jyx") {
+                        fetchCreditData5(token)
+                    }else if(token == "GTcypTZSuP") {
+                        fetchCreditData6(token)
                     }
                     Log.i("retro", "Post credit: ${response.body()}")
                     Toast.makeText(activity, "Credit updated successfully", Toast.LENGTH_SHORT).show()
@@ -362,7 +539,13 @@ class FinansialFragment : Fragment() {
                     else if(token == "3MNWbZwEdY") {
                         fetchCreditData2(token)
                     }else if(token == "l7DXScUPSK") {
-                    fetchCreditData3(token)
+                        fetchCreditData3(token)
+                    }else if(token == "ZizaZCZz6W") {
+                        fetchCreditData4(token)
+                    }else if(token == "tZ2sAr9Jyx") {
+                        fetchCreditData5(token)
+                    }else if(token == "GTcypTZSuP") {
+                        fetchCreditData6(token)
                     }
                     Log.i("retro", "Post debit: ${response.body()}")
                     Toast.makeText(activity, "Debit processed successfully", Toast.LENGTH_SHORT).show()
@@ -379,6 +562,15 @@ class FinansialFragment : Fragment() {
         })
     }
 
+    fun formatNumber(value: Int): String {
+        return when {
+            value >= 1_000_000_000 -> String.format("%.1fB", value / 1_000_000_000.0)
+            value >= 1_000_000 -> String.format("%.1fM", value / 1_000_000.0)
+            value >= 1_000 -> String.format("%.1fK", value / 1_000.0)
+            else -> value.toString()
+        }
+    }
+
     private fun fetchCreditData(newToken: String) {
         // Set the token dynamically
         pbData!!.visibility = View.VISIBLE
@@ -391,10 +583,10 @@ class FinansialFragment : Fragment() {
                     pbData!!.visibility = View.INVISIBLE
                     val creditList = response.body()
                     Log.i("retro", response.body().toString())
-                    if (creditList != null ) {
+                    if (creditList != null && creditList.value != null)  {
                         //val latestCredit = creditList.last().value
-
-                            creditValueDisplay1.text = "Credit Value: ${creditList.value}"
+                        val formattedValue = formatNumber(creditList.value.toInt())
+                            creditValueDisplay1.text = "Credit Value: Rp. $formattedValue"
 
                     } else {
 
@@ -425,10 +617,10 @@ class FinansialFragment : Fragment() {
                     pbData!!.visibility = View.INVISIBLE
                     val creditList = response.body()
                     Log.i("retro", response.body().toString())
-                    if (creditList != null ) {
+                    if (creditList != null && creditList.value != null) {
                         //val latestCredit = creditList.last().value
-
-                            creditValueDisplay2.text = "Credit Value: ${creditList.value}"
+                        val formattedValue = formatNumber(creditList.value.toInt())
+                            creditValueDisplay2.text = "Credit Value: Rp. $formattedValue"
 
                     } else {
 
@@ -460,15 +652,120 @@ class FinansialFragment : Fragment() {
                     pbData!!.visibility = View.INVISIBLE
                     val creditList = response.body()
                     Log.i("retro", response.body().toString())
-                    if (creditList != null ) {
+                    if (creditList != null  && creditList.value != null) {
                         //val latestCredit = creditList.last().value
-
-                        creditValueDisplay3.text = "Credit Value: ${creditList.value}"
+                        val formattedValue = formatNumber(creditList.value.toInt())
+                        creditValueDisplay3.text = "Credit Value: Rp. $formattedValue"
 
                     } else {
 
 
                         creditValueDisplay3.text = "No credit data available"
+
+                    }
+                } else {
+                    Toast.makeText(activity, "Failed to fetch credit data", Toast.LENGTH_SHORT).show()
+                    Log.e("retro", "Failed to fetch data: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<CreditResponse>, t: Throwable) {
+                Log.e("retro", "Error: ${t.message}")
+                Toast.makeText(activity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+    private fun fetchCreditData4(newToken: String) {
+        // Set the token dynamically
+        pbData!!.visibility = View.VISIBLE
+        Server.setToken(newToken)
+        api.getCredit().enqueue(object : Callback<CreditResponse> {
+            override fun onResponse(call: Call<CreditResponse>, response: Response<CreditResponse>) {
+                val token = userTokens["bensin_x"].toString()
+                Log.i("retro", newToken)
+                if (response.isSuccessful) {
+                    pbData!!.visibility = View.INVISIBLE
+                    val creditList = response.body()
+                    Log.i("retro", response.body().toString())
+                    if (creditList != null && creditList.value != null) {
+                        //val latestCredit = creditList.last().value
+                        val formattedValue = formatNumber(creditList.value.toInt())
+                        creditValueDisplay4.text = "Credit Value: Rp. $formattedValue"
+
+                    } else {
+
+
+                        creditValueDisplay4.text = "No credit data available"
+
+                    }
+                } else {
+                    Toast.makeText(activity, "Failed to fetch credit data", Toast.LENGTH_SHORT).show()
+                    Log.e("retro", "Failed to fetch data: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<CreditResponse>, t: Throwable) {
+                Log.e("retro", "Error: ${t.message}")
+                Toast.makeText(activity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+    private fun fetchCreditData5(newToken: String) {
+        // Set the token dynamically
+        pbData!!.visibility = View.VISIBLE
+        Server.setToken(newToken)
+        api.getCredit().enqueue(object : Callback<CreditResponse> {
+            override fun onResponse(call: Call<CreditResponse>, response: Response<CreditResponse>) {
+                val token = userTokens["bensin_x"].toString()
+                Log.i("retro", newToken)
+                if (response.isSuccessful) {
+                    pbData!!.visibility = View.INVISIBLE
+                    val creditList = response.body()
+                    Log.i("retro", response.body().toString())
+                    if (creditList != null && creditList.value != null) {
+                        //val latestCredit = creditList.last().value
+                        val formattedValue = formatNumber(creditList.value.toInt())
+                        creditValueDisplay5.text = "Credit Value: Rp. $formattedValue"
+
+                    } else {
+
+
+                        creditValueDisplay5.text = "No credit data available"
+
+                    }
+                } else {
+                    Toast.makeText(activity, "Failed to fetch credit data", Toast.LENGTH_SHORT).show()
+                    Log.e("retro", "Failed to fetch data: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<CreditResponse>, t: Throwable) {
+                Log.e("retro", "Error: ${t.message}")
+                Toast.makeText(activity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+    private fun fetchCreditData6(newToken: String) {
+        // Set the token dynamically
+        pbData!!.visibility = View.VISIBLE
+        Server.setToken(newToken)
+        api.getCredit().enqueue(object : Callback<CreditResponse> {
+            override fun onResponse(call: Call<CreditResponse>, response: Response<CreditResponse>) {
+                val token = userTokens["bensin_x"].toString()
+                Log.i("retro", newToken)
+                if (response.isSuccessful) {
+                    pbData!!.visibility = View.INVISIBLE
+                    val creditList = response.body()
+                    Log.i("retro", response.body().toString())
+                    if (creditList != null && creditList.value != null) {
+                        //val latestCredit = creditList.last().value
+                        val formattedValue = formatNumber(creditList.value.toInt())
+                        creditValueDisplay6.text = "Credit Value: Rp. $formattedValue"
+
+                    } else {
+
+
+                        creditValueDisplay6.text = "No credit data available"
 
                     }
                 } else {
@@ -512,12 +809,12 @@ class FinansialFragment : Fragment() {
                 }
 
                 // Update the button text with the formatted countdown
-                deleteButton.text = "Delete Data ($timeDisplay)"
+                deleteButton.text = "Delete All Data ($timeDisplay)"
             }
 
             override fun onFinish() {
                 // When the countdown finishes, update the button text
-                deleteButton.text = "Delete Data"
+                deleteButton.text = "Delete All Data"
                 deleteButton.isEnabled = true  // Disable the button when time is up
             }
         }
@@ -540,6 +837,18 @@ class FinansialFragment : Fragment() {
             .setPositiveButton("Yes") { dialog, which ->
                 // Proceed with the action (e.g., delete the data)
                 deleteData()
+                val bensinx = userTokens["bensin_x"].toString()
+                val sabun = userTokens["sabun"].toString()
+                val jajan = userTokens["jajan"].toString()
+                val makan = userTokens["makan"].toString()
+                val ss = userTokens["ss"].toString()
+                val cadangan = userTokens["cadangan"].toString()
+                fetchCreditData(bensinx)
+                fetchCreditData2(sabun)
+                fetchCreditData3(jajan)
+                fetchCreditData4(makan)
+                fetchCreditData5(ss)
+                fetchCreditData6(cadangan)
             }
             .setNegativeButton("No") { dialog, which ->
                 // Dismiss the dialog, no action needed
