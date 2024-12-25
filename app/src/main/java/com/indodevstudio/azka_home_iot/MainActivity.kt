@@ -7,6 +7,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -705,14 +706,8 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                 //auth.signOut()
                 //startActivity(Intent(this , SignInActivity::class.java))
 
+                showConfirmationDialog()
 
-                firebaseAuth.signOut()
-                mGoogleSignInClient.signOut().addOnCompleteListener {
-                    val intent= Intent(this, SignInActivity::class.java)
-                    startActivity(intent)
-                    Toast.makeText(this, "Successfully logout!", Toast.LENGTH_SHORT).show()
-                    finish()
-                }
                 //googleSignInClient.signOut();
                 //startActivity(Intent(this, SignInActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_CLEAR_TASK))
                 //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK) //makesure user cant go back
@@ -722,6 +717,36 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         }
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+
+    private fun showConfirmationDialog() {
+        // Build the AlertDialog
+        val isNightMode = resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+
+        val dialogStyle = if (isNightMode) R.style.CustomAlertDialogStyle_Night else R.style.CustomAlertDialogStyle
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Logout")
+            .setMessage("Are you sure you want to logout?")
+            .setPositiveButton("Yes") { dialog, which ->
+                // Proceed with the action (e.g., delete the data)
+                firebaseAuth.signOut()
+                mGoogleSignInClient.signOut().addOnCompleteListener {
+                    val intent= Intent(this, SignInActivity::class.java)
+                    startActivity(intent)
+                    Toast.makeText(this, "Successfully logout!", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            }
+            .setNegativeButton("No") { dialog, which ->
+                // Dismiss the dialog, no action needed
+                dialog.dismiss()
+            }
+            .create()
+
+        // Show the dialog
+        dialog.show()
     }
     fun requestPermissionMain(){
         if (ContextCompat.checkSelfPermission(

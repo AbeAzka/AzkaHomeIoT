@@ -5,28 +5,37 @@ import CreditRequest
 import CreditResponse
 import DebitRequest
 import DeleteAllResponse
+import HistoryResponse
 import Server
 import android.app.AlertDialog
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.PopupWindow
 import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import org.json.JSONObject
+import com.facebook.shimmer.ShimmerFrameLayout
+import com.indodevstudio.azka_home_iot.Adapter.HistoryAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -88,6 +97,8 @@ class FinansialFragment : Fragment() {
     private lateinit var creditValueDisplay6: TextView
     private lateinit var cardView6: CardView
 
+    private lateinit var historyBtn: Button
+    lateinit var shimmerFrame : ShimmerFrameLayout
     private lateinit var spinner: Spinner
     private val api = Server.instance.create(ApiService::class.java)
     val userTokens = mapOf(
@@ -98,7 +109,10 @@ class FinansialFragment : Fragment() {
         "ss" to "tZ2sAr9Jyx",
         "cadangan" to "GTcypTZSuP"
     )
-
+    private var tokenS = ""
+    private val list = ArrayList<HistoryResponse>()
+    private lateinit var recyclerView : RecyclerView
+    private lateinit var headerTable : LinearLayout
     var bensin = false
     var kebutuhan = false
     var srlData: SwipeRefreshLayout? = null
@@ -164,8 +178,17 @@ class FinansialFragment : Fragment() {
         creditValueDisplay6 = view.findViewById(R.id.creditValueDisplay6)
         cardView6 = view.findViewById(R.id.cards_info6)
 
+
+        historyBtn = view.findViewById(R.id.showTable)
         srlData = view.findViewById(R.id.srl_data)
         pbData = view.findViewById(R.id.pb_data)
+        shimmerFrame = view.findViewById(R.id.shimmerLayout2);
+
+//        headerTable = view.findViewById(R.id.recyclerView2_table)
+
+//        recyclerView = view.findViewById(R.id.recyclerView2)
+//        recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+
 
         val adapter = ArrayAdapter.createFromResource(
             requireContext(),
@@ -181,6 +204,7 @@ class FinansialFragment : Fragment() {
         val defaultSelection = 0 // Select "Bensin"
         spinner.setSelection(defaultSelection)
 
+
         // Set an ItemSelectedListener to handle the user's selection
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -192,7 +216,7 @@ class FinansialFragment : Fragment() {
                         val bensinx = userTokens["bensin_x"].toString()
 
                             fetchCreditData(bensinx)
-
+                        tokenS = userTokens["bensin_x"].toString()
 
 
                         cardView1.visibility = View.VISIBLE
@@ -201,11 +225,15 @@ class FinansialFragment : Fragment() {
                         cardView4.visibility = View.GONE
                         cardView5.visibility = View.GONE
                         cardView6.visibility = View.GONE
+
+
+
                         //Toast.makeText(requireContext(), "You selected $selectedItem", Toast.LENGTH_SHORT).show()
                     }
                     "Kebutuhan_Alat_Mandi" -> {
                         // Action for "Bensin"
                         val sabun = userTokens["sabun"].toString()
+                        tokenS = userTokens["sabun"].toString()
                         fetchCreditData2(sabun)
                         cardView1.visibility = View.GONE
                         cardView2.visibility = View.VISIBLE
@@ -218,6 +246,7 @@ class FinansialFragment : Fragment() {
                     "Jajan_Anak" -> {
                         // Action for "Bensin"
                         val jajan = userTokens["jajan"].toString()
+                        tokenS = userTokens["jajan"].toString()
                         fetchCreditData3(jajan)
                         cardView1.visibility = View.GONE
                         cardView2.visibility = View.GONE
@@ -230,6 +259,7 @@ class FinansialFragment : Fragment() {
                     "Makan_Bunda_Di_Kantor" -> {
                         // Action for "Bensin"
                         val makan = userTokens["makan"].toString()
+                        tokenS = userTokens["makan"].toString()
                         fetchCreditData4(makan)
                         cardView1.visibility = View.GONE
                         cardView2.visibility = View.GONE
@@ -242,6 +272,7 @@ class FinansialFragment : Fragment() {
                     "Kebutuhan_Sarapan_dan_Sayuran" -> {
                         // Action for "Bensin"
                         val ss = userTokens["ss"].toString()
+                        tokenS = userTokens["ss"].toString()
                         fetchCreditData5(ss)
                         cardView1.visibility = View.GONE
                         cardView2.visibility = View.GONE
@@ -254,6 +285,7 @@ class FinansialFragment : Fragment() {
                     "Kebutuhan_Cadangan_Bunda" -> {
                         // Action for "Bensin"
                         val cadangan = userTokens["cadangan"].toString()
+                        tokenS = userTokens["cadangan"].toString()
                         fetchCreditData6(cadangan)
                         cardView1.visibility = View.GONE
                         cardView2.visibility = View.GONE
@@ -290,12 +322,98 @@ class FinansialFragment : Fragment() {
                 fetchCreditData4(makan)
                 fetchCreditData5(ss)
                 fetchCreditData6(cadangan)
+
                 setRefreshing(false)
 
             }
         }
         startCountdown(deleteAllData)
 // Set up button click listeners
+        historyBtn.setOnClickListener{
+
+            Server.setToken(tokenS)
+            var textt = ""
+            if(tokenS == "xujaTb51bh") {
+                textt = "Bensin Xenia"
+            }
+            else if(tokenS == "3MNWbZwEdY") {
+                textt = "Kebutuhan Alat Mandi"
+            }else if(tokenS == "l7DXScUPSK") {
+                textt = "Jajan Anak-Anak"
+            }else if(tokenS == "ZizaZCZz6W") {
+                textt = "Makan Bunda Di Kantor"
+            }else if(tokenS == "tZ2sAr9Jyx") {
+                textt = "Kebutuhan Sarapan dan Sayuran"
+            }else if(tokenS == "GTcypTZSuP") {
+                textt = "Kebutuhan Cadangan Bunda"
+            }
+            api.getHistory().enqueue(object : Callback<ArrayList<HistoryResponse>>{
+                override fun onResponse(
+                    call: Call<ArrayList<HistoryResponse>>,
+                    response: Response<ArrayList<HistoryResponse>>
+                ) {
+
+                    val responseCode = response.code().toString()
+                    if(response.body() != null) {
+                        response.body()?.let { list.addAll(it) }
+                        val adapter = HistoryAdapter(list)
+//                recyclerView.adapter = adapter
+
+                        var inflater = LayoutInflater.from(getActivity())
+                        var popupview =
+                            inflater.inflate(R.layout.popup_grafik2, null, false)
+                        var recycler =
+                            popupview.findViewById<RecyclerView>(R.id.recyclerView2)
+                        var close =
+                            popupview.findViewById<ImageView>(R.id.close)
+                        var builder = PopupWindow(
+                            popupview,
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            true
+                        )
+                        val txt = popupview.findViewById<TextView>(R.id.idsss)
+                        txt.text = "Data History \n $textt"
+                        recycler.layoutManager =
+                            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+                        recycler.adapter = adapter
+                        adapter.notifyDataSetChanged()
+
+
+                        recycler.removeAllViewsInLayout()
+                        //imagee.setRotation(90f)
+                        builder.setBackgroundDrawable(
+                            AppCompatResources.getDrawable(
+                                requireContext(),
+                                R.drawable.background
+                            )
+                        )
+                        builder.animationStyle = R.style.DialogAnimation
+                        builder.showAtLocation(
+                            getActivity()?.findViewById(R.id.drawer_layout),
+                            Gravity.CENTER,
+                            0,
+                            0
+                        )
+                        close.setOnClickListener {
+                            builder.dismiss()
+                            recycler.removeAllViewsInLayout()
+                            adapter.clearData()
+                        }
+                    }else{
+//                        Toast.makeText(activity, "No Data Available", Toast.LENGTH_SHORT).show()
+                    }
+
+                }
+
+                override fun onFailure(call: Call<ArrayList<HistoryResponse>>, t: Throwable) {
+                    Log.e("retro", "Error: ${t.message}")
+                    Toast.makeText(activity, "Data Not Available", Toast.LENGTH_SHORT).show()
+                }
+
+            })
+        }
+
         deleteAllData.setOnClickListener{
 
             showConfirmationDialog()
@@ -571,6 +689,8 @@ class FinansialFragment : Fragment() {
         }
     }
 
+
+
     private fun fetchCreditData(newToken: String) {
         // Set the token dynamically
         pbData!!.visibility = View.VISIBLE
@@ -585,8 +705,8 @@ class FinansialFragment : Fragment() {
                     Log.i("retro", response.body().toString())
                     if (creditList != null && creditList.value != null)  {
                         //val latestCredit = creditList.last().value
-                        val formattedValue = formatNumber(creditList.value.toInt())
-                            creditValueDisplay1.text = "Credit Value: Rp. $formattedValue"
+//                        val formattedValue = formatNumber(creditList.value.toInt())
+                            creditValueDisplay1.text = "Credit Value: Rp. ${creditList.value}"
 
                     } else {
 
@@ -604,6 +724,10 @@ class FinansialFragment : Fragment() {
                 Toast.makeText(activity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
+
+
+
+
     }
     private fun fetchCreditData2(newToken: String) {
         // Set the token dynamically
@@ -619,8 +743,8 @@ class FinansialFragment : Fragment() {
                     Log.i("retro", response.body().toString())
                     if (creditList != null && creditList.value != null) {
                         //val latestCredit = creditList.last().value
-                        val formattedValue = formatNumber(creditList.value.toInt())
-                            creditValueDisplay2.text = "Credit Value: Rp. $formattedValue"
+//                        val formattedValue = formatNumber(creditList.value.toInt())
+                            creditValueDisplay2.text = "Credit Value: Rp. ${creditList.value}"
 
                     } else {
 
@@ -654,8 +778,8 @@ class FinansialFragment : Fragment() {
                     Log.i("retro", response.body().toString())
                     if (creditList != null  && creditList.value != null) {
                         //val latestCredit = creditList.last().value
-                        val formattedValue = formatNumber(creditList.value.toInt())
-                        creditValueDisplay3.text = "Credit Value: Rp. $formattedValue"
+                        //val formattedValue = formatNumber(creditList.value.toInt())
+                        creditValueDisplay3.text = "Credit Value: Rp. ${creditList.value}"
 
                     } else {
 
@@ -689,8 +813,8 @@ class FinansialFragment : Fragment() {
                     Log.i("retro", response.body().toString())
                     if (creditList != null && creditList.value != null) {
                         //val latestCredit = creditList.last().value
-                        val formattedValue = formatNumber(creditList.value.toInt())
-                        creditValueDisplay4.text = "Credit Value: Rp. $formattedValue"
+                        //val formattedValue = formatNumber(creditList.value.toInt())
+                        creditValueDisplay4.text = "Credit Value: Rp. ${creditList.value}"
 
                     } else {
 
@@ -724,8 +848,8 @@ class FinansialFragment : Fragment() {
                     Log.i("retro", response.body().toString())
                     if (creditList != null && creditList.value != null) {
                         //val latestCredit = creditList.last().value
-                        val formattedValue = formatNumber(creditList.value.toInt())
-                        creditValueDisplay5.text = "Credit Value: Rp. $formattedValue"
+                        //val formattedValue = formatNumber(creditList.value.toInt())
+                        creditValueDisplay5.text = "Credit Value: Rp. ${creditList.value}"
 
                     } else {
 
@@ -759,8 +883,8 @@ class FinansialFragment : Fragment() {
                     Log.i("retro", response.body().toString())
                     if (creditList != null && creditList.value != null) {
                         //val latestCredit = creditList.last().value
-                        val formattedValue = formatNumber(creditList.value.toInt())
-                        creditValueDisplay6.text = "Credit Value: Rp. $formattedValue"
+                        //val formattedValue = formatNumber(creditList.value.toInt())
+                        creditValueDisplay6.text = "Credit Value: Rp. ${creditList.value}"
 
                     } else {
 

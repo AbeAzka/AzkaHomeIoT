@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/idsss"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Data History \n"
+                android:textAlignment="center"
+
+                android:textSize="20dp"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/recyclerView2_table"
+                />
+            <!-- Table Header -->
+            <LinearLayout
+                android:id="@+id/recyclerView2_table"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+
+                android:background="@color/realGray"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:visibility="visible"
+
+
+                app:layout_constraintBottom_toTopOf="@id/recyclerView2">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="No"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Kredit"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Debit"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="Keterangan"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView2"
+                android:layout_width="match_parent"
+                android:layout_height="1110dp"
+                android:scrollbarSize="5dp"
+                android:scrollbarThumbVertical="@color/gray"
+                android:scrollbars="vertical"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="parent"
+                tools:listitem="@layout/item_table_row" />
+
+    <ImageView
+        android:id="@+id/close"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="330dp"
+
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:srcCompat="@drawable/ic_close_white" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

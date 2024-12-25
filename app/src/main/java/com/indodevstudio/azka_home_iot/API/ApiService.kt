@@ -1,3 +1,4 @@
+import com.indodevstudio.azka_home_iot.Model.DataModel
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -7,6 +8,15 @@ data class CreditRequest(val value: String, val msg: String)
 data class DebitRequest(val value: String, val msg: String)
 data class CreditResponse(val value: String)
 data class DeleteAllResponse(val status: String, val msg: String)
+data class HistoryResponse(
+    val no: String,
+    val kredit: String,
+    val debit: String,
+    val keterangan: String
+)
+
+
+
 
 interface ApiService {
 //    @POST("fire.php/credit")
@@ -18,6 +28,14 @@ interface ApiService {
 //    @GET("fire.php/credit")
 //    fun getCredit(): Call<List<CreditResponse>>
 // GET Request: Fetch all users
+//    @GET("fire.php/history") // Replace with your endpoint
+//    fun getTableData(): Call<TableData>
+//    fun getData(): List<DataModel?>? {
+//        return data
+//    }
+    @GET("fire.php/history")
+    fun getHistory(): Call<ArrayList<HistoryResponse>>
+
     @GET("fire.php/last_kredit")
     fun getCredit(): Call<CreditResponse>
 

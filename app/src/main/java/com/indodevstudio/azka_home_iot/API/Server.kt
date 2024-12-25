@@ -1,3 +1,4 @@
+import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -11,6 +12,9 @@ object Server {
     fun setToken(newToken: String) {
         token = newToken
     }
+
+
+
 
     private val client = OkHttpClient.Builder()
         .addInterceptor { chain: Interceptor.Chain ->

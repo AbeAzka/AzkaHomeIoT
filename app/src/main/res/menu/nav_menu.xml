@@ -28,6 +28,23 @@
             android:title="Logout"/>
 
     </group>
+    <item
+        android:title="FINANSIAL"
+        android:id="@+id/finansial"
+
+        >
+        <menu>
+            <group
+                android:checkableBehavior="single"
+                >
+                <item
+                    android:id="@+id/finansial_plan"
+                    android:icon="@drawable/ic_money"
+                    android:title="Finansial Planning (BETA)"/>
+
+            </group>
+        </menu>
+    </item>
 
     <item
         android:title="OTOMATISASI RUMAH">
@@ -123,23 +140,7 @@
             </group>
         </menu>
     </item>
-    <item
-        android:title="Finansial"
-        android:id="@+id/finansial"
 
-        >
-        <menu>
-            <group
-                android:checkableBehavior="single"
-                >
-                <item
-                    android:id="@+id/finansial_plan"
-                    android:icon="@drawable/ic_money"
-                    android:title="Finansial Planning (BETA)"/>
-
-            </group>
-        </menu>
-    </item>
 
 
     <!--<item

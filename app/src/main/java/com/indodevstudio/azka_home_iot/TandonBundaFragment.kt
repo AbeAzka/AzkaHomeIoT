@@ -53,7 +53,7 @@ class TandonBundaFragment : Fragment(), View.OnClickListener{
     lateinit var ImageStats : ImageView
     lateinit var imageGrafik : TouchImageView
     var image : Bitmap? = null
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {4
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
