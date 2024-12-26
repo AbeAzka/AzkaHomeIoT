@@ -1,8 +1,12 @@
+import com.google.gson.JsonObject
 import com.indodevstudio.azka_home_iot.Model.DataModel
+import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Url
 
 data class CreditRequest(val value: String, val msg: String)
 data class DebitRequest(val value: String, val msg: String)
@@ -13,6 +17,14 @@ data class HistoryResponse(
     val kredit: String,
     val debit: String,
     val keterangan: String
+)
+
+data class DailyGet(
+    val daily: String
+)
+
+data class MonthlyGet(
+    val monthly: String
 )
 
 
@@ -33,6 +45,26 @@ interface ApiService {
 //    fun getData(): List<DataModel?>? {
 //        return data
 //    }
+@GET
+suspend fun downloadFile(@Url fileUrl: String): Call<ResponseBody>
+
+    @GET("generate_pdf.php/k1")
+    suspend fun generatePdf(): Response<JsonObject>
+    @GET("generate_pdf.php/k2")
+    suspend fun generatePdf2(): Response<JsonObject>
+    @GET("generate_pdf.php/k3")
+    suspend fun generatePdf3(): Response<JsonObject>
+    @GET("generate_pdf.php/k4")
+    suspend fun generatePdf4(): Response<JsonObject>
+    @GET("generate_pdf.php/k5")
+    suspend fun generatePdf5(): Response<JsonObject>
+    @GET("generate_pdf.php/k6")
+    suspend fun generatePdf6(): Response<JsonObject>
+    @GET("fire.php/daily")
+    fun getDaily(): Call<DailyGet>
+    @GET("fire.php/monthly")
+    fun getMontly(): Call<MonthlyGet>
+
     @GET("fire.php/history")
     fun getHistory(): Call<ArrayList<HistoryResponse>>
 

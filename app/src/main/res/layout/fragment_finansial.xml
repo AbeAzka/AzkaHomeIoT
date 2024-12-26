@@ -1,4 +1,4 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,10 +7,12 @@
     android:background="?attr/drawerBackground"
     android:padding="16dp">
 
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/srl_data"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="20dp"
         android:layout_gravity="center"
         android:visibility="visible"
         tools:layout_editor_absoluteX="16dp"
@@ -19,10 +21,21 @@
 
 
 
+        <ScrollView
+            android:layout_width="match_parent"
+        android:layout_height="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/bottomButtons"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            android:fillViewport="true"
+            >
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
 
                 <Spinner
                     android:id="@+id/mbuh"
@@ -67,7 +80,140 @@
 
                     </LinearLayout>
                 </com.facebook.shimmer.ShimmerFrameLayout>
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cards_daily"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
 
+
+                    android:layout_marginStart="16sp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="16sp"
+                    android:visibility="visible"
+                    app:cardBackgroundColor="?attr/cardBG"
+                    app:cardElevation="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <TextView
+                            android:id="@+id/titleDaily"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+
+                            android:layout_marginTop="10dp"
+                            android:fontFamily="sans-serif"
+                            android:text="Total Pengeluaran"
+                            android:textColor="?attr/textContent"
+                            android:textSize="20dp"
+
+                            android:textStyle="bold" />
+
+
+
+
+
+
+                        <View
+                            android:id="@+id/pembatas"
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@color/purple_500"
+                            app:layout_constraintBottom_toTopOf="@id/harian"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/titleDaily" />
+
+                        <LinearLayout
+
+                            android:id="@+id/harian"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:padding="14dp"
+
+                            app:layout_constraintEnd_toStartOf="@id/bulanan"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/pembatas">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:accessibilityPaneTitle="test"
+                                android:src="@drawable/ic_today_money" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="Harian"
+                                android:textSize="18sp"
+                                android:textStyle="normal" />
+
+                            <TextView
+                                android:id="@+id/harian_Txt"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                android:text="null"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/bulanan"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="14dp"
+                            app:layout_constraintTop_toBottomOf="@id/pembatas"
+                            app:layout_constraintStart_toEndOf="@id/harian"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            >
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:accessibilityPaneTitle="test"
+                                android:src="@drawable/ic_month_money"/>
+                            <TextView
+
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:textSize="18sp"
+                                android:text="Bulanan"
+                                android:textStyle="normal"
+                                />
+                            <TextView
+                                android:id="@+id/bulanan_Txt"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                android:textSize="20sp"
+                                android:text="null"
+                                android:textStyle="bold"
+                                />
+
+                        </LinearLayout>
+
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cards_info"
@@ -76,7 +222,7 @@
 
 
                     android:layout_marginStart="16sp"
-                    android:layout_marginTop="100dp"
+
                     android:layout_marginEnd="16sp"
                     android:visibility="gone"
                     app:cardBackgroundColor="?attr/cardBG"
@@ -84,7 +230,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
 
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintTop_toBottomOf="@id/bottomButtons">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -206,7 +353,6 @@
                     android:layout_height="wrap_content"
 
                     android:layout_marginStart="16sp"
-                    android:layout_marginTop="100dp"
                     android:layout_marginEnd="16sp"
                     android:visibility="gone"
                     app:cardBackgroundColor="?attr/cardBG"
@@ -214,7 +360,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
 
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                     android:layout_marginTop="20dp"
+                    app:layout_constraintTop_toBottomOf="@id/bottomButtons"
 
                     >
 
@@ -338,7 +485,7 @@
                     android:layout_height="wrap_content"
 
                     android:layout_marginStart="16sp"
-                    android:layout_marginTop="100dp"
+
                     android:layout_marginEnd="16sp"
                     android:visibility="gone"
                     app:cardBackgroundColor="?attr/cardBG"
@@ -346,8 +493,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
 
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintTop_toBottomOf="@id/bottomButtons"
                     >
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -470,7 +617,7 @@
                     android:layout_height="wrap_content"
 
                     android:layout_marginStart="16sp"
-                    android:layout_marginTop="100dp"
+
                     android:layout_marginEnd="16sp"
                     android:visibility="gone"
                     app:cardBackgroundColor="?attr/cardBG"
@@ -478,7 +625,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
 
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintTop_toBottomOf="@id/bottomButtons"
 
                     >
 
@@ -602,7 +750,7 @@
                     android:layout_height="wrap_content"
 
                     android:layout_marginStart="16sp"
-                    android:layout_marginTop="100dp"
+
                     android:layout_marginEnd="16sp"
                     android:visibility="gone"
                     app:cardBackgroundColor="?attr/cardBG"
@@ -610,7 +758,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
 
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintTop_toBottomOf="@id/bottomButtons"
 
                     >
 
@@ -734,7 +883,7 @@
                     android:layout_height="wrap_content"
 
                     android:layout_marginStart="16sp"
-                    android:layout_marginTop="100dp"
+
                     android:layout_marginEnd="16sp"
                     android:visibility="gone"
                     app:cardBackgroundColor="?attr/cardBG"
@@ -742,7 +891,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
 
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintTop_toBottomOf="@id/bottomButtons"
 
                     >
 
@@ -878,42 +1028,42 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Button
-                    android:id="@+id/showTable"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginBottom="5dp"
-                    android:backgroundTint="@color/color_primary_light"
-                    android:elevation="8dp"
-                    android:text="Show History"
 
-                    android:translationZ="4dp"
-                    app:layout_constraintBottom_toTopOf="@id/deleteData"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <Button
-                    android:id="@+id/deleteData"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:layout_marginBottom="16dp"
-                    android:backgroundTint="@color/red"
-                    android:elevation="8dp"
-                    android:text="Delete All Data"
-
-                    android:translationZ="4dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
                 <!--            app:layout_constraintTop_toBottomOf="@id/cards_info2"-->
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
+            </LinearLayout>
+        </ScrollView>
 
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <LinearLayout
+        android:id="@+id/bottomButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:gravity="center"
+        android:background="@color/white"
+        android:layout_gravity="bottom">
+        <Button
+            android:id="@+id/showTable"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/color_primary_light"
+            android:elevation="8dp"
+            android:text="Show History"
+            android:translationZ="4dp" />
+
+        <Button
+            android:id="@+id/deleteData"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:backgroundTint="@color/red"
+            android:elevation="8dp"
+            android:text="Delete All Data"
+            android:translationZ="4dp" />
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

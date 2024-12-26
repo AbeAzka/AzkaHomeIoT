@@ -3,12 +3,16 @@ package com.indodevstudio.azka_home_iot
 import ApiService
 import CreditRequest
 import CreditResponse
+import DailyGet
 import DebitRequest
 import DeleteAllResponse
 import HistoryResponse
+import MonthlyGet
 import Server
 import android.app.AlertDialog
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -30,15 +34,25 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.indodevstudio.azka_home_iot.Adapter.HistoryAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Url
+import java.io.File
+import java.io.FileOutputStream
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -50,6 +64,9 @@ private const val ARG_PARAM2 = "param2"
  * Use the [FinansialFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+
+
+
 class FinansialFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -96,6 +113,10 @@ class FinansialFragment : Fragment() {
     private lateinit var submitDebit6: Button
     private lateinit var creditValueDisplay6: TextView
     private lateinit var cardView6: CardView
+
+    private lateinit var harianTxt : TextView
+    private lateinit var monthlyTxt : TextView
+    private lateinit var expendTxt : TextView
 
     private lateinit var historyBtn: Button
     lateinit var shimmerFrame : ShimmerFrameLayout
@@ -184,6 +205,10 @@ class FinansialFragment : Fragment() {
         pbData = view.findViewById(R.id.pb_data)
         shimmerFrame = view.findViewById(R.id.shimmerLayout2);
 
+        harianTxt = view.findViewById(R.id.harian_Txt)
+        monthlyTxt = view.findViewById(R.id.bulanan_Txt)
+        expendTxt = view.findViewById(R.id.titleDaily)
+
 //        headerTable = view.findViewById(R.id.recyclerView2_table)
 
 //        recyclerView = view.findViewById(R.id.recyclerView2)
@@ -214,7 +239,8 @@ class FinansialFragment : Fragment() {
                     "Bensin_Xenia" -> {
                         // Action for "Kebutuhan"
                         val bensinx = userTokens["bensin_x"].toString()
-
+                        GetExpendDaily(bensinx)
+                        GetExpendMonthly(bensinx)
                             fetchCreditData(bensinx)
                         tokenS = userTokens["bensin_x"].toString()
 
@@ -233,6 +259,8 @@ class FinansialFragment : Fragment() {
                     "Kebutuhan_Alat_Mandi" -> {
                         // Action for "Bensin"
                         val sabun = userTokens["sabun"].toString()
+                        GetExpendDaily(sabun)
+                        GetExpendMonthly(sabun)
                         tokenS = userTokens["sabun"].toString()
                         fetchCreditData2(sabun)
                         cardView1.visibility = View.GONE
@@ -247,6 +275,8 @@ class FinansialFragment : Fragment() {
                         // Action for "Bensin"
                         val jajan = userTokens["jajan"].toString()
                         tokenS = userTokens["jajan"].toString()
+                        GetExpendDaily(jajan)
+                        GetExpendMonthly(jajan)
                         fetchCreditData3(jajan)
                         cardView1.visibility = View.GONE
                         cardView2.visibility = View.GONE
@@ -260,6 +290,8 @@ class FinansialFragment : Fragment() {
                         // Action for "Bensin"
                         val makan = userTokens["makan"].toString()
                         tokenS = userTokens["makan"].toString()
+                        GetExpendDaily(makan)
+                        GetExpendMonthly(makan)
                         fetchCreditData4(makan)
                         cardView1.visibility = View.GONE
                         cardView2.visibility = View.GONE
@@ -274,6 +306,8 @@ class FinansialFragment : Fragment() {
                         val ss = userTokens["ss"].toString()
                         tokenS = userTokens["ss"].toString()
                         fetchCreditData5(ss)
+                        GetExpendDaily(ss)
+                        GetExpendMonthly(ss)
                         cardView1.visibility = View.GONE
                         cardView2.visibility = View.GONE
                         cardView3.visibility = View.GONE
@@ -285,6 +319,8 @@ class FinansialFragment : Fragment() {
                     "Kebutuhan_Cadangan_Bunda" -> {
                         // Action for "Bensin"
                         val cadangan = userTokens["cadangan"].toString()
+                        GetExpendDaily(cadangan)
+                        GetExpendMonthly(cadangan)
                         tokenS = userTokens["cadangan"].toString()
                         fetchCreditData6(cadangan)
                         cardView1.visibility = View.GONE
@@ -330,7 +366,7 @@ class FinansialFragment : Fragment() {
         startCountdown(deleteAllData)
 // Set up button click listeners
         historyBtn.setOnClickListener{
-
+//            pdf1(tokenS)
             Server.setToken(tokenS)
             var textt = ""
             if(tokenS == "xujaTb51bh") {
@@ -373,7 +409,7 @@ class FinansialFragment : Fragment() {
                             true
                         )
                         val txt = popupview.findViewById<TextView>(R.id.idsss)
-                        txt.text = "Data History \n $textt"
+                        txt.text = "Data History \n$textt"
                         recycler.layoutManager =
                             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
                         recycler.adapter = adapter
@@ -381,6 +417,7 @@ class FinansialFragment : Fragment() {
 
 
                         recycler.removeAllViewsInLayout()
+
                         //imagee.setRotation(90f)
                         builder.setBackgroundDrawable(
                             AppCompatResources.getDrawable(
@@ -397,6 +434,7 @@ class FinansialFragment : Fragment() {
                         )
                         close.setOnClickListener {
                             builder.dismiss()
+
                             recycler.removeAllViewsInLayout()
                             adapter.clearData()
                         }
@@ -580,13 +618,123 @@ class FinansialFragment : Fragment() {
         return view
     }
 
-    private fun sendBoolToServer(value: Boolean) {
-        // Use the boolean value as needed
-        if (value) {
-            // Handle "Yes" or true
-        } else {
-            // Handle "No" or false
+//    fun pdf1(token: String){
+//        Server.setToken(token)
+//        CoroutineScope(Dispatchers.IO).launch {
+//            try {
+//                val filePath = generatePdf1()
+//                val file = downloadPdf1("https://abeazka.my.id/json/finansial/$filePath")
+//                withContext(Dispatchers.Main) {
+//                    file
+//                    // Handle file, e.g., show success message or open PDF viewer
+//                }
+//            } catch (e: Exception) {
+//                withContext(Dispatchers.Main) {
+//                    // Show error message
+//                }
+//            }
+//        }
+//    }
+
+    suspend fun generatePdf1(): String {
+        val response = api.generatePdf()
+        if (response.isSuccessful) {
+            Log.i("retro", "Pdf success \n ${response.body()}")
+            return response.body()?.get("file_path")?.asString ?: ""
         }
+        throw Exception("Failed to generate PDF")
+    }
+
+//    suspend fun downloadPdf1(fileUrl: String): File {
+//        val responseBody = api.downloadFile(fileUrl)
+//        val file = File(context?.cacheDir, "bensin_x.pdf")
+//        file.outputStream().use { outputStream ->
+//            responseBody.byteStream().copyTo(outputStream)
+//        }
+//        return file
+//    }
+
+
+
+    private fun GetExpendDaily(token: String){
+        Server.setToken(token)
+        api.getDaily().enqueue(object : Callback<DailyGet>{
+            override fun onResponse(call: Call<DailyGet>, response: Response<DailyGet>) {
+                if (response.isSuccessful){
+                    if(token == "xujaTb51bh") {
+                        expendTxt.text = "Total Pengeluaran - Bensin Xenia"
+                    }
+                    else if(token == "3MNWbZwEdY") {
+                        expendTxt.text = "Total Pengeluaran - Kebutuhan Alat Mandi"
+                    }else if(token == "l7DXScUPSK") {
+                        expendTxt.text = "Total Pengeluaran - Jajan Anak-Anak"
+                    }else if(token == "ZizaZCZz6W") {
+                        expendTxt.text = "Total Pengeluaran - Makan Bunda Di Kantor"
+                    }else if(token == "tZ2sAr9Jyx") {
+                        expendTxt.text = "Total Pengeluaran - Kebutuhan Sarapan dan Sayuran"
+                    }else if(token == "GTcypTZSuP") {
+                        expendTxt.text = "Total Pengeluaran - Kebutuhan Cadangan Bunda"
+                    }
+                    val creditList = response.body()
+                    if(creditList != null && creditList.daily != null) {
+
+                        harianTxt.text = "${creditList.daily}"
+
+                    }else{
+                        harianTxt.text = "No Data"
+                    }
+                }else{
+                    Log.e("retro", "Failed to get daily expend: ${response.code()}")
+                    Toast.makeText(activity, "Failed to get daily expend", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<DailyGet>, t: Throwable) {
+                Log.e("Error", "Error: ${t.message}")
+                Toast.makeText(activity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+
+        })
+    }
+
+    private fun GetExpendMonthly(token: String){
+        Server.setToken(token)
+        api.getMontly().enqueue(object : Callback<MonthlyGet>{
+            override fun onResponse(call: Call<MonthlyGet>, response: Response<MonthlyGet>) {
+                if (response.isSuccessful){
+                    if(token == "xujaTb51bh") {
+                        expendTxt.text = "Total Pengeluaran - Bensin Xenia"
+                    }
+                    else if(token == "3MNWbZwEdY") {
+                        expendTxt.text = "Total Pengeluaran - Kebutuhan Alat Mandi"
+                    }else if(token == "l7DXScUPSK") {
+                        expendTxt.text = "Total Pengeluaran - Jajan Anak-Anak"
+                    }else if(token == "ZizaZCZz6W") {
+                        expendTxt.text = "Total Pengeluaran - Makan Bunda Di Kantor"
+                    }else if(token == "tZ2sAr9Jyx") {
+                        expendTxt.text = "Total Pengeluaran - Kebutuhan Sarapan dan Sayuran"
+                    }else if(token == "GTcypTZSuP") {
+                        expendTxt.text = "Total Pengeluaran - Kebutuhan Cadangan Bunda"
+                    }
+                    val creditList = response.body()
+                    if(creditList != null && creditList.monthly != null) {
+                        monthlyTxt.text = "${creditList.monthly}"
+
+                    }else{
+                        monthlyTxt.text = "No Data"
+                    }
+                }else{
+                    Log.e("retro", "Failed to get monthly expend: ${response.code()}")
+                    Toast.makeText(activity, "Failed to get monthly expend", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<MonthlyGet>, t: Throwable) {
+                Log.e("Error", "Error: ${t.message}")
+                Toast.makeText(activity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+
+        })
     }
 
     private fun deleteData() {
@@ -597,7 +745,7 @@ class FinansialFragment : Fragment() {
                     val responseBody = response.body()
                     Log.i("retro","Status: ${responseBody?.status}, Message: ${responseBody?.msg}")
                     Toast.makeText(activity, "All data succesfully deleted!", Toast.LENGTH_SHORT).show()
-                } else {4
+                } else {
                     Log.i("retro","Error: ${response.errorBody()?.string()}")
                     Toast.makeText(activity, "Failed to delete data", Toast.LENGTH_SHORT).show()
                 }
