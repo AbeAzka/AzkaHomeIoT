@@ -45,21 +45,21 @@ interface ApiService {
 //    fun getData(): List<DataModel?>? {
 //        return data
 //    }
-@GET
-suspend fun downloadFile(@Url fileUrl: String): Call<ResponseBody>
-
-    @GET("generate_pdf.php/k1")
-    suspend fun generatePdf(): Response<JsonObject>
-    @GET("generate_pdf.php/k2")
-    suspend fun generatePdf2(): Response<JsonObject>
-    @GET("generate_pdf.php/k3")
-    suspend fun generatePdf3(): Response<JsonObject>
-    @GET("generate_pdf.php/k4")
-    suspend fun generatePdf4(): Response<JsonObject>
-    @GET("generate_pdf.php/k5")
-    suspend fun generatePdf5(): Response<JsonObject>
-    @GET("generate_pdf.php/k6")
-    suspend fun generatePdf6(): Response<JsonObject>
+//@GET
+//suspend fun downloadFile(@Url fileUrl: String): Call<ResponseBody>
+//
+//    @GET("generate_pdf.php/k1")
+//    suspend fun generatePdf(): Response<JsonObject>
+//    @GET("generate_pdf.php/k2")
+//    suspend fun generatePdf2(): Response<JsonObject>
+//    @GET("generate_pdf.php/k3")
+//    suspend fun generatePdf3(): Response<JsonObject>
+//    @GET("generate_pdf.php/k4")
+//    suspend fun generatePdf4(): Response<JsonObject>
+//    @GET("generate_pdf.php/k5")
+//    suspend fun generatePdf5(): Response<JsonObject>
+//    @GET("generate_pdf.php/k6")
+//    suspend fun generatePdf6(): Response<JsonObject>
     @GET("fire.php/daily")
     fun getDaily(): Call<DailyGet>
     @GET("fire.php/monthly")

@@ -8,13 +8,29 @@ import DebitRequest
 import DeleteAllResponse
 import HistoryResponse
 import MonthlyGet
+import ProgressResponseBody
 import Server
+import android.Manifest
 import android.app.AlertDialog
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.ContentValues
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Environment
+import android.os.Handler
+import android.os.Looper
+import android.provider.MediaStore
 import android.util.Log
 import android.view.Gravity
 import androidx.fragment.app.Fragment
@@ -32,19 +48,28 @@ import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.firebase.messaging.FirebaseMessaging
 import com.indodevstudio.azka_home_iot.Adapter.HistoryAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -53,6 +78,9 @@ import retrofit2.http.GET
 import retrofit2.http.Url
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
+import java.net.URL
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -118,6 +146,9 @@ class FinansialFragment : Fragment() {
     private lateinit var monthlyTxt : TextView
     private lateinit var expendTxt : TextView
 
+    private val CHANNEL_ID = "progress_channel"
+    private val NOTIFICATION_ID = 10
+    private val NOTIFICATION_ID2 = 12
     private lateinit var historyBtn: Button
     lateinit var shimmerFrame : ShimmerFrameLayout
     private lateinit var spinner: Spinner
@@ -208,6 +239,13 @@ class FinansialFragment : Fragment() {
         harianTxt = view.findViewById(R.id.harian_Txt)
         monthlyTxt = view.findViewById(R.id.bulanan_Txt)
         expendTxt = view.findViewById(R.id.titleDaily)
+
+        context?.let { createNotificationChannel(it) }
+        var inflater = LayoutInflater.from(getActivity())
+        var popupview =
+            inflater.inflate(R.layout.popup_grafik2, null, false)
+        var buttonDownload =
+            popupview.findViewById<Button>(R.id.downloadPdf)
 
 //        headerTable = view.findViewById(R.id.recyclerView2_table)
 
@@ -363,6 +401,8 @@ class FinansialFragment : Fragment() {
 
             }
         }
+
+
         startCountdown(deleteAllData)
 // Set up button click listeners
         historyBtn.setOnClickListener{
@@ -408,6 +448,57 @@ class FinansialFragment : Fragment() {
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             true
                         )
+
+                        val  btn = popupview.findViewById<Button>(R.id.downloadPdf)
+
+                        btn.setOnClickListener{
+                            if(tokenS == "xujaTb51bh") {
+
+                                try {
+                                    downloadPdf(tokenS, "AHI-bensin_x")
+                                    Log.i("Retro","PDF downloaded successfully")
+                                } catch (e: Exception) {
+                                    Log.i("Retro","Error downloading PDF: ${e.message}")
+                                }
+                            }
+                            else if(tokenS == "3MNWbZwEdY") {
+                                try {
+                                    downloadPdf(tokenS, "AHI-sabun")
+                                    Log.i("Retro","PDF downloaded successfully")
+                                } catch (e: Exception) {
+                                    Log.i("Retro","Error downloading PDF: ${e.message}")
+                                }
+                            }else if(tokenS == "l7DXScUPSK") {
+                                try {
+                                    downloadPdf(tokenS, "AHI-jajan")
+                                    Log.i("Retro","PDF downloaded successfully")
+                                } catch (e: Exception) {
+                                    Log.i("Retro","Error downloading PDF: ${e.message}")
+                                }
+                            }else if(tokenS == "ZizaZCZz6W") {
+                                try {
+                                    downloadPdf(tokenS, "AHI-makan_b")
+                                    Log.i("Retro","PDF downloaded successfully")
+                                } catch (e: Exception) {
+                                    Log.i("Retro","Error downloading PDF: ${e.message}")
+                                }
+                            }else if(tokenS == "tZ2sAr9Jyx") {
+                                try {
+                                    downloadPdf(tokenS, "AHI-ss")
+                                    Log.i("Retro","PDF downloaded successfully")
+                                } catch (e: Exception) {
+                                    Log.i("Retro","Error downloading PDF: ${e.message}")
+                                }
+                            }else if(tokenS == "GTcypTZSuP") {
+                                try {
+                                    downloadPdf(tokenS, "AHI-cadangan")
+                                    Log.i("Retro","PDF downloaded successfully")
+                                } catch (e: Exception) {
+                                    Log.i("Retro","Error downloading PDF: ${e.message}")
+                                }
+                            }
+
+                        }
                         val txt = popupview.findViewById<TextView>(R.id.idsss)
                         txt.text = "Data History \n$textt"
                         recycler.layoutManager =
@@ -451,6 +542,8 @@ class FinansialFragment : Fragment() {
 
             })
         }
+
+
 
         deleteAllData.setOnClickListener{
 
@@ -618,42 +711,351 @@ class FinansialFragment : Fragment() {
         return view
     }
 
-//    fun pdf1(token: String){
-//        Server.setToken(token)
-//        CoroutineScope(Dispatchers.IO).launch {
-//            try {
-//                val filePath = generatePdf1()
-//                val file = downloadPdf1("https://abeazka.my.id/json/finansial/$filePath")
-//                withContext(Dispatchers.Main) {
-//                    file
-//                    // Handle file, e.g., show success message or open PDF viewer
-//                }
-//            } catch (e: Exception) {
-//                withContext(Dispatchers.Main) {
-//                    // Show error message
-//                }
-//            }
+//    private fun sharePDF() {
+//        val shareIntent = Intent().apply {
+//            action = Intent.ACTION_SEND
+//            putExtra(Intent.EXTRA_STREAM, getContext()?.let {
+//                FileProvider.getUriForFile(
+//                    it, "com.indodevstudio.azka_home_iot.fileprovider",
+//
+//                )
+//            })
+//            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+//            type = "application/pdf"
 //        }
+//        val sendIntent = Intent.createChooser(shareIntent, null)
+//        startActivity(sendIntent)
 //    }
 
-    suspend fun generatePdf1(): String {
-        val response = api.generatePdf()
-        if (response.isSuccessful) {
-            Log.i("retro", "Pdf success \n ${response.body()}")
-            return response.body()?.get("file_path")?.asString ?: ""
+    fun saveToDownloads(context: Context, fileName: String, inputStream: InputStream, urlKang: String) {
+        val resolver = context.contentResolver
+        val uri: Uri?
+
+//        showDownloadingNotification(context, 100)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // Scoped storage for Android 10+
+            val contentValues = ContentValues().apply {
+                put(MediaStore.Downloads.DISPLAY_NAME, fileName)
+                put(MediaStore.Downloads.MIME_TYPE, "application/pdf")
+                put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+            }
+            uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
+
+        } else {
+            // Legacy storage for Android 9 and below
+            val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            val file = File(downloadsDir, fileName)
+            uri = Uri.fromFile(file)
+
+//            downloadFileWithNotification(context, urlKang, file, "1")
+
         }
-        throw Exception("Failed to generate PDF")
+
+        val notificationManager =
+            context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        Thread {
+            // Simulating a download process
+            for (progress in 1..100) {
+                Thread.sleep(100) // Simulate work (e.g., downloading)
+
+                // Update progress notification
+//                builder.setProgress(maxProgress, progress, false)
+//                notificationManager.notify(NOTIFICATION_ID, builder.build())
+                val updatedNotification = buildProgressNotification(progress)
+                notificationManager.notify(NOTIFICATION_ID, updatedNotification)
+            }
+            notificationManager.cancel(NOTIFICATION_ID)
+            // After download finishes, show completed notification
+            val completedNotification = showDownloadingNotification()
+            notificationManager.notify(NOTIFICATION_ID2, completedNotification)
+            uri?.let {
+                resolver.openOutputStream(it)?.use { outputStream ->
+                    inputStream.copyTo(outputStream)
+                    getActivity()?.runOnUiThread {
+                        Toast.makeText(
+                            getActivity(),
+                            "File saved to Downloads folder: $it",
+                            Toast.LENGTH_LONG
+                        ).show();
+                    }
+//                context?.let { showNotification(context, "File Successfully Saved", "File saved to Downloads folder: $it") }
+                    println("File saved to Downloads folder: $it")
+                }
+            } ?: run {
+                throw Exception("Failed to create file in Downloads folder")
+                getActivity()?.runOnUiThread {
+                    Toast.makeText(
+                        getActivity(),
+                        "Failed to create file in Downloads folder",
+                        Toast.LENGTH_LONG
+                    ).show();
+
+                }
+            }
+        }.start()
+
+
     }
 
-//    suspend fun downloadPdf1(fileUrl: String): File {
-//        val responseBody = api.downloadFile(fileUrl)
-//        val file = File(context?.cacheDir, "bensin_x.pdf")
-//        file.outputStream().use { outputStream ->
-//            responseBody.byteStream().copyTo(outputStream)
-//        }
-//        return file
+    fun downloadPdf(token: String, name: String ){
+        val URL : String ="https://abeazka.my.id/json/finansial/generate_pdf.php"
+
+        //myWebView.loadUrl("http://taryem.my.id/Lab01/labx.php?type=on")
+        //myWebView.loadUrl("http://taryem.my.id/Lab01/labx.php?type=on")
+        if (URL.isNotEmpty()){
+            val http = OkHttpClient()
+            val request = Request.Builder()
+                .url(URL)
+                .header("Authorization", "Bearer $token")
+
+
+                .build()
+            //myWebView.loadUrl(URL)
+
+            http.newCall(request).enqueue(object : okhttp3.Callback {
+                override fun onFailure(call: okhttp3.Call, e: IOException) {
+                    e.printStackTrace();
+                }
+
+                override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                    val response: okhttp3.Response = http.newCall(request).execute()
+                    val responseCode = response.code
+                    val results = response.body!!.string()
+
+                    println("Success " + response.toString())
+                    println("Success " + response.message.toString())
+                    println("Success " + results)
+                    Log.i("KODE", "CODE: "+ responseCode)
+                    Log.i("Response", "Received response from server. Response")
+                    if (response.code == 200){
+                        Log.i("retro", "Sukses generate pdf")
+
+
+                            val URL2 = URL("https://abeazka.my.id/json/finansial/pdf_file/$name.pdf")
+
+                        if (URL2.toString().isNotEmpty()) {
+                            val http = OkHttpClient()
+                            val request = Request.Builder()
+                                .url(URL2)
+                                .build()
+                            http.newCall(request).enqueue(object : okhttp3.Callback {
+                                override fun onFailure(call: okhttp3.Call, e: IOException) {
+                                    e.printStackTrace();
+                                }
+
+                                override fun onResponse(
+                                    call: okhttp3.Call,
+                                    response: okhttp3.Response
+                                ) {
+                                    if (response.code == 200) {
+                                        val inputStream = URL2.openStream()
+                                        getActivity()?.runOnUiThread {
+                                            Toast.makeText(
+                                                getActivity(),
+                                                "Succesfully download pdf",
+                                                Toast.LENGTH_LONG
+                                            ).show();
+                                        }
+//                                        context?.let { showDownloadingNotification(it, 100) }
+
+                                        context?.let {
+                                            saveToDownloads(
+                                                it,
+                                                "$name.pdf",
+                                                inputStream, URL2.toString()
+                                            )
+                                        }
+
+
+
+                                    }else{
+                                        getActivity()?.runOnUiThread {
+                                            Toast.makeText(
+                                                getActivity(),
+                                                "Failed to download pdf",
+                                                Toast.LENGTH_LONG
+                                            ).show();
+                                        }
+
+                                    }
+                                }
+
+                            })
+                        }
+
+                    }else{
+                        getActivity()?.runOnUiThread {
+
+                            Log.e(
+                                "HTTP Error",
+                                "Something didn't load, or wasn't succesfully"
+                            )
+                            Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_LONG).show();
+
+                        }
+                        return
+                    }
+                }
+            })
+        }
+    }
+
+    fun createNotificationChannel(context: Context) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Progress Channel"
+            val descriptionText = "Channel for progress notifications"
+            val importance = NotificationManager.IMPORTANCE_LOW
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+//    private fun buildProgressNotification(progress: Int): Notification {
+//        return NotificationCompat.Builder(context, CHANNEL_ID)
+//            .setContentTitle("Progress Notification")
+//            .setContentText("Downloading... $progress%")
+//            .setSmallIcon(R.drawable.azkahomeiot__288_x_288_pixel_) // Replace with your icon
+//            .setProgress(100, progress, false) // max value, current value, indeterminate (false)
+//            .setOngoing(true)
+//            .build()
 //    }
 
+    fun showDownloadingNotification(context: Context, maxProgress: Int) {
+        val notificationId = 1
+        val progress = 0
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        // Build the initial notification
+        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.azkahomeiot__288_x_288_pixel_) // Replace with your icon
+            .setContentTitle("Download File")
+            .setContentText("Download in progress")
+            .setProgress(maxProgress, 0, false) // Set initial progress
+            .setOngoing(true) // Makes the notification persistent
+
+        // Display the initial notification
+        notificationManager.notify(NOTIFICATION_ID, builder.build())
+
+        // Update progress using a coroutine
+//        CoroutineScope(Dispatchers.IO).launch {
+//            for (progress in 1..maxProgress) {
+//                delay(100) // Simulate download time
+//
+//                // Update progress
+//                builder.setProgress(maxProgress, progress, false)
+//
+//                withContext(Dispatchers.Main) { // Update on the main thread
+//                    notificationManager.notify(NOTIFICATION_ID, builder.build())
+//                }
+//            }
+//
+//            // Once download is complete, update the notification
+//            withContext(Dispatchers.Main) { // Final update on the main thread
+////                builder.setContentText("Download complete")
+////                    .setContentText("Downloading... $progress%")
+////                    .setProgress(maxProgress, progress, false) // Remove progress bar
+////                    .setOngoing(false) // Allow dismissal
+////                notificationManager.notify(NOTIFICATION_ID, builder.build())
+//                val completedNotification = showDownloadingNotification()
+//                notificationManager.notify(NOTIFICATION_ID, completedNotification)
+//            }
+//        }
+
+
+    }
+
+    private fun buildProgressNotification(progress: Int): Notification {
+        return NotificationCompat.Builder(requireContext(), CHANNEL_ID)
+            .setContentTitle("Download in Progress")
+            .setContentText("Downloading... $progress%")
+            .setSmallIcon(R.drawable.azkahomeiot__288_x_288_pixel_) // Replace with your icon
+            .setProgress(100, progress, false) // Max value = 100, current progress
+            .setOngoing(true) // Keeps the notification active
+            .build()
+    }
+
+    fun showDownloadingNotification(): Notification  {
+        return NotificationCompat.Builder(requireContext(), CHANNEL_ID)
+            .setContentTitle("Download Complete")
+            .setContentText("The file has been successfully downloaded.")
+            .setSmallIcon(R.drawable.azkahomeiot__288_x_288_pixel_) // Replace with your icon
+            .setAutoCancel(true) // Automatically dismiss the notification when clicked
+            .build()
+//        val notificationId = 1
+//        val progress = 0
+//        val notificationManager =
+//            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//
+//        // Build the initial notification
+//        val builder = NotificationCompat.Builder(context, channelId)
+//            .setSmallIcon(R.drawable.azkahomeiot__288_x_288_pixel_) // Replace with your icon
+//            .setContentTitle("Download Complete")
+//            .setContentText("The file has been successfully downloaded.")
+//            .setAutoCancel(true) // Dismiss notification on click
+//            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+//
+//        notificationManager.notify(NOTIFICATION_ID, completedNotification)
+    }
+
+    private fun buildCompletedNotification(): Notification {
+        return NotificationCompat.Builder(requireContext(), CHANNEL_ID)
+            .setContentTitle("Download Complete")
+            .setContentText("The file has been successfully downloaded.")
+            .setSmallIcon(R.drawable.azkahomeiot__288_x_288_pixel_) // Replace with your icon
+            .setAutoCancel(true) // Dismiss the notification when tapped
+            .build()
+    }
+
+    fun showNotification(context: Context, title: String, description: String) {
+        val channelId = "id_1"
+        val notificationId = 5
+
+        val intent = Intent(context, FinansialFragment::class.java) // Activity to open on click
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
+        )
+
+        val builder = NotificationCompat.Builder(context, channelId)
+            .setSmallIcon(R.drawable.azkahomeiot__288_x_288_pixel_) // Replace with your icon
+            .setContentTitle(title)
+            .setContentText(description)
+            .setAutoCancel(true) // Dismiss notification on click
+            .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+        with(NotificationManagerCompat.from(context)) {
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                return
+            }
+            notify(NOTIFICATION_ID, builder.build())
+        }
+    }
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+
+            // FCM SDK (and your app) can post notifications.
+        } else {
+            // TODO: Inform user that that your app will not show notifications.
+        }
+    }
 
 
     private fun GetExpendDaily(token: String){
