@@ -61,6 +61,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
 import com.indodevstudio.azka_home_iot.Adapter.HistoryAdapter
 import kotlinx.coroutines.CoroutineScope
@@ -97,6 +98,7 @@ private const val ARG_PARAM2 = "param2"
 
 class FinansialFragment : Fragment() {
     // TODO: Rename and change types of parameters
+    var email = ""
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var valueInput1: EditText
@@ -170,7 +172,7 @@ class FinansialFragment : Fragment() {
     var srlData: SwipeRefreshLayout? = null
     var pbData: ProgressBar? = null
     private lateinit var countdownTimer: CountDownTimer
-    private val countdownTimeInMillis: Long = 10000      // 1 hour and 1 minute (for testing purposes)
+    private val countdownTimeInMillis: Long = 5000      // 1 hour and 1 minute (for testing purposes)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -239,6 +241,8 @@ class FinansialFragment : Fragment() {
         harianTxt = view.findViewById(R.id.harian_Txt)
         monthlyTxt = view.findViewById(R.id.bulanan_Txt)
         expendTxt = view.findViewById(R.id.titleDaily)
+
+        email = FirebaseAuth.getInstance().currentUser?.email.toString()
 
         context?.let { createNotificationChannel(it) }
         var inflater = LayoutInflater.from(getActivity())
@@ -1488,8 +1492,13 @@ class FinansialFragment : Fragment() {
 
             override fun onFinish() {
                 // When the countdown finishes, update the button text
-                deleteButton.text = "Delete All Data"
-                deleteButton.isEnabled = true  // Disable the button when time is up
+                if(email == "azka.jsiswanto@gmail.com") {
+                    deleteButton.text = "Delete All Data"
+                    deleteButton.isEnabled = true  // Disable the button when time is up
+                }else{
+                    deleteButton.text = "Delete All Data"
+                    deleteButton.isEnabled = false  // Disable the button when time is up
+                }
             }
         }
 

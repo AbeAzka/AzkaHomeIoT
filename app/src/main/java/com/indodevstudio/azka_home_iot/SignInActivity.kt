@@ -169,6 +169,11 @@ class SignInActivity : AppCompatActivity() {
     private fun handleResults(task: Task<GoogleSignInAccount>) {
         if (task.isSuccessful){
             val account : GoogleSignInAccount? = task.result
+            Toast.makeText(
+                applicationContext,
+                "Welcome",
+                Toast.LENGTH_SHORT
+            ).show()
             if (account != null){
                 updateUI(account)
             }
