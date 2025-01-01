@@ -17,16 +17,19 @@ class HistoryAdapter(private val list: ArrayList<HistoryResponse>): RecyclerView
                 val kredit : String = "${historyResponse.kredit}"
                 val debit : String = "${historyResponse.debit}"
                 val keterangan : String = "${historyResponse.keterangan}"
+                val by : String = "${historyResponse.by}"
 
                 val tvNo = findViewById<TextView>(R.id.tvNo)
                 val tvKredit = findViewById<TextView>(R.id.tvKredit)
                 val tvDebit = findViewById<TextView>(R.id.tvDebit)
                 val tvKeterangan = findViewById<TextView>(R.id.tvKeterangan)
+                val tvAdded = findViewById<TextView>(R.id.tvAdded)
 
                 tvNo.text = no
                 tvKredit.text = kredit
                 tvDebit.text = debit
                 tvKeterangan.text = keterangan
+                tvAdded.text = by
             }
 
         }

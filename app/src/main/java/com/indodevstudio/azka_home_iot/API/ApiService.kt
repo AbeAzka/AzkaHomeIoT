@@ -1,22 +1,26 @@
 import com.google.gson.JsonObject
 import com.indodevstudio.azka_home_iot.Model.DataModel
+import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Url
 
-data class CreditRequest(val value: String, val msg: String)
-data class DebitRequest(val value: String, val msg: String)
+data class CreditRequest(val value: String, val msg: String, val added_by: String)
+data class DebitRequest(val value: String, val msg: String, val added_by: String)
 data class CreditResponse(val value: String)
 data class DeleteAllResponse(val status: String, val msg: String)
 data class HistoryResponse(
     val no: String,
     val kredit: String,
     val debit: String,
-    val keterangan: String
+    val keterangan: String,
+    val by: String
 )
 
 data class DailyGet(
@@ -25,6 +29,12 @@ data class DailyGet(
 
 data class MonthlyGet(
     val monthly: String
+)
+
+data class UploadResponse(
+    val status: String, // e.g., "success" or "error"
+    val message: String, // e.g., "File uploaded successfully"
+    val filePath: String? // e.g., "uploads/unique_file_name.jpg" (optional, if success)
 )
 
 
@@ -60,6 +70,10 @@ interface ApiService {
 //    suspend fun generatePdf5(): Response<JsonObject>
 //    @GET("generate_pdf.php/k6")
 //    suspend fun generatePdf6(): Response<JsonObject>
+
+    @Multipart
+    @POST("fire.php/photo")
+    fun uploadPhoto(@Part photo: MultipartBody.Part): Call<Void>
     @GET("fire.php/daily")
     fun getDaily(): Call<DailyGet>
     @GET("fire.php/monthly")

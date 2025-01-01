@@ -8,32 +8,29 @@ import DebitRequest
 import DeleteAllResponse
 import HistoryResponse
 import MonthlyGet
-import ProgressResponseBody
 import Server
 import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.ActivityNotFoundException
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Environment
-import android.os.Handler
-import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,40 +45,34 @@ import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.content.FileProvider
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.messaging.FirebaseMessaging
 import com.indodevstudio.azka_home_iot.Adapter.HistoryAdapter
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.ResponseBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Url
+import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -144,6 +135,20 @@ class FinansialFragment : Fragment() {
     private lateinit var creditValueDisplay6: TextView
     private lateinit var cardView6: CardView
 
+    private lateinit var valueInputTest: EditText
+    private lateinit var descInputTest: EditText
+    private lateinit var submitCreditTest: Button
+    private lateinit var submitDebitTest: Button
+    private lateinit var creditValueDisplayTest: TextView
+    private lateinit var cardViewTest: CardView
+    private lateinit var cardTextTitle: TextView
+
+    private lateinit var takePictureLauncher: ActivityResultLauncher<Intent>
+    private lateinit var billBtn : Button
+    private val REQUEST_IMAGE_CAPTURE = 100
+//    private lateinit var imageView: ImageView
+    private var imageUri: Uri? = null
+
     private lateinit var harianTxt : TextView
     private lateinit var monthlyTxt : TextView
     private lateinit var expendTxt : TextView
@@ -163,6 +168,7 @@ class FinansialFragment : Fragment() {
         "ss" to "tZ2sAr9Jyx",
         "cadangan" to "GTcypTZSuP"
     )
+    private var emailU = ""
     private var tokenS = ""
     private val list = ArrayList<HistoryResponse>()
     private lateinit var recyclerView : RecyclerView
@@ -232,7 +238,15 @@ class FinansialFragment : Fragment() {
         creditValueDisplay6 = view.findViewById(R.id.creditValueDisplay6)
         cardView6 = view.findViewById(R.id.cards_info6)
 
+        valueInputTest = view.findViewById(R.id.creditInput6)
+        descInputTest = view.findViewById(R.id.inputDsc6)
+        submitCreditTest= view.findViewById(R.id.submitCredit6)
+        submitDebitTest = view.findViewById(R.id.submitDebit6)
+        creditValueDisplayTest = view.findViewById(R.id.creditValueDisplay6)
+        cardViewTest = view.findViewById(R.id.cards_info6)
+        cardTextTitle = view.findViewById(R.id.txTest)
 
+        billBtn = view.findViewById(R.id.takePhoto)
         historyBtn = view.findViewById(R.id.showTable)
         srlData = view.findViewById(R.id.srl_data)
         pbData = view.findViewById(R.id.pb_data)
@@ -250,6 +264,11 @@ class FinansialFragment : Fragment() {
             inflater.inflate(R.layout.popup_grafik2, null, false)
         var buttonDownload =
             popupview.findViewById<Button>(R.id.downloadPdf)
+
+
+
+
+        emailU = FirebaseAuth.getInstance().currentUser?.displayName.toString()
 
 //        headerTable = view.findViewById(R.id.recyclerView2_table)
 
@@ -394,12 +413,27 @@ class FinansialFragment : Fragment() {
                 val makan = userTokens["makan"].toString()
                 val ss = userTokens["ss"].toString()
                 val cadangan = userTokens["cadangan"].toString()
-                fetchCreditData(bensinx)
-                fetchCreditData2(sabun)
-                fetchCreditData3(jajan)
-                fetchCreditData4(makan)
-                fetchCreditData5(ss)
-                fetchCreditData6(cadangan)
+
+                if(tokenS == "xujaTb51bh") {
+                    fetchCreditData(bensinx)
+                }
+                else if(tokenS == "3MNWbZwEdY") {
+                    fetchCreditData2(sabun)
+                }else if(tokenS == "l7DXScUPSK") {
+                    fetchCreditData3(jajan)
+                }else if(tokenS == "ZizaZCZz6W") {
+                    fetchCreditData4(makan)
+                }else if(tokenS == "tZ2sAr9Jyx") {
+                    fetchCreditData5(ss)
+                }else if(tokenS == "GTcypTZSuP") {
+                    fetchCreditData6(cadangan)
+                }
+
+
+
+
+
+
 
                 setRefreshing(false)
 
@@ -558,7 +592,7 @@ class FinansialFragment : Fragment() {
             val msg = descInput1.text.toString()
             if (creditValue != null) {
                 val bensinx = userTokens["bensin_x"].toString()
-                postCredit(creditValue,msg, bensinx)
+                postCredit(creditValue,msg, bensinx, emailU)
                 valueInput1.text.clear()
                 descInput1.text.clear()
             } else {
@@ -571,9 +605,9 @@ class FinansialFragment : Fragment() {
             if (debitValue != null) {
                 val msg = descInput1.text.toString()
                 val bensinx = userTokens["bensin_x"].toString()
-                postDebit(debitValue, msg, bensinx)
-                valueInput2.text.clear()
-                descInput2.text.clear()
+                postDebit(debitValue, msg, bensinx, emailU)
+                valueInput1.text.clear()
+                descInput1.text.clear()
             } else {
                 Toast.makeText(activity, "Please enter a valid value", Toast.LENGTH_SHORT).show()
             }
@@ -584,7 +618,7 @@ class FinansialFragment : Fragment() {
             val msg = descInput2.text.toString()
             if (creditValue != null) {
                 val sabun = userTokens["sabun"].toString()
-                postCredit(creditValue,msg, sabun)
+                postCredit(creditValue,msg, sabun, emailU)
                 valueInput2.text.clear()
                 descInput2.text.clear()
             } else {
@@ -597,9 +631,9 @@ class FinansialFragment : Fragment() {
             if (debitValue != null) {
                 val msg = descInput2.text.toString()
                 val sabun = userTokens["sabun"].toString()
-                postDebit(debitValue, msg, sabun)
-                valueInput1.text.clear()
-                descInput1.text.clear()
+                postDebit(debitValue, msg, sabun, emailU)
+                valueInput2.text.clear()
+                descInput2.text.clear()
             } else {
                 Toast.makeText(activity, "Please enter a valid value", Toast.LENGTH_SHORT).show()
             }
@@ -610,7 +644,7 @@ class FinansialFragment : Fragment() {
             val msg = descInput3.text.toString()
             if (creditValue != null) {
                 val jajan = userTokens["jajan"].toString()
-                postCredit(creditValue,msg, jajan)
+                postCredit(creditValue,msg, jajan, emailU)
                 valueInput3.text.clear()
                 descInput3.text.clear()
             } else {
@@ -623,7 +657,7 @@ class FinansialFragment : Fragment() {
             if (debitValue != null) {
                 val msg = descInput3.text.toString()
                 val jajan = userTokens["jajan"].toString()
-                postDebit(debitValue, msg, jajan)
+                postDebit(debitValue, msg, jajan, emailU)
                 valueInput3.text.clear()
                 descInput3.text.clear()
             } else {
@@ -636,7 +670,7 @@ class FinansialFragment : Fragment() {
             val msg = descInput4.text.toString()
             if (creditValue != null) {
                 val makan = userTokens["makan"].toString()
-                postCredit(creditValue,msg, makan)
+                postCredit(creditValue,msg, makan, emailU)
                 valueInput4.text.clear()
                 descInput4.text.clear()
             } else {
@@ -649,7 +683,7 @@ class FinansialFragment : Fragment() {
             if (debitValue != null) {
                 val msg = descInput4.text.toString()
                 val makan = userTokens["makan"].toString()
-                postDebit(debitValue, msg, makan)
+                postDebit(debitValue, msg, makan, emailU)
                 valueInput4.text.clear()
                 descInput4.text.clear()
             } else {
@@ -662,7 +696,7 @@ class FinansialFragment : Fragment() {
             val msg = descInput5.text.toString()
             if (creditValue != null) {
                 val ss = userTokens["ss"].toString()
-                postCredit(creditValue,msg, ss)
+                postCredit(creditValue,msg, ss, emailU)
                 valueInput5.text.clear()
                 descInput5.text.clear()
             } else {
@@ -675,7 +709,7 @@ class FinansialFragment : Fragment() {
             if (debitValue != null) {
                 val msg = descInput5.text.toString()
                 val ss = userTokens["ss"].toString()
-                postDebit(debitValue, msg, ss)
+                postDebit(debitValue, msg, ss, emailU)
                 valueInput5.text.clear()
                 descInput5.text.clear()
             } else {
@@ -688,7 +722,7 @@ class FinansialFragment : Fragment() {
             val msg = descInput6.text.toString()
             if (creditValue != null) {
                 val cadangan = userTokens["cadangan"].toString()
-                postCredit(creditValue,msg, cadangan)
+                postCredit(creditValue,msg, cadangan, emailU)
                 valueInput6.text.clear()
                 descInput6.text.clear()
             } else {
@@ -701,7 +735,7 @@ class FinansialFragment : Fragment() {
             if (debitValue != null) {
                 val msg = descInput6.text.toString()
                 val cadangan = userTokens["cadangan"].toString()
-                postDebit(debitValue, msg, cadangan)
+                postDebit(debitValue, msg, cadangan, emailU)
                 valueInput6.text.clear()
                 descInput6.text.clear()
             } else {
@@ -710,7 +744,26 @@ class FinansialFragment : Fragment() {
         }
 
 
+        billBtn.setOnClickListener {
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.CAMERA
+                ) != android.content.pm.PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.CAMERA),
+                    1
+                )
+            }
+            dispatchTakePictureIntent()
+//            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//            startActivityForResult(
+//                intent,
+//                REQUEST_IMAGE_CAPTURE
+//            )
 
+        }
 
         return view
     }
@@ -730,6 +783,49 @@ class FinansialFragment : Fragment() {
 //        val sendIntent = Intent.createChooser(shareIntent, null)
 //        startActivity(sendIntent)
 //    }
+
+
+
+    private fun dispatchTakePictureIntent() {
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        try {
+            activity?.startActivityFromFragment(this,takePictureIntent, REQUEST_IMAGE_CAPTURE)
+        } catch (e: Exception) {
+            // display error state(camera app not found) to the user
+            Toast.makeText(requireContext(), "ERROR!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+//            imageView.setImageBitmap(imageBitmap)
+            uploadPhoto(imageBitmap)
+        }
+    }
+
+    private fun uploadPhoto(bitmap: Bitmap) {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+        val byteArray = stream.toByteArray()
+        val requestBody = RequestBody.create("image/jpeg".toMediaTypeOrNull(), byteArray)
+        val photoPart = MultipartBody.Part.createFormData("photo", "bill.jpg", requestBody)
+
+        api.uploadPhoto(photoPart).enqueue(object : retrofit2.Callback<Void> {
+            override fun onResponse(call: retrofit2.Call<Void>, response: retrofit2.Response<Void>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(requireContext(), "Photo uploaded!", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "Error: ${response.message()}", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: retrofit2.Call<Void>, t: Throwable) {
+                Toast.makeText(requireContext(), "Upload failed: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
 
     fun saveToDownloads(context: Context, fileName: String, inputStream: InputStream, urlKang: String) {
         val resolver = context.contentResolver
@@ -1164,9 +1260,9 @@ class FinansialFragment : Fragment() {
         })
     }
 
-    private fun postCredit(value: String, msg: String, token: String) {
+    private fun postCredit(value: String, msg: String, token: String, added_by: String) {
 
-        api.postCredit(CreditRequest(value, msg)).enqueue(object : Callback<Map<String, String>> {
+        api.postCredit(CreditRequest(value, msg, added_by)).enqueue(object : Callback<Map<String, String>> {
             override fun onResponse(call: Call<Map<String, String>>, response: Response<Map<String, String>>) {
                 if (response.isSuccessful) {
                     val bensinx = userTokens["bensin_x"].toString()
@@ -1199,9 +1295,9 @@ class FinansialFragment : Fragment() {
         })
     }
 
-    private fun postDebit(value: String, msg: String, token: String) {
+    private fun postDebit(value: String, msg: String, token: String, added_by: String) {
 
-        api.postDebit(DebitRequest(value, msg)).enqueue(object : Callback<Map<String, String>> {
+        api.postDebit(DebitRequest(value, msg, added_by)).enqueue(object : Callback<Map<String, String>> {
             override fun onResponse(call: Call<Map<String, String>>, response: Response<Map<String, String>>) {
                 if (response.isSuccessful) {
                     val bensinx = userTokens["bensin_x"].toString()
