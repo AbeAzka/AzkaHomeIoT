@@ -63,7 +63,7 @@ dependencies {
     implementation ("com.google.android.gms:play-services-auth:18.1.0")
     implementation("com.google.firebase:firebase-database:21.0.0")
     implementation("com.google.firebase:firebase-firestore:25.0.0")
-    implementation ("com.github.MikeOrtiz:TouchImageView:1.4.1")
+    implementation ("com.github.MikeOrtiz.TouchImageView:1.4.1")
     implementation("com.google.firebase:firebase-messaging:24.0.0")
     implementation("androidx.test:core-ktx:1.6.1")
     implementation("androidx.preference:preference-ktx:1.2.1")

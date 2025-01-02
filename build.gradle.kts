@@ -5,7 +5,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter() // Optional, as it's deprecated
         maven { url = uri("https://jitpack.io") } // Add JitPack repository
     }
     dependencies {
@@ -20,7 +19,7 @@ subprojects {
         google()               // Google's Maven repository
         mavenCentral()         // Maven Central repository
         maven { url = uri ("https://jitpack.io") }  // JitPack repository for GitHub-based dependencies
-        jcenter()              // JCenter repository (note: it's deprecated)
+
     }
 }
 
