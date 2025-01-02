@@ -43,6 +43,10 @@ android {
     }
 }
 
+repositories {
+    maven { url = uri("https://jitpack.io") }  // Add this if it's not already added
+}
+
 dependencies {
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation("com.facebook.shimmer:shimmer:0.5.0")
