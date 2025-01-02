@@ -1,3 +1,5 @@
+// Top-level build.gradle file
+
 buildscript {
     repositories {
         google()
@@ -8,8 +10,11 @@ buildscript {
     dependencies {
 
         classpath("com.google.gms:google-services:4.3.5")
+        classpath ("com.android.tools.build:gradle:7.0.4")
     }
 }
+
+
 
 
 
