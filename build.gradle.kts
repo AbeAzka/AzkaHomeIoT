@@ -1,9 +1,16 @@
 buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        jcenter() // Optional, as it's deprecated
+        maven { url = uri("https://jitpack.io") } // Add JitPack repository
+    }
     dependencies {
 
         classpath("com.google.gms:google-services:4.3.5")
     }
 }
+
 
 
 
