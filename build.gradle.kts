@@ -1,6 +1,7 @@
 // Top-level build.gradle file
 
 buildscript {
+
     repositories {
         google()
         mavenCentral()
@@ -23,4 +24,12 @@ buildscript {
 plugins {
     id("com.android.application") version "8.2.0" apply false
     id("org.jetbrains.kotlin.android") version "1.9.10" apply false
+}
+subprojects {
+    repositories {
+        google()               // Google's Maven repository
+        mavenCentral()         // Maven Central repository
+        maven { url = uri ("https://jitpack.io") }  // JitPack repository for GitHub-based dependencies
+        jcenter()              // JCenter repository (note: it's deprecated)
+    }
 }
