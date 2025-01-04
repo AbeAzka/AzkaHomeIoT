@@ -8,6 +8,12 @@ buildscript {
         google()
         mavenCentral()
         maven { url = uri("https://jitpack.io") } // Add JitPack repository
+        maven {
+            url = uri("https://repo.spring.io/release")
+        }
+        maven {
+            url = uri("https://repository.jboss.org/maven2")
+        }
     }
     dependencies {
 
@@ -19,14 +25,14 @@ buildscript {
 
 
 
-subprojects {
-    repositories {
-        google()               // Google's Maven repository
-        mavenCentral()         // Maven Central repository
-        maven { url = uri ("https://jitpack.io") }  // JitPack repository for GitHub-based dependencies
-
-    }
-}
+//subprojects {
+//    repositories {
+//        google()               // Google's Maven repository
+//        mavenCentral()         // Maven Central repository
+//        maven { url = uri ("https://jitpack.io") }  // JitPack repository for GitHub-based dependencies
+//
+//    }
+//}
 
 
 
