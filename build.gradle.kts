@@ -11,7 +11,7 @@ buildscript {
 
         classpath("com.google.gms:google-services:4.3.5")
         classpath ("com.android.tools.build:gradle:7.0.4")
-        classpath("com.github.MikeOrtiz:TouchImageView:1.4.1")
+
     }
 }
 
