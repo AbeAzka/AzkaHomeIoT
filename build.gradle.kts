@@ -3,43 +3,22 @@
 // Top-level build.gradle file
 
 buildscript {
-
     repositories {
         google()
         mavenCentral()
-//        maven { url = uri("https://jitpack.io") } // Add JitPack repository
-//        maven {
-//            url = uri("https://repo.spring.io/release")
-//        }
-//        maven {
-//            url = uri("https://repository.jboss.org/maven2")
-//        }
-
     }
     dependencies {
-
-        classpath("com.google.gms:google-services:4.3.15")
-        classpath ("com.android.tools.build:gradle:7.0.4")
-
+        classpath ("com.android.tools.build:gradle:8.2.0")
+        classpath ("com.google.gms:google-services:4.3.15") // If using Firebase
+        // Other classpath dependencies
     }
 }
-
-
-
-subprojects {
+allprojects {
     repositories {
-        google()               // Google's Maven repository
-        mavenCentral()         // Maven Central repository
-        maven {
-            url = uri ("https://jitpack.io") }  // JitPack repository for GitHub-based dependencies
-//        maven {
-//            url = uri("https://repo.spring.io/release")
-//        }
-//        maven {
-//            url = uri("https://repository.jboss.org/maven2")
-//        }
+        google()
+        mavenCentral()
+        maven { url = uri("https://jitpack.io") } // For JitPack dependencies
     }
-
 }
 
 
