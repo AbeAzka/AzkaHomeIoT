@@ -2,8 +2,6 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
-
-
 }
 
 android {
@@ -17,7 +15,7 @@ android {
         minSdk = 30
         targetSdk = 34
         versionCode = 1
-        versionName = "2.4"//Last 1.2
+        versionName = "2.4"//Last 2.4
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -41,14 +39,14 @@ android {
     buildFeatures{
         viewBinding= true
     }
+
+
 }
 
-repositories {
-    maven { url = uri("https://jitpack.io") }  // Add this if it's not already added
-}
+
 
 dependencies {
-    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
     implementation("com.facebook.shimmer:shimmer:0.5.0")
     implementation ("com.github.bumptech.glide:glide:4.4.0")
     implementation ("androidx.core:core-splashscreen:1.0.0")
@@ -63,7 +61,7 @@ dependencies {
     implementation ("com.google.android.gms:play-services-auth:18.1.0")
     implementation("com.google.firebase:firebase-database:21.0.0")
     implementation("com.google.firebase:firebase-firestore:25.0.0")
-    implementation ("com.github.MikeOrtiz:TouchImageView:1.4.1")
+    implementation ("com.github.MikeOrtiz:TouchImageView:3.0.2")
     implementation("com.google.firebase:firebase-messaging:24.0.0")
     implementation("androidx.test:core-ktx:1.6.1")
     implementation("androidx.preference:preference-ktx:1.2.1")
@@ -72,6 +70,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.5.0")
     implementation("com.squareup.retrofit2:converter-gson:2.5.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    implementation("androidx.activity:activity-ktx:1.9.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

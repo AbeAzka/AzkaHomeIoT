@@ -4,22 +4,27 @@
 
 buildscript {
     repositories {
-        google()
-        mavenCentral()
+        //google()
+        mavenCentral() // Jangan dikomentari, masih diperlukan
+        //jcenter() // Deprecated, tidak perlu digunakan
+        //maven { url = uri("https://jitpack.io") } // Hanya jika menggunakan library dari JitPack
     }
     dependencies {
-        classpath ("com.android.tools.build:gradle:8.2.0")
-        classpath ("com.google.gms:google-services:4.3.15") // If using Firebase
+        classpath("com.android.tools.build:gradle:8.2.0") // Android Gradle Plugin (AGP)
+        classpath("com.google.gms:google-services:4.3.15") // Jika menggunakan Firebase
         // Other classpath dependencies
     }
 }
+
+
 allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url = uri("https://jitpack.io") } // For JitPack dependencies
+        //maven { url = uri("https://jitpack.io") }
     }
 }
+
 
 
 

@@ -25,7 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerFrameLayout
-import com.github.mikephil.charting.charts.LineChart
+
 import com.google.firebase.auth.FirebaseAuth
 import com.indodevstudio.azka_home_iot.API.APIRequestData
 import com.indodevstudio.azka_home_iot.API.RetroServer
@@ -76,7 +76,7 @@ class HomeFragment : Fragment() {
     var srlData: SwipeRefreshLayout? = null
     var pbData: ProgressBar? = null
     var cards2: CardView? = null
-    var chart: LineChart? = null
+
 
 
 
