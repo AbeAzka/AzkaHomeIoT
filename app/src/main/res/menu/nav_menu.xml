@@ -47,6 +47,24 @@
     </item>
 
     <item
+        android:title="EVENTS"
+        android:id="@+id/events"
+
+        >
+        <menu>
+            <group
+                android:checkableBehavior="single"
+                >
+                <item
+                    android:id="@+id/events_"
+                    android:icon="@drawable/ic_agenda"
+                    android:title="Events Schedule"/>
+
+            </group>
+        </menu>
+    </item>
+
+    <item
         android:title="OTOMATISASI RUMAH">
 
         <menu>

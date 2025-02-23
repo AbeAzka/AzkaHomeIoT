@@ -65,7 +65,7 @@ class MQTT_Service : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val serviceChannel = NotificationChannel(
                 CHANNEL_ID,
-                "MQTT Foreground Service Channel",
+                "Apps Service",
                 NotificationManager.IMPORTANCE_DEFAULT
             )
 

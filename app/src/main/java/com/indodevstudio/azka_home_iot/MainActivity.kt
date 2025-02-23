@@ -39,6 +39,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.MenuProvider
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -212,6 +213,11 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
         mbuh()
 
+        // Cek apakah notifikasi membawa data untuk membuka EventFragment
+        if (intent?.getStringExtra("FRAGMENT") == "EventFragment") {
+            openFragment(EventFragment())
+        }
+
         auth = FirebaseAuth.getInstance()
         mFirebaseUser = auth.currentUser!!;
 
@@ -300,6 +306,12 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
 
 
+    }
+
+    private fun openFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
     }
 
     fun obfuscateEmail(email: String): String {
@@ -696,6 +708,13 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, FinansialFragment()).commit()
                 navigationView.setCheckedItem(R.id.finansial_plan)
+            }
+            R.id.events_ -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, EventFragment()).commit()
+                navigationView.setCheckedItem(R.id.events_)
             }
 
 
