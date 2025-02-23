@@ -40,6 +40,13 @@
                 android:data="https://www.abeazka.my.id"/>
 
         </Preference>
+        <Preference android:title="Update Log"
+            app:key="link"
+            android:summary="Open website!">
+            <intent android:action="android.intent.action.VIEW"
+                android:data="https://abeazka.my.id/ahi/"/>
+
+        </Preference>
     </PreferenceCategory>
 
 

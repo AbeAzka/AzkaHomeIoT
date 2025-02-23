@@ -82,7 +82,7 @@ class TandonUtiFragment : Fragment(), View.OnClickListener{
             ) {
 
                 super.onReceivedError(view, request, error)
-                Log.e("MainActivity", (error.description as String)!!)
+                Log.e("MainActivity", (error.description as String))
                 Log.e("MainActivity", error.errorCode.toString())
                 Log.d("ERROR","Error code:"+Integer.toString(error.errorCode))
                 println(error.errorCode)
@@ -119,7 +119,7 @@ class TandonUtiFragment : Fragment(), View.OnClickListener{
                         override fun onResponse(call: Call, response: Response) {
                             val response: Response = http.newCall(request).execute()
                             val responseCode = response.code
-                            val results = response.body!!.string()
+                            val results = response.body?.string()
 
                             println("Success " + response.toString())
                             println("Success " + response.message.toString())

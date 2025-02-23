@@ -15,7 +15,7 @@ android {
         minSdk = 30
         targetSdk = 34
         versionCode = 1
-        versionName = "2.4"//Last 2.4
+        versionName = "2.4.1"//Last 2.4
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -46,7 +46,13 @@ android {
 
 
 dependencies {
-
+// Untuk Executor bawaan Android (pengganti ListenableFuture)
+    implementation ("androidx.concurrent:concurrent-futures:1.1.0")
+    implementation ("com.google.guava:guava:31.0.1-android")
+    implementation ("androidx.camera:camera-core:1.3.0")
+    implementation ("androidx.camera:camera-camera2:1.3.0")
+    implementation ("androidx.camera:camera-lifecycle:1.3.0")
+    implementation ("androidx.camera:camera-view:1.3.0")
     implementation("com.facebook.shimmer:shimmer:0.5.0")
     implementation ("com.github.bumptech.glide:glide:4.4.0")
     implementation ("androidx.core:core-splashscreen:1.0.0")

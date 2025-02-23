@@ -74,6 +74,11 @@ interface ApiService {
     @Multipart
     @POST("fire.php/photo")
     fun uploadPhoto(@Part photo: MultipartBody.Part): Call<Void>
+
+
+    @Multipart
+    @POST("fire.php/photo2")
+    fun uploadPhoto2(@Part photo: MultipartBody.Part): Call<Void>
     @GET("fire.php/daily")
     fun getDaily(): Call<DailyGet>
     @GET("fire.php/monthly")

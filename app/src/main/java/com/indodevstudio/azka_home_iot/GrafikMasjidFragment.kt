@@ -92,7 +92,7 @@ class GrafikMasjidFragment : Fragment(), View.OnClickListener{
             ) {
 
                 super.onReceivedError(view, request, error)
-                Log.e("MainActivity", (error.description as String)!!)
+                Log.e("MainActivity", (error.description as String))
                 Log.e("MainActivity", error.errorCode.toString())
                 Log.d("ERROR","Error code:"+Integer.toString(error.errorCode))
                 println(error.errorCode)

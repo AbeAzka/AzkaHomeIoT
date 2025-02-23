@@ -109,22 +109,22 @@ class InboxActivity : AppCompatActivity() {
             override fun onResponse(call: Call<ResponseModel>, response: Response<ResponseModel>) {
 
                 if(response.body()?.data == null){
-                    rvData!!.visibility = View.GONE
+                    rvData?.visibility = View.GONE
                     text.visibility = View.VISIBLE
-                    pbData!!.visibility = View.INVISIBLE
+                    pbData?.visibility = View.INVISIBLE
                 }else{
                     shimmerFrame.stopShimmer();
                     shimmerFrame.setVisibility(View.GONE);
                     listData = response.body()!!.data
                     adData = AdapterData(this@InboxActivity, listData)
-                    rvData!!.smoothScrollToPosition(listData.size-1);
-                    rvData!!.visibility = View.VISIBLE
+                    rvData?.smoothScrollToPosition(listData.size-1);
+                    rvData?.visibility = View.VISIBLE
 
                     text.visibility = View.GONE
-                    rvData!!.adapter = adData
+                    rvData?.adapter = adData
 
-                    adData!!.notifyDataSetChanged()
-                    pbData!!.visibility = View.INVISIBLE
+                    adData?.notifyDataSetChanged()
+                    pbData?.visibility = View.INVISIBLE
                 }
 
 
@@ -135,7 +135,7 @@ class InboxActivity : AppCompatActivity() {
                     this@InboxActivity,"Failed to connect: " + t.message, Toast.LENGTH_SHORT
                 ).show()
                 Log.i("ERROR", "Failed to connect: " + t.message)
-                pbData!!.visibility = View.INVISIBLE
+                pbData?.visibility = View.INVISIBLE
             }
 
         })

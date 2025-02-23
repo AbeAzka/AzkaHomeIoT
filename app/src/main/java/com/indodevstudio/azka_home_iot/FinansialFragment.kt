@@ -23,6 +23,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -48,22 +49,34 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.google.common.util.concurrent.ListenableFuture
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.work.await
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.indodevstudio.azka_home_iot.Adapter.HistoryAdapter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -72,6 +85,8 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
+import java.util.concurrent.Executors
+import kotlin.coroutines.resume
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -177,6 +192,13 @@ class FinansialFragment : Fragment() {
     var kebutuhan = false
     var srlData: SwipeRefreshLayout? = null
     var pbData: ProgressBar? = null
+
+    //private lateinit var previewView: androidx.camera.view.PreviewView
+    private lateinit var imageCapture: ImageCapture
+
+    //private lateinit var imgThumbnail: ImageView
+
+
     private lateinit var countdownTimer: CountDownTimer
     private val countdownTimeInMillis: Long = 5000      // 1 hour and 1 minute (for testing purposes)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -192,6 +214,11 @@ class FinansialFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view =  inflater.inflate(R.layout.fragment_finansial, container, false)
+
+        //previewView = view.findViewById(R.id.previewView)
+
+        //imgThumbnail = view.findViewById(R.id.imgThumbnail)
+
         valueInput1 = view.findViewById(R.id.creditInput)
         descInput1 = view.findViewById(R.id.inputDsc)
         submitCredit1 = view.findViewById(R.id.submitCredit)
@@ -743,8 +770,22 @@ class FinansialFragment : Fragment() {
             }
         }
 
-
         billBtn.setOnClickListener {
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(), Manifest.permission.CAMERA
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    requireActivity(), arrayOf(Manifest.permission.CAMERA), 1
+                )
+            } else {
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, CameraFragment()) // Gantilah dengan ID container yang benar
+                    .addToBackStack(null)
+                    .commit()
+            }
+        }
+        /*billBtn.setOnClickListener {
             if (ActivityCompat.checkSelfPermission(
                     requireContext(),
                     Manifest.permission.CAMERA
@@ -763,7 +804,7 @@ class FinansialFragment : Fragment() {
 //                REQUEST_IMAGE_CAPTURE
 //            )
 
-        }
+        }*/
 
         return view
     }
@@ -787,7 +828,7 @@ class FinansialFragment : Fragment() {
 
 
     private fun dispatchTakePictureIntent() {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE  )
         try {
             activity?.startActivityFromFragment(this,takePictureIntent, REQUEST_IMAGE_CAPTURE)
         } catch (e: Exception) {
@@ -799,9 +840,12 @@ class FinansialFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            val imageBitmap = data?.extras?.get("data") as Bitmap
-//            imageView.setImageBitmap(imageBitmap)
-            uploadPhoto(imageBitmap)
+            val imagePath = data?.getStringExtra("image_path")
+            if (imagePath != null) {
+                val bitmap = BitmapFactory.decodeFile(imagePath)
+                //imgThumbnail.setImageBitmap(bitmap)
+                uploadPhoto(bitmap) // Upload ke server
+            }
         }
     }
 
@@ -825,6 +869,30 @@ class FinansialFragment : Fragment() {
                 Toast.makeText(requireContext(), "Upload failed: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun uploadPhoto(file: File) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val requestBody = file.readBytes().toRequestBody("image/jpeg".toMediaTypeOrNull())
+            val photoPart = MultipartBody.Part.createFormData("photo", "bill.jpg", requestBody)
+
+            api.uploadPhoto(photoPart).enqueue(object : retrofit2.Callback<Void> {
+                override fun onResponse(call: retrofit2.Call<Void>, response: retrofit2.Response<Void>) {
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(requireContext(), "Photo uploaded!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                override fun onFailure(call: retrofit2.Call<Void>, t: Throwable) {
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(requireContext(), "Upload failed: ${t.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
+        }
+    }
+
+    private suspend fun <T> ListenableFuture<T>.await(): T = suspendCancellableCoroutine { cont ->
+        addListener({ cont.resume(get()) }, Executors.newSingleThreadExecutor())
     }
 
     fun saveToDownloads(context: Context, fileName: String, inputStream: InputStream, urlKang: String) {
