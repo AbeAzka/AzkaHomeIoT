@@ -5,7 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".CameraFragment">
-
+    <View
+        android:id="@+id/focusOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/focus_overlay"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
     <!-- Tampilan Kamera -->
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"
@@ -66,7 +74,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/bg_circle_button"
-        android:src="@drawable/flash_off_black"
+        android:src="@drawable/flash_auto_black"
         android:contentDescription="Capture"
         android:scaleType="fitCenter"
         android:padding="10dp"
@@ -77,6 +85,8 @@
         android:layout_marginStart="80dp"
         android:layout_marginBottom="40dp"
    />
+
+
 
 
 

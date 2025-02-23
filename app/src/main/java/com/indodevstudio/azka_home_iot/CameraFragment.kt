@@ -58,7 +58,7 @@ class CameraFragment: Fragment() {
     private var isFlashOn = false // Status flash
     private val api = Server.instance.create(ApiService::class.java)
     val REQUEST_IMAGE_CAPTURE = 100
-
+    private lateinit var focusOverlay: View
 
     private val pickImageLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -85,6 +85,7 @@ class CameraFragment: Fragment() {
         val view = inflater.inflate(R.layout.fragment_camera, container, false)
 
         Server.setToken("2025A")
+        focusOverlay = view.findViewById(R.id.focusOverlay) // Overlay Fokus
         previewView = view.findViewById(R.id.previewView)
         captureButton = view.findViewById(R.id.captureButton)
         flashButton = view.findViewById(R.id.flashButton)
@@ -132,6 +133,7 @@ class CameraFragment: Fragment() {
                 cameraProvider.bindToLifecycle(
                     viewLifecycleOwner, cameraSelector, preview, imageCapture
                 )
+
             } catch (exc: Exception) {
                 Log.e("CameraX", "Gagal memulai kamera", exc)
             }
@@ -183,7 +185,7 @@ class CameraFragment: Fragment() {
     }
 
 
-    private var flashMode = 0 // 0 = OFF, 1 = ON, 2 = AUTO
+    private var flashMode = 2 // 0 = OFF, 1 = ON, 2 = AUTO
 
     private fun toggleFlash() {
         flashMode = (flashMode + 1) % 3 // Ganti mode secara berurutan: OFF -> ON -> AUTO
@@ -230,11 +232,17 @@ class CameraFragment: Fragment() {
         return tempFile
     }
 
-    private fun uploadPhoto(bitmap: Bitmap) {
+    private fun compressBitmap(bitmap: Bitmap): ByteArray {
         val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-        val byteArray = stream.toByteArray()
-        val requestBody = RequestBody.create("image/jpeg".toMediaTypeOrNull(), byteArray)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream) // Coba kualitas 80 agar lebih ringan
+        return stream.toByteArray()
+    }
+
+
+
+    private fun uploadPhoto(bitmap: Bitmap) {
+        val compressedImage = compressBitmap(bitmap)
+        val requestBody = RequestBody.create("image/jpeg".toMediaTypeOrNull(), compressedImage)
         val photoPart = MultipartBody.Part.createFormData("photo", "bill.jpg", requestBody)
 
         api.uploadPhoto2(photoPart).enqueue(object : retrofit2.Callback<Void> {
@@ -242,15 +250,18 @@ class CameraFragment: Fragment() {
                 if (response.isSuccessful) {
                     Toast.makeText(requireContext(), "Photo uploaded!", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(requireContext(), "Error: ${response.message()}", Toast.LENGTH_SHORT).show()
+                    Log.e("Upload", "Error: ${response.message()} - ${response.code()}")
+                    Toast.makeText(requireContext(), "Upload Error: ${response.message()}", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: retrofit2.Call<Void>, t: Throwable) {
+                Log.e("Upload", "Upload failed: ${t.message}", t)
                 Toast.makeText(requireContext(), "Upload failed: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

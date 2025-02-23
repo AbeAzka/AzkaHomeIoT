@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Layer gelap (background) -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#99000000"/> <!-- Hitam transparan -->
+        </shape>
+    </item>
+
+    <!-- Lubang transparan di tengah -->
+    <item>
+        <inset
+            android:insetLeft="50dp"
+            android:insetRight="50dp"
+            android:insetTop="200dp"
+            android:insetBottom="200dp">
+            <shape android:shape="rectangle">
+                <solid android:color="@android:color/transparent"/>
+            </shape>
+        </inset>
+    </item>
+</layer-list>
