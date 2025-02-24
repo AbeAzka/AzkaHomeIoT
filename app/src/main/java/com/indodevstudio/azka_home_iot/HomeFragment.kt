@@ -127,7 +127,7 @@ class HomeFragment : Fragment() {
         with (srlData){
             this?.setOnRefreshListener {
                 setRefreshing(true)
-                //imageGraphSample.setImageBitmap(null)
+                imageGraphSample.setImageBitmap(null)
                 retrieveData()
 //                getNotice()
                 retrieveTemp()

@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit
 class EventViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = EventRepository()
     val events = MutableLiveData<List<Event>?>()
+    val filteredEvents = MutableLiveData<List<Event>>() // Tambahkan LiveData untuk filter
 
     init {
         createNotificationChannel()
@@ -124,4 +125,12 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
 
         notificationManager.notify(Random().nextInt(), builder.build())
     }
+
+    fun filterEventsByDate(selectedDate: String) {
+        val eventList = events.value ?: return
+        val filteredList = eventList.filter { it.date == selectedDate }
+        filteredEvents.postValue(filteredList) // Update filteredEvents
+
+    }
+
 }

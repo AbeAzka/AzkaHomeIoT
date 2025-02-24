@@ -20,6 +20,7 @@
     <color name="red">#80FF0000</color>
     <color name="realGray">#505050</color>
     <color name="transparant">#00FFFFFF</color>
+    <color name="orange">#FF7700</color>
 
     <!--    Light (Primary) -->
     <color name="color_primary_light">#1CAB55</color>

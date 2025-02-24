@@ -9,7 +9,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.indodevstudio.azka_home_iot.R
 
-
 class EventAdapter(private var events: List<Event>, private val onDelete: (Event) -> Unit) :
     RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
@@ -27,14 +26,25 @@ class EventAdapter(private var events: List<Event>, private val onDelete: (Event
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
         val event = events[position]
         holder.eventName.text = event.name
-        holder.eventDate.text = event.date
-        holder.btnDelete.setOnClickListener { onDelete(event) }
+        holder.eventDate.text = event.date.ifEmpty { "-" }
+
+        // Jika event tidak valid (misal, hanya placeholder "Tidak ada event"), sembunyikan tombol hapus
+        if (event.id == 0) {
+            holder.btnDelete.visibility = View.GONE
+        } else {
+            holder.btnDelete.visibility = View.VISIBLE
+            holder.btnDelete.setOnClickListener { onDelete(event) }
+        }
     }
 
     override fun getItemCount() = events.size
 
     fun updateEvents(newEvents: List<Event>) {
-        events = newEvents
+        events = if (newEvents.isEmpty()) {
+            listOf(Event(0, "Tidak ada event", ""))
+        } else {
+            newEvents
+        }
         notifyDataSetChanged()
     }
 }

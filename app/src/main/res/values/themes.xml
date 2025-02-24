@@ -23,6 +23,13 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="CalendarTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">?android:textColorPrimary</item>
+
+    </style>
+
+
+
     <style name="Theme.MainActivity" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 <!--        <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownStyle</item>-->
         <!-- Primary brand color. -->

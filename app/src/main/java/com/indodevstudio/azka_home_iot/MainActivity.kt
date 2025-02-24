@@ -2,6 +2,7 @@ package com.indodevstudio.azka_home_iot
 
 
 import android.Manifest
+import com.jakewharton.threetenabp.AndroidThreeTen
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
@@ -213,6 +214,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
         mbuh()
 
+        AndroidThreeTen.init(this) // Inisialisasi ThreeTenABP
         // Cek apakah notifikasi membawa data untuk membuka EventFragment
         if (intent?.getStringExtra("FRAGMENT") == "EventFragment") {
             openFragment(EventFragment())
