@@ -32,7 +32,7 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         createNotificationChannel()
-        scheduleDailyWork()
+        //scheduleDailyWork()
     }
 
     private fun scheduleDailyWork() {

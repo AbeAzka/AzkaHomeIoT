@@ -16,9 +16,13 @@ import retrofit2.http.Url
 data class Event(
     val id: Int,
     val name: String,
-    val date: String
+    val date: String,
+    val color: Int // Warna event dalam format integer
 )
 interface ApiService2 {
+
+    @GET("get_events_by_date.php") // Sesuaikan dengan API-mu
+    fun getEventsByDate(date: String): ArrayList<Event> // Harus List, bukan LiveData atau nullable
     @POST("addevent.php")
     fun addEvent(@Body event: Event): Call<ResponseBody>
 

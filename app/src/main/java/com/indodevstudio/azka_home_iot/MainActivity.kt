@@ -5,6 +5,7 @@ import android.Manifest
 import com.jakewharton.threetenabp.AndroidThreeTen
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -15,10 +16,13 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.PowerManager
+import android.provider.Settings
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -138,6 +142,22 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 //        mqtt.receiveMessages()
 
         connectDB()
+
+        val pm = this.getSystemService(Context.POWER_SERVICE) as PowerManager
+        val packageName = this.packageName
+
+        if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+            val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                data = Uri.parse("package:$packageName")
+            }
+            try {
+                startActivity(intent)
+            } catch (e: ActivityNotFoundException) {
+                Toast.makeText(this, "Pengaturan tidak ditemukan di perangkat ini", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(this, "Aplikasi sudah dikecualikan dari optimasi baterai", Toast.LENGTH_SHORT).show()
+        }
         //subscribe_mqtt("sending_telemetri2")
         //connect(this)
         requestPermission()
@@ -309,6 +329,10 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
 
     }
+
+
+
+
 
     private fun openFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()

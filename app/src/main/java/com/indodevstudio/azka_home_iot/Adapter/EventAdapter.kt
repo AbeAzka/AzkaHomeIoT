@@ -1,6 +1,7 @@
 package com.indodevstudio.azka_home_iot.Adapter
 
 import Event
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,8 @@ class EventAdapter(private var events: List<Event>, private val onDelete: (Event
         val eventDate: TextView = view.findViewById(R.id.eventDate)
         val btnDelete: Button = view.findViewById(R.id.btnDelete)
     }
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_event, parent, false)
@@ -41,7 +44,7 @@ class EventAdapter(private var events: List<Event>, private val onDelete: (Event
 
     fun updateEvents(newEvents: List<Event>) {
         events = if (newEvents.isEmpty()) {
-            listOf(Event(0, "Tidak ada event", ""))
+            listOf(Event(0, "Tidak ada event", "", Color.BLUE))
         } else {
             newEvents
         }
