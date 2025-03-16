@@ -16,19 +16,19 @@ class EventWorker(context: Context, workerParams: WorkerParameters) : Worker(con
     override fun doWork(): Result {
         Log.d("EventWorker", "WorkManager berjalan!") // 🔥 Cek di Logcat
         // ✅ Set Worker sebagai Foreground Service agar tetap berjalan
-        setForegroundAsync(createForegroundInfo())
+        /*setForegroundAsync(createForegroundInfo())
 
         // ✅ Jalankan pengecekan event
-        checkAndSendNotification()
+        checkAndSendNotification()*/
         return Result.success()
     }
 
-    private fun createForegroundInfo(): ForegroundInfo {
+    /*private fun createForegroundInfo(): ForegroundInfo {
         val notification = createNotification()
         return ForegroundInfo(1, notification)
-    }
+    }*/
 
-    private fun createNotification(): Notification {
+    /*private fun createNotification(): Notification {
         val channelId = "event_reminder_channel"
         val channelName = "Event Reminder"
 
@@ -47,12 +47,12 @@ class EventWorker(context: Context, workerParams: WorkerParameters) : Worker(con
             .setContentText("Aplikasi sedang berjalan di latar belakang")
             .setSmallIcon(R.drawable.ic_event) // Pastikan ada icon di drawable
             .build()
-    }
+    }*/
 
-    private fun checkAndSendNotification() {
+   /* private fun checkAndSendNotification() {
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         val repository = EventRepository()
-        val eventsToday = repository.getEventsForDate(today) // 🔥 Ambil event dari database
+        //val eventsToday = repository.getEventsForDate(today) // 🔥 Ambil event dari database
 
         if (eventsToday.isNotEmpty()) {
             sendNotification("Ada ${eventsToday.size} acara hari ini!", "Jangan lupa untuk mengecek jadwal.")
@@ -60,9 +60,9 @@ class EventWorker(context: Context, workerParams: WorkerParameters) : Worker(con
         } else {
             Log.d("EventWorker", "Tidak ada event hari ini.") // 🔍 Pastikan ini tidak terjadi
         }
-    }
+    }*/
 
-    private fun sendNotification(title: String, message: String) {
+    /*private fun sendNotification(title: String, message: String) {
         val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationBuilder = NotificationCompat.Builder(applicationContext, "event_channel")
             .setContentTitle(title)
@@ -71,5 +71,5 @@ class EventWorker(context: Context, workerParams: WorkerParameters) : Worker(con
             .setPriority(NotificationCompat.PRIORITY_HIGH)
 
         notificationManager.notify(1, notificationBuilder.build())
-    }
+    }*/
 }

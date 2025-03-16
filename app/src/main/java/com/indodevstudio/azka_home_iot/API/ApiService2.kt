@@ -19,15 +19,33 @@ data class Event(
     val date: String,
     val color: Int // Warna event dalam format integer
 )
+
+data class Event2(
+    val id: Int,
+    val name: String,
+    val date: String
+)
+
+data class Event3(
+    val id: Int,
+    val name: String,
+    val date: String,
+    val email: String
+)
+
 interface ApiService2 {
 
-    @GET("get_events_by_date.php") // Sesuaikan dengan API-mu
-    fun getEventsByDate(date: String): ArrayList<Event> // Harus List, bukan LiveData atau nullable
+    @GET("get_events_by_date.php")
+    fun getEventsByDate(
+        @Query("date") date: String,
+        @Query("email") email: String
+    ): Call<List<Event>>
     @POST("addevent.php")
-    fun addEvent(@Body event: Event): Call<ResponseBody>
+    fun addEvent(@Body event: Event3): Call<ResponseBody>
 
     @GET("getevents.php")
-    fun getEvents(): Call<ArrayList<Event>>
+    fun getAllEvents(@Query("email") email: String): Call<ArrayList<Event2>>
+
 
     @POST("deleteevent.php")
     fun deleteEvent(@Query("id") id: Int): Call<ResponseBody>

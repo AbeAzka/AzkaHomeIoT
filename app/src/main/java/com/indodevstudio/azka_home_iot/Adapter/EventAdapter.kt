@@ -1,6 +1,7 @@
 package com.indodevstudio.azka_home_iot.Adapter
 
 import Event
+import Event2
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -10,16 +11,15 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.indodevstudio.azka_home_iot.R
 
-class EventAdapter(private var events: List<Event>, private val onDelete: (Event) -> Unit) :
+
+class EventAdapter(private var eventList: ArrayList<Event2>, private val onDelete: (Event2) -> Unit) :
     RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
-    class EventViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val eventName: TextView = view.findViewById(R.id.eventName)
-        val eventDate: TextView = view.findViewById(R.id.eventDate)
-        val btnDelete: Button = view.findViewById(R.id.btnDelete)
+    class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val eventName: TextView = itemView.findViewById(R.id.eventName)
+        val eventDate: TextView = itemView.findViewById(R.id.eventDate)
+        val btnDelete: Button = itemView.findViewById(R.id.btnDelete)
     }
-
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_event, parent, false)
@@ -27,7 +27,7 @@ class EventAdapter(private var events: List<Event>, private val onDelete: (Event
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        val event = events[position]
+        val event = eventList[position]
         holder.eventName.text = event.name
         holder.eventDate.text = event.date.ifEmpty { "-" }
 
@@ -40,14 +40,13 @@ class EventAdapter(private var events: List<Event>, private val onDelete: (Event
         }
     }
 
-    override fun getItemCount() = events.size
-
-    fun updateEvents(newEvents: List<Event>) {
-        events = if (newEvents.isEmpty()) {
-            listOf(Event(0, "Tidak ada event", "", Color.BLUE))
-        } else {
-            newEvents
-        }
-        notifyDataSetChanged()
+    fun updateEvents(newEvents: List<Event2>) {
+        eventList.clear()
+        eventList.addAll(newEvents)
+        notifyDataSetChanged() // Pastikan RecyclerView diperbarui
     }
+
+
+    override fun getItemCount(): Int = eventList.size
 }
+

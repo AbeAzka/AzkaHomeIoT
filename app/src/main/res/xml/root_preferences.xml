@@ -6,7 +6,7 @@
     tools:context=".SettingsActivity">
     <PreferenceCategory></PreferenceCategory>
     <PreferenceCategory></PreferenceCategory>
-    <PreferenceCategory app:title="Notification">
+    <!--<PreferenceCategory app:title="Notification">
         <SwitchPreferenceCompat
             app:defaultValue="false"
             app:key="notif"
@@ -16,8 +16,8 @@
             app:summaryOn="You will receive any notifications in background."/>
 
 
-    </PreferenceCategory>
-    <PreferenceCategory app:title="Advanced">
+    </PreferenceCategory>-->
+    <PreferenceCategory app:title="Basic">
 <!--        <SwitchPreferenceCompat-->
 <!--        app:defaultValue="false"-->
 <!--        app:key="night"-->
@@ -33,6 +33,9 @@
 
             app:entries="@array/dark_mode_entries"
             app:entryValues="@array/dark_mode_entries_values"/>
+
+    </PreferenceCategory>
+    <PreferenceCategory app:title="Advanced">
         <Preference android:title="Website"
             app:key="link"
             android:summary="Open website!">
@@ -42,10 +45,13 @@
         </Preference>
         <Preference android:title="Update Log"
             app:key="link"
-            android:summary="Open website!">
+            android:summary="See the update log!">
             <intent android:action="android.intent.action.VIEW"
-                android:data="https://abeazka.my.id/ahi/"/>
+                android:data="https://www.abeazka.my.id/ahi/update"/>
 
+        </Preference>
+        <Preference android:title="License"
+            android:summary="Copyright © 2024 Azka - All Rights Reserved">
         </Preference>
     </PreferenceCategory>
 

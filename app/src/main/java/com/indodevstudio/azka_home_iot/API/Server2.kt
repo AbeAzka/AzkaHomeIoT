@@ -6,7 +6,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object Server2 {
-    private const val BASE_URL = "https://abeazka.my.id/json/events/"
+    private const val BASE_URL = "https://ahi.abeazka.my.id/api/events/"
+    //private const val BASE_URL = "https://abeazka.my.id/json/events/"
     private var token: String? = null
 
     val instance: ApiService2 by lazy {

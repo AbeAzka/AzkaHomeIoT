@@ -17,6 +17,7 @@ import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
@@ -141,9 +142,20 @@ class HomeFragment : Fragment() {
         val greeting = view.findViewById<TextView>(R.id.greetings)
 
         val displayName = getArguments()?.getString("name")
-
+        val userData = getUserData()
+        var namee = ""
 //        val imageGraphSample2 = view.findViewById<ImageView>(R.id.imageGrafikSampleHehe)
-        val namee = user!!.displayName
+
+        val prefs = requireContext().getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
+        val authToken = prefs.getString("auth_token", null)
+        val firebaseUser = FirebaseAuth.getInstance().currentUser
+        if (firebaseUser != null) {
+            namee = user?.displayName.toString()
+        }
+        if(authToken != null){
+            namee = userData["username"].toString()
+        }
+
 
 
 
@@ -212,7 +224,7 @@ class HomeFragment : Fragment() {
 //
 //        val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
 //        val formatted = current.format(formatter)
-        val email2 = user!!.email
+        //val email2 = user!!.email
 
 
 //        println("Current Date is: $formatted")
@@ -247,7 +259,7 @@ class HomeFragment : Fragment() {
                 override fun onResponse(call: Call, response: Response) {
                     val response: Response = http.newCall(request).execute()
                     val responseCode = response.code
-                    val results = response.body!!.string()
+                    val results = response.body?.string()
 
                     println("Success " + response.toString())
                     println("Success " + response.message.toString())
@@ -349,7 +361,7 @@ class HomeFragment : Fragment() {
 
                     text.visibility = View.GONE
                     srlDat?.visibility = View.VISIBLE
-                    listData = response.body()!!.data
+                    listData = response.body()?.data!!
                     adData = AdapterData(context, listData)
                     rvData?.smoothScrollToPosition(listData.size-1);
                     rvData?.visibility = View.VISIBLE
@@ -381,6 +393,17 @@ class HomeFragment : Fragment() {
 
         })
     }
+    private fun getUserData(): Map<String, String?> {
+        val prefs = requireContext().getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
+        return mapOf(
+            "token" to prefs.getString("auth_token", null),
+            "username" to prefs.getString("username", null),
+            "email" to prefs.getString("email", null),
+            "avatar" to prefs.getString("avatar", null),
+            "isFirebase" to prefs.getString("isFirebase", null)
+        )
+    }
+
 
 
     fun retrieveTemp(){

@@ -60,7 +60,7 @@
 
 
     <TextView
-        android:id="@+id/nama"
+        android:id="@+id/namas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Menu"

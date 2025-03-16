@@ -2,6 +2,7 @@ package com.indodevstudio.azka_home_iot
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ActivityManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -22,61 +23,104 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.indodevstudio.azka_home_iot.API.EventService
+import com.indodevstudio.azka_home_iot.API.RetrofitClient
+import okhttp3.ResponseBody
+
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 const val channelId = "notification_channel"
 const val channelName = "com.indodevstudio.azka_home_iot"
 class MyFirebaseMessagingService : FirebaseMessagingService(){
 
-    // Declare the launcher at the top of your Activity/Fragment:
+    override fun onNewToken(token: String) {
+        Log.d("FCM", "Token baru: $token")
+        // Simpan token ke server
+        val email = getEmailFromSharedPref(applicationContext) // Ambil email dari SharedPreferences
+        if (email.isNotEmpty()) {
+            saveFcmTokenToServer(applicationContext, email, token)
+        }
+    }
+
+    private fun getEmailFromSharedPref(context: Context): String {
+        val sharedPref = context.getSharedPreferences("USER_DATA", Context.MODE_PRIVATE)
+        return sharedPref.getString("EMAIL", "") ?: ""
+    }
+
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        if(remoteMessage.getNotification() != null){
-            generateNotification(remoteMessage.notification!!.title!!, remoteMessage.notification!!.body!!)
+        if (!isAppInForeground(this)) {
+            remoteMessage.notification?.let {
+                showNotification(it.title ?: "Event Hari Ini", it.body ?: "Ada agenda yang harus Anda hadiri.")
+            }
         }
     }
-    @SuppressLint("RemoteViewLayout")
-    fun getRemoteView(title: String, message: String): RemoteViews{
-        val remoteView = RemoteViews("com.indodevstudio.azka_home_iot", R.layout.notification)
 
-        remoteView.setTextViewText(R.id.title, title)
-        remoteView.setTextViewText(R.id.description, message)
-        remoteView.setImageViewResource(R.id.app_logo, R.drawable.azkahomeiot)
+    private fun showNotification(title: String, message: String) {
+        val channelId = "event_channel"
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        return remoteView
-    }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(channelId, "Event Notifications",
+                NotificationManager.IMPORTANCE_HIGH)
+            notificationManager.createNotificationChannel(channel)
+        }
 
-    fun generateNotification(title: String, message: String){
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent,
-            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
-        var builder : NotificationCompat.Builder = NotificationCompat.Builder(applicationContext, channelId)
-            .setSmallIcon(R.drawable.azkahomeiot)
+        val notification = NotificationCompat.Builder(this, channelId)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setSmallIcon(R.drawable.ic_notif_ig)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
-            .setVibrate(longArrayOf(1000,1000,1000,1000))
-            .setOnlyAlertOnce(true)
-            .setContentIntent(pendingIntent)
+            .build()
 
-        builder = builder.setContent(getRemoteView(title, message))
-
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            val notificationChannel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH)
-            notificationManager.createNotificationChannel(notificationChannel)
-            /*FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    Log.w("Firebase Logs", "Fetching FCM registration token failed", task.exception)
-                    return@OnCompleteListener
-                }
-
-                // Get new FCM registration token
-                val token = task.result
-
-                // Log and toast
-                Log.w("Firebase Logs", "Fetching FCM registration sucess : $token")
-            })*/
-        }
-
-        notificationManager.notify(0, builder.build())
+        notificationManager.notify(1, notification)
     }
+
+    private fun isAppInForeground(context: Context): Boolean {
+        val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val runningProcesses = activityManager.runningAppProcesses ?: return false
+        return runningProcesses.any { it.processName == context.packageName && it.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND }
+    }
+
+
+    fun saveFcmTokenToServer(context: Context, email: String, fcmToken: String) {
+        val retrofit = RetrofitClient.instance
+        val apiService = retrofit.create(EventService::class.java)
+
+        apiService.sendFcmToken(email, fcmToken).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    Log.d("FCM", "Token FCM berhasil disimpan")
+                } else {
+                    Log.e("FCM", "Gagal menyimpan token")
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.e("FCM", "Error: ${t.message}")
+            }
+        })
+    }
+
+    /*private fun sendTokenToServer(token: String) {
+        val sharedPref = getSharedPreferences("USER_DATA", Context.MODE_PRIVATE)
+        val userId = sharedPref.getInt("USER_ID", -1)
+        if (userId == -1) return
+
+        val retrofit = RetrofitClient.instance.create(EventService::class.java)
+        retrofit.sendFcmToken(userId, token).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    Log.d("FCM", "Token berhasil dikirim ke server")
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.e("FCM", "Gagal mengirim token ke server")
+            }
+        })
+    }*/
 }

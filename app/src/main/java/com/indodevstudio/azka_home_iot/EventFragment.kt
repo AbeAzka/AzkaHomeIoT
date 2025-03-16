@@ -1,36 +1,37 @@
 package com.indodevstudio.azka_home_iot
 
 import Event
-import EventDecorator
+import Event2
+import Event3
 import android.app.AlertDialog
 import android.app.DatePickerDialog
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.res.Configuration
+import android.content.Context
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.indodevstudio.azka_home_iot.Adapter.EventAdapter
+import com.indodevstudio.azka_home_iot.Decorator.EventDecorator
 
 import com.indodevstudio.azka_home_iot.Model.EventViewModel
+import com.indodevstudio.azka_home_iot.Decorator.MultiEventDecorator
+import com.indodevstudio.azka_home_iot.Decorator.SingleEventDecorator
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 
 import java.util.Locale
 
@@ -47,24 +48,57 @@ class EventFragment : Fragment() {
     //private  lateinit var emptyTextView: TextView
     private var selectedColor: Int = Color.BLUE // Default warna
     private lateinit var textSelectedColor: TextView
+    var email = ""
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_event, container, false)
-        viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application))
-            .get(EventViewModel::class.java)
+        viewModel = ViewModelProvider(this)[EventViewModel::class.java]
 
         //emptyTextView = view.findViewById(R.id.emptyTextView)
-        calendarView = view.findViewById(R.id.calendarView)
+/*        calendarView = view.findViewById(R.id.calendarView)*/
         recyclerView = view.findViewById(R.id.recyclerView)
         inputEventName = view.findViewById(R.id.inputEventName)
         inputEventDate = view.findViewById(R.id.inputEventDate)
-        textSelectedColor = view.findViewById(R.id.textSelectedColor)
+/*        textSelectedColor = view.findViewById(R.id.textSelectedColor)*/
         btnSubmit = view.findViewById(R.id.btnSubmit)
+        val emptyTextView = view.findViewById<TextView>(R.id.emptyTextView)
+        val userData = getUserData()
+        val prefs = requireContext().getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
+        val authToken = prefs.getString("auth_token", null)
+        val firebaseUser = FirebaseAuth.getInstance().currentUser
+        val user = FirebaseAuth.getInstance().currentUser
+        if(firebaseUser != null){
+            email = user!!.email.toString()
 
-        view.findViewById<Button>(R.id.btnPickColor).setOnClickListener {
+        }
+        if(authToken != null){
+            email = userData["email"].toString()
+        }
+
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        adapter = EventAdapter(ArrayList()) { events ->
+            viewModel.deleteEvent(events.id, email)
+        }
+        recyclerView.adapter = adapter
+        viewModel.fetchEvents(email)
+        viewModel.events.observe(viewLifecycleOwner) { events ->
+            if (events != null) {
+                    Log.d("EventFragment", "Update RecyclerView dengan ${events.size} event")
+            }
+            adapter.updateEvents(events ?: arrayListOf()) // Pastikan list tidak null
+            adapter.notifyDataSetChanged()
+            if (events?.isEmpty() == true) {
+                emptyTextView.visibility = View.VISIBLE
+            } else {
+                emptyTextView.visibility = View.GONE
+            }
+        }
+        // Fetch events dari API
+
+        /*view.findViewById<Button>(R.id.btnPickColor).setOnClickListener {
             val colors = intArrayOf(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.CYAN, Color.MAGENTA)
             val colorNames = arrayOf("Merah", "Biru", "Hijau", "Kuning", "Cyan", "Magenta")
             val builder = AlertDialog.Builder(requireContext())
@@ -77,38 +111,14 @@ class EventFragment : Fragment() {
                 Toast.makeText(requireContext(), "Warna dipilih!", Toast.LENGTH_SHORT).show()
             }
             builder.create().show()
-        }
+        }*/
 
 
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        /*recyclerView.layoutManager = LinearLayoutManager(requireContext())
         adapter = EventAdapter(listOf()) { event ->
             viewModel.deleteEvent(event.id)
         }
-        recyclerView.adapter = adapter
-
-        inputEventDate.isFocusable = false
-        inputEventDate.isClickable = true
-
-        val today = Calendar.getInstance()
-        val formattedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(today.time)
-        calendarView.selectedDate =
-            CalendarDay.from(today.get(Calendar.YEAR), today.get(Calendar.MONTH) + 1, today.get(Calendar.DAY_OF_MONTH))
-        viewModel.fetchEvents() // Ambil semua event dulu
-        // ✅ Tambahkan pemanggilan ulang setelah setSelectedDate
-        calendarView.post {
-            viewModel.filterEventsByDate(formattedDate)
-        }
-
-
-        calendarView.setOnDateChangedListener { _, date, _ ->
-            val calendar = Calendar.getInstance().apply {
-                set(date.year, date.month - 1, date.day)
-            }
-            val selectedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.time)
-
-            viewModel.filterEventsByDate(selectedDate) // Memfilter event berdasarkan tanggal
-        }
-
+        recyclerView.adapter = adapter*/
 
         inputEventDate.setOnClickListener {
             val calendar = Calendar.getInstance()
@@ -128,47 +138,122 @@ class EventFragment : Fragment() {
         btnSubmit.setOnClickListener {
             val name = inputEventName.text.toString()
             val date = inputEventDate.text.toString()
+            val userId = getUserIdFromSharedPref() // Ambil user_id dari SharedPreferences
 
             if (name.isNotEmpty() && date.isNotEmpty() ) {
-                viewModel.addEvent(Event(0, name, date, selectedColor))
+                if (email != null) {
+                    viewModel.addEvent(Event3(0, name, date, email), email)
+                }
                 inputEventName.text.clear()
                 inputEventDate.text.clear()
+                /*viewModel.sendNotification(userId, "Event Baru", "Kamu punya event: $name pada $date")*/
                 Toast.makeText(requireContext(), "Sukses menambahkan agenda", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(requireContext(), "Harap isi semua bidang", Toast.LENGTH_SHORT).show()
             }
         }
 
-        viewModel.filteredEvents.observe(viewLifecycleOwner) { events ->
-            recyclerView.postDelayed({
-                adapter.updateEvents(events)
-                adapter.notifyDataSetChanged()
-            }, 100) // Tambahkan delay 100ms
+
+        inputEventDate.isFocusable = false
+        inputEventDate.isClickable = true
+
+        /*val today = Calendar.getInstance()
+        val formattedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(today.time)
+        calendarView.selectedDate =
+            CalendarDay.from(today.get(Calendar.YEAR), today.get(Calendar.MONTH) + 1, today.get(Calendar.DAY_OF_MONTH))
+        viewModel.fetchEvents() // Ambil semua event dulu*/
+        // ✅ Tambahkan pemanggilan ulang setelah setSelectedDate
+/*        calendarView.post {
+            viewModel.filterEventsByDate(formattedDate)
+        }*/
+
+
+
+
+
+
+
+
+        /*viewModel.filteredEvents.observe(viewLifecycleOwner) { events ->
+            adapter.updateEvents(events)
+            adapter.notifyDataSetChanged()
             markEventsOnCalendar(events)
+
+            // ✅ Tampilkan "No events" jika daftar event kosong
+            if (events.isEmpty()) {
+                emptyTextView.visibility = View.VISIBLE
+            } else {
+                emptyTextView.visibility = View.GONE
+            }
+        }*/
+
+
+       /* calendarView.setOnDateChangedListener { _, date, _ ->
+            val calendar = Calendar.getInstance().apply {
+                set(date.year, date.month - 1, date.day)
+            }
+            val selectedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.time)
+            viewModel.selectedDate.value = selectedDate // 🔄 Simpan tanggal yang dipilih
+            viewModel.filterEventsByDate(selectedDate) // Memfilter event berdasarkan tanggal
         }
 
+
+*/
 
 
 
         return view
     }
 
+    private fun getUserData(): Map<String, String?> {
+        val prefs = requireContext().getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
+        return mapOf(
+            "token" to prefs.getString("auth_token", null),
+            "username" to prefs.getString("username", null),
+            "email" to prefs.getString("email", null),
+            "avatar" to prefs.getString("avatar", null),
+            "isVerified" to prefs.getString("isVerified", null)
+        )
+    }
+
     private fun markEventsOnCalendar(events: List<Event>) {
-        calendarView.removeDecorators()
+        calendarView.removeDecorators() // Hapus dekorasi lama
+
+        val eventMap = mutableMapOf<CalendarDay, MutableList<Int>>()
 
         for (event in events) {
-            val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(event.date)
-            date?.let {
-                val calendar = Calendar.getInstance().apply { time = date }
-                val eventDate = CalendarDay.from(
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH) + 1, // Perbaikan: bulan di Java dimulai dari 0, tambah 1
-                    calendar.get(Calendar.DAY_OF_MONTH)
-                )
-                calendarView.addDecorator(EventDecorator(event.color, eventDate))
+            val calendar = Calendar.getInstance().apply {
+                time = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(event.date)!!
+            }
+            val day = CalendarDay.from(
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH) + 1,
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+
+            if (!eventMap.containsKey(day)) {
+                eventMap[day] = mutableListOf()
+            }
+            eventMap[day]?.add(event.color)
+        }
+
+        for ((date, colors) in eventMap) {
+            if (colors.size > 1) {
+                // Jika ada lebih dari 1 event, tampilkan warna setengah-setengah
+                calendarView.addDecorator(EventDecorator(requireContext(), date, colors))
+            } else {
+                // Jika hanya ada 1 warna, tampilkan warna biasa
+                calendarView.addDecorator(SingleEventDecorator(requireContext(), date, colors[0]))
             }
         }
     }
+
+    private fun getUserIdFromSharedPref(): Int {
+        val sharedPref = requireContext().getSharedPreferences("USER_DATA", Context.MODE_PRIVATE)
+        return sharedPref.getInt("USER_ID", -1)
+    }
+
+
 
 
 }

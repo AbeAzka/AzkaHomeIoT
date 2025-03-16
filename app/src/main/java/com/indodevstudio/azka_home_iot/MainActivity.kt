@@ -40,12 +40,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.MenuProvider
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import androidx.privacysandbox.tools.core.model.Method
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -67,7 +71,7 @@ import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
-import okhttp3.Request
+//import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.eclipse.paho.client.mqttv3.IMqttActionListener
@@ -82,6 +86,8 @@ import java.io.InputStream
 import java.net.InetAddress
 import java.net.NetworkInterface
 import java.net.URL
+import com.android.volley.Request
+import com.indodevstudio.azka_home_iot.utils.FirebaseUtils.firebaseUser
 
 
 class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelectedListener {
@@ -92,9 +98,8 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
     var image : Bitmap? = null
     lateinit var inputStream : InputStream
     private lateinit var auth : FirebaseAuth
-    private lateinit var mFirebaseUser : FirebaseUser
-    lateinit var mGoogleSignInClient: GoogleSignInClient
 
+    lateinit var mGoogleSignInClient: GoogleSignInClient
 
 
     private lateinit var mqttAndroidClient: MqttAndroidClient
@@ -118,7 +123,10 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
     var username = "azka"
     var password = "misxB@T.ErHPMS/2"
     var email = ""
-
+    private lateinit var nama : TextView
+    private lateinit var em : TextView
+    private lateinit var profilepc : ImageView
+    private var isFirebase = false
 
 
 
@@ -128,6 +136,16 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        auth = FirebaseAuth.getInstance()
+        val mFirebaseUser = FirebaseAuth.getInstance().currentUser
+        mFirebaseUser?.let { user ->
+            // Lanjutkan proses jika user tidak null
+            Log.d("Firebase", "User is logged in: ${user.uid}")
+        } ?: run {
+            // Handle kasus ketika user null (belum login)
+            Log.e("Firebase", "No user is logged in")
+        }
+        //verifyToken()
         val test = Intent(this, MQTT_Service::class.java)
         //startService(test)
         connectToFirebase()
@@ -179,14 +197,14 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
         val headerView = navigationView.getHeaderView(0)
-        val nama = headerView.findViewById<TextView>(R.id.nama)
+        nama = headerView.findViewById<TextView>(R.id.namas)
         val ipAddress = headerView.findViewById<TextView>(R.id.ipAddress)
-        val profilepc = headerView.findViewById<ImageView>(R.id.logo_p)
+        profilepc = headerView.findViewById<ImageView>(R.id.logo_p)
 
         val localIpAddresses = getLocalUnicastIpAddresses()
         ipAddress.text = "$localIpAddresses"
 
-        val em = headerView.findViewById<TextView>(R.id.emailGet)
+        em = headerView.findViewById<TextView>(R.id.emailGet)
         val status = headerView.findViewById<ImageView>(R.id.status22)
 
         val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav)
@@ -221,9 +239,28 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
 //        ui_hot = view.findViewById(R.id.hotlist_hot)
 
+        val prefs = getSharedPreferences("my_prefs", MODE_PRIVATE)
+        val authToken = prefs.getString("auth_token", null)
+        val firebaseUser = FirebaseAuth.getInstance().currentUser
 
+        if(firebaseUser != null){
+            email = intent.getStringExtra("email").toString()
+            val displayName = intent.getStringExtra("name")
+            val photo = intent.getStringExtra("photop")
+            val picture3 = mFirebaseUser?.photoUrl?.toString() ?: ""
+            if (picture3 == null && firebaseUser != null) {
+                profilepc.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.azkahomeiot))
 
+            }
+            if (picture3 != null && firebaseUser != null ){
+                Glide.with(this).load(picture3).into(profilepc)
 
+            }
+            nama.text = displayName;
+
+            val obfuscatedEmail = email?.let { obfuscateEmail(it) }
+            em.text = obfuscatedEmail;
+        }
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
@@ -232,71 +269,75 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             navigationView.setCheckedItem(R.id.nav_home)
         }
 
-        mbuh()
-
         AndroidThreeTen.init(this) // Inisialisasi ThreeTenABP
         // Cek apakah notifikasi membawa data untuk membuka EventFragment
         if (intent?.getStringExtra("FRAGMENT") == "EventFragment") {
             openFragment(EventFragment())
         }
+        val userData = getUserData()
 
-        auth = FirebaseAuth.getInstance()
-        mFirebaseUser = auth.currentUser!!;
+
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
-        mGoogleSignInClient= GoogleSignIn.getClient(this,gso)
+        mGoogleSignInClient = GoogleSignIn.getClient(this,gso)
 
-        if(auth.currentUser!!.isEmailVerified == true){
-            status.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.verified))
-        }else{
-            status.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.unverified))
-            auth.currentUser?.sendEmailVerification()?.addOnCompleteListener {
-                Toast.makeText(this, "Please verify your email!" , Toast.LENGTH_SHORT).show()
-            }?.addOnFailureListener{
-                Toast.makeText(this, "Something went wrong" , Toast.LENGTH_SHORT).show()
+
+            if(mFirebaseUser?.isEmailVerified == true || userData["isVerified"] == "true"){
+                status.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.verified))
+            }else{
+                status.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.unverified))
+                auth.currentUser?.sendEmailVerification()?.addOnCompleteListener {
+                    Toast.makeText(this, "Please verify your email!" , Toast.LENGTH_SHORT).show()
+                }?.addOnFailureListener{
+                    Toast.makeText(this, "Something went wrong" , Toast.LENGTH_SHORT).show()
+                }
             }
-        }
+
 
 
 
 
         val picture = FirebaseAuth.getInstance().currentUser?.photoUrl
-        val picture2 = mFirebaseUser.photoUrl.toString();
-        val picture5 = mFirebaseUser.photoUrl
-        email = intent.getStringExtra("email").toString()
-        val displayName = intent.getStringExtra("name")
-        val photo = intent.getStringExtra("photop")
-        picture3 = FirebaseAuth.getInstance().currentUser!!.photoUrl.toString()
+
+
+
+        isFirebase = intent.getBooleanExtra("isFirebase", false)
 
 
         //val xxy = URL("https://lh3.googleusercontent.com/a/ACg8ocIdS4yQkO_r9lcFAMcoA1yVFRa3N5IC9rz3CE47mYsenze49A=s96-c")
         //profilepc.setImageURI(picture)
-        if (picture3 == null) {
-            profilepc.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.azkahomeiot))
 
-        } else {
-            Glide.with(this).load(picture3).into(profilepc)
-
-        }
 
 
         Log.i("INFO_PC", picture3 + " AND "+ picture)
         val handler = Handler(Looper.getMainLooper())
-        val ur = URL(picture3)
-        try {
-            val `in` = ur.openStream()
-            image = BitmapFactory.decodeStream(`in`)
-            handler.post {
-                profilepc.setImageBitmap(image)
-
+        if (picture3.isNullOrEmpty()) {
+            Log.e("ERROR", "URL is null or empty")
+        } else {
+            val ur = URL(picture3)
+            try {
+                if (picture3.isNullOrEmpty() || !picture3.startsWith("http")) {
+                    Log.e("ERROR", "Invalid or empty URL: $picture3")
+                    profilepc.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.azkahomeiot))
+                } else {
+                    val ur = URL(picture3)
+                    val `in` = ur.openStream()
+                    val image = BitmapFactory.decodeStream(`in`)
+                    handler.post {
+                        profilepc.setImageBitmap(image)
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Log.e("ERROR", "Failed to load image: ${e.message}")
+                profilepc.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.azkahomeiot))
             }
+
         }
-        catch (e: Exception){
-            e.printStackTrace()
-        }
+
 
         profilepc.setOnClickListener{ view->
 
@@ -307,7 +348,41 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         var close = popupview.findViewById<ImageView>(R.id.close)
         var builder = PopupWindow(popupview, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true)
         //imagee.setImageBitmap(image)
-        Glide.with(this).load(picture3).into(imagee);
+            if(firebaseUser != null) {
+                val picture3 = mFirebaseUser?.photoUrl?.toString() ?: ""
+                if (picture3 == null && firebaseUser != null) {
+                    profilepc.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.azkahomeiot))
+
+                }
+                if (picture3 != null && firebaseUser != null ){
+                    Glide.with(this).load(picture3).into(imagee)
+
+                }
+            }
+            if(authToken != null) {
+                val avatarPath = userData["avatar"].toString()
+
+// Base URL untuk server
+                val baseUrl = "https://games.abeazka.my.id/users/"
+                val baseUrl2 = "https://games.abeazka.my.id/users/images/"
+
+                /*// Pastikan path benar
+                val fullAvatarUrl = when {
+                    avatarPath.startsWith("uploads/") -> baseUrl + avatarPath
+                    avatarPath.startsWith("avatar/") -> baseUrl + avatarPath
+                    avatarPath.startsWith("http") -> avatarPath // Jika sudah full URL
+                    else -> baseUrl2 + "user.png" // Jika path tidak diketahui
+                }*/
+                val fullAvatarUrl = "https://games.abeazka.my.id/users/$avatarPath"
+
+                Log.d("AvatarURL", "Final URL2: $fullAvatarUrl") // Debugging
+
+                // Gunakan Glide untuk memuat gambar
+                Glide.with(this)
+                    .load(fullAvatarUrl)
+                    .into(imagee)
+            }
+
         builder.setBackgroundDrawable(
             AppCompatResources.getDrawable(
                 this,
@@ -321,15 +396,80 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             }
         }
 
-        nama.text = displayName;
-
-        val obfuscatedEmail = email?.let { obfuscateEmail(it) }
-        em.text = obfuscatedEmail;
 
 
 
+
+        if (userData["token"] != null) {
+            Toast.makeText(this, "Halo, ${userData["username"]}!", Toast.LENGTH_SHORT).show()
+        }
+
+        if (isUserLoggedIn() ) {
+            Toast.makeText(this, "User login dengan akun IndodevStudio", Toast.LENGTH_SHORT).show()
+        } else {
+
+            openWebLogin(this)  // Arahkan ke login jika belum login
+        }
+
+        if(authToken != null) {
+            nama.text = userData["username"]
+            em.text = userData["email"]
+            // Ambil avatar dari userData
+            val avatarPath = userData["avatar"].toString()
+
+// Base URL untuk server
+            val baseUrl = "https://games.abeazka.my.id/users/"
+            val baseUrl2 = "https://games.abeazka.my.id/users/images/"
+
+            // Pastikan path benar
+            /*val fullAvatarUrl = when {
+                avatarPath.startsWith("uploads/") -> baseUrl + avatarPath
+                avatarPath.startsWith("avatar/") -> baseUrl + avatarPath
+                avatarPath.startsWith("http") -> avatarPath // Jika sudah full URL
+                else -> baseUrl2 + "user.png" // Jika path tidak diketahui
+            }*/
+
+            val fullAvatarUrl = "https://games.abeazka.my.id/users/$avatarPath"
+
+            Log.d("AvatarURL", "Final URL: $fullAvatarUrl") // Debugging
+
+            // Gunakan Glide untuk memuat gambar
+            Glide.with(this)
+                .load(fullAvatarUrl)
+                .into(profilepc)
+
+        }
     }
 
+    fun openWebLogin(context: Context) {
+        val redirectUrl = "myapp://link_success"  // Deep link kembali ke aplikasi
+        val loginUrl = "https://games.abeazka.my.id/users/login.php?redirect=$redirectUrl"
+
+        val builder = CustomTabsIntent.Builder()
+        val customTabsIntent = builder.build()
+        customTabsIntent.launchUrl(this, Uri.parse(loginUrl))
+        finish()
+    }
+
+    private fun getUserData(): Map<String, String?> {
+        val prefs = getSharedPreferences("my_prefs", MODE_PRIVATE)
+        return mapOf(
+            "token" to prefs.getString("auth_token", null),
+            "username" to prefs.getString("username", null),
+            "email" to prefs.getString("email", null),
+            "avatar" to prefs.getString("avatar", null),
+            "isVerified" to prefs.getString("isVerified", null)
+        )
+    }
+
+
+    private fun isUserLoggedIn(): Boolean {
+        val prefs = getSharedPreferences("my_prefs", MODE_PRIVATE)
+        val authToken = prefs.getString("auth_token", null)
+        val firebaseUser = FirebaseAuth.getInstance().currentUser
+
+        return authToken != null || firebaseUser != null
+    }
 
 
 
@@ -776,13 +916,20 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             .setMessage("Are you sure you want to logout?")
             .setPositiveButton("Yes") { dialog, which ->
                 // Proceed with the action (e.g., delete the data)
-                firebaseAuth.signOut()
-                mGoogleSignInClient.signOut().addOnCompleteListener {
-                    val intent= Intent(this, SignInActivity::class.java)
+
+                // Hapus token dari SharedPreferences (untuk login via web)
+                val prefs = getSharedPreferences("my_prefs", MODE_PRIVATE).edit()
+                prefs.remove("auth_token")  // Hapus token login web
+                prefs.apply()
+
+                // Sign out dari Firebase Authentication (untuk login via Google)
+                FirebaseAuth.getInstance().signOut()
+                    val intent = Intent(this, SignInActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                     Toast.makeText(this, "Successfully logout!", Toast.LENGTH_SHORT).show()
                     finish()
-                }
+
             }
             .setNegativeButton("No") { dialog, which ->
                 // Dismiss the dialog, no action needed
@@ -925,10 +1072,66 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         }
     }
 
-    fun mbuh(){
-        sendPushNotification(token, "Test", "Test", "Test")
+    fun verifyToken() {
+        val sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
+        val token = sharedPreferences.getString("auth_token", null)
+        //Log.d("TOKEN_DEBUG", "Token dikirim: $token") // Debugging
+       /* val name = sharedPreferences.getString("username", null)
+        val email2 = sharedPreferences.getString("email", null)
+        val avatar = sharedPreferences.getString("avatar", null)*/
+        val navigationView = findViewById<NavigationView>(R.id.nav_view)
+        navigationView.setNavigationItemSelectedListener(this)
+        val headerView = navigationView.getHeaderView(0)
+        nama = headerView.findViewById<TextView>(R.id.namas)
+        em = headerView.findViewById<TextView>(R.id.emailGet)
+        profilepc = headerView.findViewById<ImageView>(R.id.logo_p)
+
+        if (!token.isNullOrEmpty()) {
+            val url = "https://games.abeazka.my.id/api/verify_token.php"
+            val requestBody = JSONObject().apply {
+                put("token", token)
+            }
+
+            val request = JsonObjectRequest(Request.Method.POST, url, requestBody,
+                { response ->
+                    //Log.d("TOKEN_RESPONSE", response.toString()) // Debugging
+
+                    if (response.getBoolean("success")) {
+                        val username = response.getString("username")
+                        val email2 = response.getString("email")
+                        val photo = response.getString("avatar")
+
+                        nama.text = username
+                        em.text = email2
+                        Glide.with(this).load(photo).into(profilepc)
+
+
+                        // Simpan ke SharedPreferences
+                        sharedPreferences.edit().apply {
+                            putString("username", username)
+                            putString("email", email2)
+                            putString("avatar", photo)
+                            apply()
+                        }
+                        Toast.makeText(this, "Login sebagai $username", Toast.LENGTH_LONG).show()
+                    } else {
+                        sharedPreferences.edit().remove("auth_token").apply()
+                        Toast.makeText(this, "Token invalid", Toast.LENGTH_LONG).show()
+                    }
+                },
+                { error -> Log.e("API_ERROR", error.toString()) }
+            )
+
+            Volley.newRequestQueue(this).add(request)
+        }
     }
 
+
+    fun mbuh(){
+        /*sendPushNotification(token, "Test", "Test", "Test")*/
+    }
+
+/*
     fun sendPushNotification(token: String, title: String, subtitle: String, body: String, data: Map<String, String> = emptyMap()) {
         val url = "https://fcm.googleapis.com/fcm/send"
 
@@ -1008,6 +1211,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         }
 
     }
+*/
 
     private fun connectToFirebase() {
         val database = FirebaseDatabase.getInstance()
