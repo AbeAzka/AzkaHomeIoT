@@ -205,11 +205,11 @@ class SignInActivity : AppCompatActivity() {
     private fun handleResults(task: Task<GoogleSignInAccount>) {
         if (task.isSuccessful){
             val account : GoogleSignInAccount? = task.result
-            Toast.makeText(
+            /*Toast.makeText(
                 applicationContext,
                 "Welcome",
                 Toast.LENGTH_SHORT
-            ).show()
+            ).show()*/
             if (account != null){
                 updateUI(account)
             }
@@ -259,11 +259,11 @@ class SignInActivity : AppCompatActivity() {
                 intent.putExtra("email", user!!.email)
                 intent.putExtra("name", user!!.displayName)
                 startActivity(intent)
-                Toast.makeText(
+                /*Toast.makeText(
                     applicationContext,
                     "Welcome back " + user!!.email,
                     Toast.LENGTH_SHORT
-                ).show()
+                ).show()*/
                 saveEmailToSharedPref(this, user!!.email.toString())
 
                 overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right)
@@ -271,27 +271,10 @@ class SignInActivity : AppCompatActivity() {
             }
 
         }
-
-//        if(firebaseAuth.currentUser != null) {
-//            val user = FirebaseAuth.getInstance().currentUser
-//            val intent  = Intent(this , MainActivity::class.java)
-//            intent.putExtra("email" , user!!.email)
-//            intent.putExtra("name" , user!!.displayName)
-//
-//            startActivity(intent)
-//            Toast.makeText(applicationContext, "Welcome back " + user!!.email, Toast.LENGTH_SHORT).show()
-//            overridePendingTransition(R.anim.slide_from_left,R.anim.slide_to_right)
-//        }
     }
 
 
-    //==override fun onStart() {
-    //    super.onStart()
-    //    if(firebaseAuth.currentUser != null){
-    //        val intent = Intent(this, MainActivity::class.java)
-    //        startActivity(intent)
-    //    }
-   // }
+
 
     fun saveEmailToSharedPref(context: Context, email: String) {
         val sharedPref = context.getSharedPreferences("USER_DATA", Context.MODE_PRIVATE)

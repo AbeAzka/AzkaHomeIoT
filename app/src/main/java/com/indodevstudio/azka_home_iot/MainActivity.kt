@@ -244,10 +244,12 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         val firebaseUser = FirebaseAuth.getInstance().currentUser
 
         if(firebaseUser != null){
+            Toast.makeText(this, "User login dengan akun Google", Toast.LENGTH_SHORT).show()
             email = intent.getStringExtra("email").toString()
             val displayName = intent.getStringExtra("name")
             val photo = intent.getStringExtra("photop")
             val picture3 = mFirebaseUser?.photoUrl?.toString() ?: ""
+            profilepc.tooltipText = email
             if (picture3 == null && firebaseUser != null) {
                 profilepc.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.azkahomeiot))
 
@@ -401,19 +403,21 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
 
         if (userData["token"] != null) {
-            Toast.makeText(this, "Halo, ${userData["username"]}!", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, "Halo, ${userData["username"]}!", Toast.LENGTH_SHORT).show()
         }
 
         if (isUserLoggedIn() ) {
-            Toast.makeText(this, "User login dengan akun IndodevStudio", Toast.LENGTH_SHORT).show()
+
         } else {
 
             openWebLogin(this)  // Arahkan ke login jika belum login
         }
 
         if(authToken != null) {
+            Toast.makeText(this, "User login dengan akun IndodevStudio", Toast.LENGTH_SHORT).show()
             nama.text = userData["username"]
-            em.text = userData["email"]
+            val obfuscatedEmail = userData["email"]?.let { obfuscateEmail(it) }
+            em.text = obfuscatedEmail
             // Ambil avatar dari userData
             val avatarPath = userData["avatar"].toString()
 
@@ -437,6 +441,8 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             Glide.with(this)
                 .load(fullAvatarUrl)
                 .into(profilepc)
+
+            profilepc.tooltipText = userData["email"]
 
         }
     }
@@ -1072,64 +1078,6 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         }
     }
 
-    fun verifyToken() {
-        val sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
-        val token = sharedPreferences.getString("auth_token", null)
-        //Log.d("TOKEN_DEBUG", "Token dikirim: $token") // Debugging
-       /* val name = sharedPreferences.getString("username", null)
-        val email2 = sharedPreferences.getString("email", null)
-        val avatar = sharedPreferences.getString("avatar", null)*/
-        val navigationView = findViewById<NavigationView>(R.id.nav_view)
-        navigationView.setNavigationItemSelectedListener(this)
-        val headerView = navigationView.getHeaderView(0)
-        nama = headerView.findViewById<TextView>(R.id.namas)
-        em = headerView.findViewById<TextView>(R.id.emailGet)
-        profilepc = headerView.findViewById<ImageView>(R.id.logo_p)
-
-        if (!token.isNullOrEmpty()) {
-            val url = "https://games.abeazka.my.id/api/verify_token.php"
-            val requestBody = JSONObject().apply {
-                put("token", token)
-            }
-
-            val request = JsonObjectRequest(Request.Method.POST, url, requestBody,
-                { response ->
-                    //Log.d("TOKEN_RESPONSE", response.toString()) // Debugging
-
-                    if (response.getBoolean("success")) {
-                        val username = response.getString("username")
-                        val email2 = response.getString("email")
-                        val photo = response.getString("avatar")
-
-                        nama.text = username
-                        em.text = email2
-                        Glide.with(this).load(photo).into(profilepc)
-
-
-                        // Simpan ke SharedPreferences
-                        sharedPreferences.edit().apply {
-                            putString("username", username)
-                            putString("email", email2)
-                            putString("avatar", photo)
-                            apply()
-                        }
-                        Toast.makeText(this, "Login sebagai $username", Toast.LENGTH_LONG).show()
-                    } else {
-                        sharedPreferences.edit().remove("auth_token").apply()
-                        Toast.makeText(this, "Token invalid", Toast.LENGTH_LONG).show()
-                    }
-                },
-                { error -> Log.e("API_ERROR", error.toString()) }
-            )
-
-            Volley.newRequestQueue(this).add(request)
-        }
-    }
-
-
-    fun mbuh(){
-        /*sendPushNotification(token, "Test", "Test", "Test")*/
-    }
 
 /*
     fun sendPushNotification(token: String, title: String, subtitle: String, body: String, data: Map<String, String> = emptyMap()) {

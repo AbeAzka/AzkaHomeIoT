@@ -22,6 +22,8 @@
     <color name="transparant">#00FFFFFF</color>
     <color name="orange">#FF7700</color>
 
+    <color name="green">#4CAF50</color> <!-- Ganti dengan warna hijau yang diinginkan -->
+
     <!--    Light (Primary) -->
     <color name="color_primary_light">#1CAB55</color>
     <color name="color_primary_variant_light">#1CAB55</color>

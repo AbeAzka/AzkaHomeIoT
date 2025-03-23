@@ -6,6 +6,8 @@ import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -23,8 +25,12 @@ data class Event(
 data class Event2(
     val id: Int,
     val name: String,
-    val date: String
-)
+    val date: String,
+    var isCompleted: Int, // Nilai dari database (0 atau 1)
+) {
+    val isCompleted2: Boolean
+        get() = isCompleted == 1 // Konversi otomatis
+}
 
 data class Event3(
     val id: Int,
@@ -34,7 +40,12 @@ data class Event3(
 )
 
 interface ApiService2 {
-
+    @FormUrlEncoded
+    @POST("update_event.php")
+    fun updateEventStatus(
+        @Field("id") eventId: Int,
+        @Field("isCompleted") isCompleted: Int
+    ): Call<ResponseBody>
     @GET("get_events_by_date.php")
     fun getEventsByDate(
         @Query("date") date: String,

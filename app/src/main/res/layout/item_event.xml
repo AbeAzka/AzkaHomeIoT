@@ -1,30 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:padding="8dp"
-    android:gravity="center_vertical">
+    android:layout_margin="5dp"
+    android:id="@+id/cardItemEv"
+    app:cardBackgroundColor="?attr/drawerItemBackground"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="4dp">
 
-    <TextView
-        android:id="@+id/eventName"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:text="Nama Event"
-        android:textSize="16sp" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="6dp">
 
-    <TextView
-        android:id="@+id/eventDate"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Tanggal"
-        android:textSize="14sp" />
+        <TextView
+            android:id="@+id/eventName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="Nama Event"
+            android:textColor="?attr/textContent"
+            android:textSize="16sp"
+            android:tooltipText="Nama event"/>
 
-    <Button
-        android:id="@+id/btnDelete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hapus" />
-</LinearLayout>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="?attr/textContent"
+            android:layout_marginHorizontal="8dp"/>
+
+
+        <TextView
+            android:id="@+id/eventDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Tanggal"
+            android:textColor="?attr/textContent"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:tooltipText="Tanggal event"/>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="?attr/textContent"
+            android:layout_marginHorizontal="8dp"/>
+        <!-- Tombol Check -->
+        <ImageButton
+            android:id="@+id/btnCheck"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            android:src="@drawable/ic_check_circle"
+
+            android:tooltipText="Tandai sebagai selesai"/>
+
+
+        <!-- Tombol Delete -->
+        <ImageButton
+            android:id="@+id/btnDelete"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            android:src="@drawable/ic_trash_can"
+            app:tint="@android:color/holo_red_light"
+            android:tooltipText="Hapus"/>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

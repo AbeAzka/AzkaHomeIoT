@@ -18,6 +18,8 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -78,11 +80,19 @@ class EventFragment : Fragment() {
             email = userData["email"].toString()
         }
 
+        val constraintLayout = view.findViewById<ConstraintLayout>(R.id.idxxs)
+
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(constraintLayout)
+        constraintSet.constrainHeight(R.id.recyclerView, 600) // Atur tinggi sesuai kebutuhan
+        constraintSet.applyTo(constraintLayout)
+
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         adapter = EventAdapter(ArrayList()) { events ->
             viewModel.deleteEvent(events.id, email)
         }
         recyclerView.adapter = adapter
+        recyclerView.setHasFixedSize(true)
         viewModel.fetchEvents(email)
         viewModel.events.observe(viewLifecycleOwner) { events ->
             if (events != null) {
