@@ -5,6 +5,8 @@ import android.Manifest
 import com.jakewharton.threetenabp.AndroidThreeTen
 import android.app.AlertDialog
 import android.app.Dialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -87,6 +89,7 @@ import java.net.InetAddress
 import java.net.NetworkInterface
 import java.net.URL
 import com.android.volley.Request
+import com.android.volley.toolbox.StringRequest
 import com.indodevstudio.azka_home_iot.utils.FirebaseUtils.firebaseUser
 
 
@@ -158,8 +161,21 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 //        mqtt = MQTT()
 //        mqtt.connect(this@MainActivity)
 //        mqtt.receiveMessages()
+        createNotificationChannel(applicationContext)
 
-        connectDB()
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        val channels = notificationManager.notificationChannels
+        for (channel in channels) {
+            Log.d("FCM", "Channel ID: ${channel.id}, Name: ${channel.name}")
+        }
+
+
+        FirebaseMessaging.getInstance().subscribeToTopic("all")
+            .addOnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.e("FCM", "Gagal subscribe ke topic")
+                }
+            }
 
         val pm = this.getSystemService(Context.POWER_SERVICE) as PowerManager
         val packageName = this.packageName
@@ -181,6 +197,12 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         requestPermission()
         requestPermissionMain()
         drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
+
+
+        // Cek jika Activity dibuka dari notifikasi
+        if (intent.hasExtra("openFragment") && intent.getStringExtra("openFragment") == "EventFragment") {
+            openFragment(EventFragment())
+        }
 
 
 //        foregoundServiceIntent = Intent(this, MQTT_Service::class.java)
@@ -248,6 +270,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             email = intent.getStringExtra("email").toString()
             val displayName = intent.getStringExtra("name")
             val photo = intent.getStringExtra("photop")
+            sendFCMTokenToServer(applicationContext, email)
             val picture3 = mFirebaseUser?.photoUrl?.toString() ?: ""
             profilepc.tooltipText = email
             if (picture3 == null && firebaseUser != null) {
@@ -420,7 +443,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             em.text = obfuscatedEmail
             // Ambil avatar dari userData
             val avatarPath = userData["avatar"].toString()
-
+            userData["email"]?.let { sendFCMTokenToServer(applicationContext,it) }
 // Base URL untuk server
             val baseUrl = "https://games.abeazka.my.id/users/"
             val baseUrl2 = "https://games.abeazka.my.id/users/images/"
@@ -477,6 +500,58 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         return authToken != null || firebaseUser != null
     }
 
+    fun createNotificationChannel(context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "event_reminder",  // HARUS SAMA DENGAN channel_id di PHP
+                "Event Reminder",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Channel untuk pengingat event"
+            }
+
+            val notificationManager = context.getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    fun sendFCMTokenToServer(ctx: Context,email: String) {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.e("FCM", "Gagal mendapatkan token")
+                return@addOnCompleteListener
+            }
+            val fcmToken = task.result
+            sendTokenToServer(ctx, email, fcmToken)
+        }
+    }
+
+    fun sendTokenToServer(context: Context, email: String, token: String) {
+        val url = "https://ahi.abeazka.my.id/api/events/save_fcm_token.php"
+        val jsonBody = JSONObject().apply {
+            put("email", email)
+            put("fcm_token", token)
+        }
+
+        Log.d("FCM", "EMAIL: $email ----- TOKEN: $token")
+
+        val request = object : JsonObjectRequest(Method.POST, url, jsonBody,
+            { response ->
+                Log.d("FCM", "Token berhasil dikirim: $response")
+            },
+            { error ->
+                Log.e("FCM", "Gagal mengirim token: ${error.message}")
+            }) {
+            override fun getHeaders(): MutableMap<String, String> {
+                return mutableMapOf("Content-Type" to "application/json")
+            }
+        }
+
+        Volley.newRequestQueue(context.applicationContext).add(request)
+    }
+
+
+
 
 
 
@@ -485,6 +560,8 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             .replace(R.id.fragment_container, fragment)
             .commit()
     }
+
+
 
     fun obfuscateEmail(email: String): String {
         val parts = email.split("@")
@@ -546,10 +623,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         super.onResume()
     }
 
-    fun connectDB(){
 
-
-    }
 
 
 

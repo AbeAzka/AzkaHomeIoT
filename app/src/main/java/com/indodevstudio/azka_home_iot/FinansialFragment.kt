@@ -1073,7 +1073,7 @@ class FinansialFragment : Fragment() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Progress Channel"
-            val descriptionText = "Channel for progress notifications"
+            val descriptionText = "Channel untuk notifikasi proses download"
             val importance = NotificationManager.IMPORTANCE_LOW
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText

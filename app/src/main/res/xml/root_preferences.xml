@@ -33,27 +33,34 @@
 
             app:entries="@array/dark_mode_entries"
             app:entryValues="@array/dark_mode_entries_values"/>
+        <!--<SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="notification"
+            app:title="Notification"
+            app:summaryOff="You will not receive any notifications."
+            app:summaryOn="You will receive any notifications."
+            ></SwitchPreferenceCompat>-->
 
-    </PreferenceCategory>
-    <PreferenceCategory app:title="Advanced">
-        <Preference android:title="Website"
-            app:key="link"
-            android:summary="Open website!">
-            <intent android:action="android.intent.action.VIEW"
-                android:data="https://www.abeazka.my.id"/>
+                </PreferenceCategory>
+                <PreferenceCategory app:title="Advanced">
+                    <Preference android:title="Website"
+                        app:key="link"
+                        android:summary="Open website!">
+                        <intent android:action="android.intent.action.VIEW"
+                            android:data="https://www.abeazka.my.id"/>
 
-        </Preference>
-        <Preference android:title="Update Log"
-            app:key="link"
-            android:summary="See the update log!">
-            <intent android:action="android.intent.action.VIEW"
-                android:data="https://www.abeazka.my.id/ahi/update"/>
+                    </Preference>
+                    <Preference android:title="Update Log"
+                        app:key="link"
+                        android:summary="See the update log!">
+                        <intent android:action="android.intent.action.VIEW"
+                            android:data="https://www.abeazka.my.id/ahi/update"/>
 
-        </Preference>
-        <Preference android:title="License"
-            android:summary="Copyright © 2024 Azka - All Rights Reserved">
-        </Preference>
-    </PreferenceCategory>
+                    </Preference>
+                    <Preference android:title="License"
+                        android:summary="Copyright © 2024 Azka - All Rights Reserved">
+                    </Preference>
+                </PreferenceCategory>
 
 
-</PreferenceScreen>
+            </PreferenceScreen>

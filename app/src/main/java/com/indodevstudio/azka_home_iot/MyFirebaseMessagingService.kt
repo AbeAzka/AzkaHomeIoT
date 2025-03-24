@@ -34,93 +34,49 @@ import retrofit2.Response
 const val channelId = "notification_channel"
 const val channelName = "com.indodevstudio.azka_home_iot"
 class MyFirebaseMessagingService : FirebaseMessagingService(){
-
-    override fun onNewToken(token: String) {
-        Log.d("FCM", "Token baru: $token")
-        // Simpan token ke server
-        val email = getEmailFromSharedPref(applicationContext) // Ambil email dari SharedPreferences
-        if (email.isNotEmpty()) {
-            saveFcmTokenToServer(applicationContext, email, token)
-        }
-    }
-
-    private fun getEmailFromSharedPref(context: Context): String {
-        val sharedPref = context.getSharedPreferences("USER_DATA", Context.MODE_PRIVATE)
-        return sharedPref.getString("EMAIL", "") ?: ""
-    }
-
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        if (!isAppInForeground(this)) {
-            remoteMessage.notification?.let {
-                showNotification(it.title ?: "Event Hari Ini", it.body ?: "Ada agenda yang harus Anda hadiri.")
-            }
+        remoteMessage.notification?.let {
+
+            sendNotification(it.title, it.body)
         }
     }
 
-    private fun showNotification(title: String, message: String) {
-        val channelId = "event_channel"
+    private fun sendNotification(title: String?, messageBody: String?) {
+        val channelId = "event_reminder"
+        val notificationId = System.currentTimeMillis().toInt()
+
+        // Intent untuk membuka MainActivity dengan Fragment Event
+        val intent = Intent(this, MainActivity::class.java).apply {
+            putExtra("openFragment", "EventFragment")
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
+
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val notificationBuilder = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.drawable.ic_event) // Ganti dengan icon yang sesuai
+            .setContentTitle(title ?: "Notifikasi Baru")
+            .setContentText(messageBody ?: "Tekan untuk melihat detail event.")
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
+        // Buat channel jika Android >= Oreo
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId, "Event Notifications",
-                NotificationManager.IMPORTANCE_HIGH)
+            val channel = NotificationChannel(
+                channelId,
+                "Reminder Acara",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Channel untuk mengingatkan event"
+            }
             notificationManager.createNotificationChannel(channel)
         }
 
-        val notification = NotificationCompat.Builder(this, channelId)
-            .setContentTitle(title)
-            .setContentText(message)
-            .setSmallIcon(R.drawable.ic_notif_ig)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setAutoCancel(true)
-            .build()
-
-        notificationManager.notify(1, notification)
+        notificationManager.notify(notificationId, notificationBuilder.build())
     }
-
-    private fun isAppInForeground(context: Context): Boolean {
-        val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val runningProcesses = activityManager.runningAppProcesses ?: return false
-        return runningProcesses.any { it.processName == context.packageName && it.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND }
-    }
-
-
-    fun saveFcmTokenToServer(context: Context, email: String, fcmToken: String) {
-        val retrofit = RetrofitClient.instance
-        val apiService = retrofit.create(EventService::class.java)
-
-        apiService.sendFcmToken(email, fcmToken).enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.isSuccessful) {
-                    Log.d("FCM", "Token FCM berhasil disimpan")
-                } else {
-                    Log.e("FCM", "Gagal menyimpan token")
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Log.e("FCM", "Error: ${t.message}")
-            }
-        })
-    }
-
-    /*private fun sendTokenToServer(token: String) {
-        val sharedPref = getSharedPreferences("USER_DATA", Context.MODE_PRIVATE)
-        val userId = sharedPref.getInt("USER_ID", -1)
-        if (userId == -1) return
-
-        val retrofit = RetrofitClient.instance.create(EventService::class.java)
-        retrofit.sendFcmToken(userId, token).enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.isSuccessful) {
-                    Log.d("FCM", "Token berhasil dikirim ke server")
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Log.e("FCM", "Gagal mengirim token ke server")
-            }
-        })
-    }*/
 }

@@ -1,14 +1,19 @@
 package com.indodevstudio.azka_home_iot
 
+import android.app.NotificationManager
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
+import com.google.firebase.messaging.FirebaseMessaging
 
 
 class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
@@ -88,6 +93,55 @@ lateinit var web : WebView
                 }
             }
         }
+
+        /*if (key == "notification") {
+            val prefs = sharedPreferences.getBoolean(key, true)
+
+            if (prefs) {
+                // Enable notifications
+                // For example, using the NotificationManager to show a notification
+
+                val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                val notificationChannelId = "event_reminder" // You can create your channel
+
+                // Create and show the notification
+                val notification = NotificationCompat.Builder(this, notificationChannelId)
+                    .setSmallIcon(R.drawable.ic_notif_ig)
+                    .setContentTitle("Notification Enabled")
+                    .setContentText("Notifications are turned on.")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .build()
+
+                // Show the notification
+                notificationManager.notify(0, notification)
+
+                // Enable Firebase notifications (Subscribe to topic)
+                FirebaseMessaging.getInstance().subscribeToTopic("general_notifications")
+                    .addOnCompleteListener { task ->
+                        var msg = "Subscribed to notifications"
+                        if (!task.isSuccessful) {
+                            msg = "Failed to subscribe"
+                        }
+                        Log.d("Notification", msg)
+                    }
+
+            } else {
+                // Disable notifications
+                // Cancel ongoing notifications if any
+                val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                notificationManager.cancelAll()  // This will cancel all active notifications
+
+                FirebaseMessaging.getInstance().unsubscribeFromTopic("general_notifications")
+                    .addOnCompleteListener { task ->
+                        var msg = "Unsubscribed from notifications"
+                        if (!task.isSuccessful) {
+                            msg = "Failed to unsubscribe"
+                        }
+                        Log.d("Notification", msg)
+                    }
+            }
+        }*/
+
 
     }
 
