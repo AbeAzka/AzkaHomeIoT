@@ -90,6 +90,7 @@ import java.net.NetworkInterface
 import java.net.URL
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
+
 import com.indodevstudio.azka_home_iot.utils.FirebaseUtils.firebaseUser
 
 
@@ -203,6 +204,14 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         if (intent.hasExtra("openFragment") && intent.getStringExtra("openFragment") == "EventFragment") {
             openFragment(EventFragment())
         }
+
+        // Inisialisasi Logger
+        // Mulai service logcat
+        Logger.init(this)
+        Logger.log("MainActivity", "Aplikasi dimulai!")
+
+
+
 
 
 //        foregoundServiceIntent = Intent(this, MQTT_Service::class.java)
@@ -468,6 +477,8 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             profilepc.tooltipText = userData["email"]
 
         }
+
+
     }
 
     fun openWebLogin(context: Context) {
@@ -479,6 +490,31 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         customTabsIntent.launchUrl(this, Uri.parse(loginUrl))
         finish()
     }
+
+    fun setToolbarForFragment(showBackButton: Boolean) {
+        val actionBar = supportActionBar
+        if (actionBar != null) {
+            if (showBackButton) {
+                actionBar.setDisplayHomeAsUpEnabled(true)
+                actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back) // Ganti dengan ikon back
+            } else {
+                actionBar.setDisplayHomeAsUpEnabled(false) // Tampilkan hamburger kembali
+            }
+        }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStack() // Kembali ke fragment sebelumnya
+        } else {
+            finish() // Jika tidak ada fragment lagi, keluar dari aplikasi
+        }
+        return true
+    }
+
+
+
+
 
     private fun getUserData(): Map<String, String?> {
         val prefs = getSharedPreferences("my_prefs", MODE_PRIVATE)
@@ -961,6 +997,13 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, EventFragment()).commit()
                 navigationView.setCheckedItem(R.id.events_)
+            }
+            R.id.nav_device -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, DeviceListFragment()).commit()
+                navigationView.setCheckedItem(R.id.nav_book)
             }
 
 

@@ -47,7 +47,7 @@
     </item>
 
     <item
-        android:title="EVENTS"
+        android:title="ACARA/AGENDA"
         android:id="@+id/events"
 
         >
@@ -71,14 +71,19 @@
             <group
                 android:checkableBehavior="single"
                 >
-            <item
-                android:id="@+id/nav_taman"
-                android:icon="@drawable/ic_nature_people"
-                android:title="Taman - LAB"/>
-            <item
-                android:id="@+id/nav_taman_p"
-                android:icon="@drawable/ic_nature_people"
-                android:title="Taman - Production"/>
+                <item
+                    android:id="@+id/nav_device"
+                    android:icon="@drawable/ic_device"
+                    android:title="Tambahkan Arduino"/>
+                <item
+                    android:id="@+id/nav_taman"
+                    android:icon="@drawable/ic_nature_people"
+                    android:title="Taman - LAB"/>
+                <item
+                    android:id="@+id/nav_taman_p"
+                    android:icon="@drawable/ic_nature_people"
+                    android:title="Taman - Production"/>
+
 
             </group>
         </menu>

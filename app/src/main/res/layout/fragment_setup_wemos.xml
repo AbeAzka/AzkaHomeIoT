@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    >
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarSetup"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:title="Setup Perangkat"
+        app:titleTextColor="@color/white"
+        app:navigationIcon="@drawable/ic_arrow_back"
+       app:navigationContentDescription="Back"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+
+    <!-- Status Koneksi -->
+    <TextView
+        android:id="@+id/statusTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Press Connect to Wemos"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:padding="8dp"
+        android:background="@color/gray"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Tombol Connect ke Wemos_Setup -->
+    <Button
+        android:id="@+id/buttonConnect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Connect to Wemos"
+        android:padding="12dp"
+        android:backgroundTint="@color/cyan"
+        android:textColor="@android:color/white"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Input SSID -->
+    <EditText
+        android:id="@+id/editTextSSID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter WiFi SSID"
+        android:inputType="text"
+        android:padding="12dp"
+        android:textColor="?attr/textContent"
+        android:background="?attr/drawerBackground"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone"/>
+
+    <!-- Input Password -->
+    <EditText
+        android:id="@+id/editTextPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter WiFi Password"
+        android:inputType="textPassword"
+        android:padding="12dp"
+        android:textColor="?attr/textContent"
+        android:background="?attr/drawerBackground"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone"/>
+
+    <!-- Tombol Submit WiFi -->
+    <Button
+        android:id="@+id/buttonSubmitWiFi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Submit WiFi"
+        android:padding="12dp"
+        android:backgroundTint="@color/green"
+        android:textColor="@android:color/white"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"/>
+
+    <!-- Input Nama Device -->
+    <EditText
+        android:id="@+id/editTextDeviceName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Device Name"
+        android:inputType="text"
+        android:padding="12dp"
+        android:textColor="?attr/textContent"
+        android:background="?attr/drawerBackground"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone"/>
+
+    <!-- Tombol Submit Device -->
+    <Button
+        android:id="@+id/buttonSubmitDevice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save Device"
+        android:padding="12dp"
+        android:backgroundTint="@color/red"
+        android:textColor="@android:color/white"
+        android:visibility="gone"/>
+    </LinearLayout>
+
+</LinearLayout>

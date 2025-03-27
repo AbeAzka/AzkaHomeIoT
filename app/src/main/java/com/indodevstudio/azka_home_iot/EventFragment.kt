@@ -96,14 +96,17 @@ class EventFragment : Fragment() {
         viewModel.fetchEvents(email)
         viewModel.events.observe(viewLifecycleOwner) { events ->
             if (events != null) {
+
                     Log.d("EventFragment", "Update RecyclerView dengan ${events.size} event")
             }
             adapter.updateEvents(events ?: arrayListOf()) // Pastikan list tidak null
             adapter.notifyDataSetChanged()
             if (events?.isEmpty() == true) {
                 emptyTextView.visibility = View.VISIBLE
+                recyclerView.visibility = View.GONE
             } else {
                 emptyTextView.visibility = View.GONE
+                recyclerView.visibility = View.VISIBLE
             }
         }
         // Fetch events dari API
