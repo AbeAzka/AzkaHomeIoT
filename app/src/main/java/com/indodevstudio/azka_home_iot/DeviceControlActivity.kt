@@ -1,14 +1,23 @@
 package com.indodevstudio.azka_home_iot
 
+import android.content.DialogInterface
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import okhttp3.*
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import java.io.IOException
+
 
 class DeviceControlActivity : AppCompatActivity() {
 
@@ -18,8 +27,13 @@ class DeviceControlActivity : AppCompatActivity() {
     private lateinit var buttonOn2: Button
     private lateinit var buttonOff2: Button
 
+    private lateinit var textSwitch1 : TextView
+    private lateinit var textSwitch2: TextView
+
     private val client = OkHttpClient()
     private lateinit var baseUrl: String
+
+    var sharedPreferences: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +44,25 @@ class DeviceControlActivity : AppCompatActivity() {
         buttonOff = findViewById(R.id.buttonOff)
         buttonOn2 = findViewById(R.id.buttonOn2)
         buttonOff2 = findViewById(R.id.buttonOff2)
+
+        textSwitch2 = findViewById(R.id.textSwitch2)
+        textSwitch1 = findViewById(R.id.textSwitch1)
+
+        sharedPreferences = getSharedPreferences("MyPrefs", 0)
+
+        // 🔹 Set teks yang tersimpan
+        textSwitch1.text = sharedPreferences?.getString("switch1", "Switch 1")
+        textSwitch2.text = sharedPreferences?.getString("switch2", "Switch 2")
+        textSwitch1.setOnClickListener { v: View? ->
+            showEditDialog(
+                textSwitch1, "switch1"
+            )
+        }
+        textSwitch2.setOnClickListener { v: View? ->
+            showEditDialog(
+                textSwitch2, "switch2"
+            )
+        }
 
         val deviceName = intent.getStringExtra("deviceName") ?: "Unknown Device"
         baseUrl = "http://taryem.my.id/Lab01/labx.php"
@@ -49,6 +82,29 @@ class DeviceControlActivity : AppCompatActivity() {
             //What to do on back clicked
             onBackPressed()
         })
+    }
+
+    private fun showEditDialog(textView: TextView, key: String) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Edit Nama")
+        val input = EditText(this)
+        input.setText(textView.text.toString())
+        builder.setView(input)
+        builder.setPositiveButton("OK") { dialog: DialogInterface?, which: Int ->
+            val newText = input.text.toString()
+            textView.text = newText
+
+            // 🔹 Simpan teks yang diedit ke SharedPreferences
+
+            val editor = sharedPreferences?.edit()
+            editor?.putString(key, newText)
+            editor?.apply()
+
+        }
+        builder.setNegativeButton(
+            "Cancel"
+        ) { dialog: DialogInterface, which: Int -> dialog.cancel() }
+        builder.show()
     }
 
     override fun onBackPressed() {

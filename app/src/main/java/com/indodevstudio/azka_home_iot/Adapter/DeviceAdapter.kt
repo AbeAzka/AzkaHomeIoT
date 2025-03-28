@@ -34,6 +34,10 @@ class DeviceAdapter(
         fun onRenameDevice(device: DeviceModel, position: Int)
         fun onDeleteDevice(device: DeviceModel, position: Int)
         fun onResetWiFi(device: DeviceModel)
+
+        fun onPublish(deviceId: String)
+
+        /*fun onTopic(device: DeviceModel)*/
     }
 
     private val viewHolders = mutableListOf<DeviceViewHolder>() // Menyimpan semua ViewHolder
@@ -77,10 +81,13 @@ class DeviceAdapter(
         }
     }
 
+
+
     class DeviceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvDeviceName: TextView = itemView.findViewById(R.id.textViewDeviceName)
         private val btnRename: ImageButton = itemView.findViewById(R.id.btnRename)
         private val btnDelete: ImageButton = itemView.findViewById(R.id.btnDelete)
+        private val btnRefresh: ImageButton = itemView.findViewById(R.id.btnRefresh)
         val deviceStatus: TextView = itemView.findViewById(R.id.textStatus)
         val ip: TextView = itemView.findViewById(R.id.textIP)
         lateinit var mqttClient: MqttClient
@@ -90,8 +97,11 @@ class DeviceAdapter(
 
             btnRename.setOnClickListener { listener.onRenameDevice(device, position) }
             btnDelete.setOnClickListener { listener.onDeleteDevice(device, position) }
-
+            btnRefresh.setOnClickListener{listener.onPublish("arduino_1")}
             setupMqttClient()
+            listener.onPublish("arduino_1")
+
+            //publishMqttTopic("set_mqtt_topic", topic1, topic2)
         }
 
         private fun setupMqttClient() {
@@ -105,7 +115,7 @@ class DeviceAdapter(
                 options.isAutomaticReconnect = true
                 options.isCleanSession = true
                 options.connectionTimeout = 10
-                options.keepAliveInterval = 60
+                options.keepAliveInterval = 10
 
                 mqttClient.connect(options)
 
@@ -128,7 +138,7 @@ class DeviceAdapter(
                                 ip.text = payload
                             } else {
                                 println("⚠️ Bukan IP Address: $payload")
-                                ip.text = "null"
+                                ip.text = "0.0.0.0"
                             }
                         }
                     }
@@ -136,7 +146,9 @@ class DeviceAdapter(
                     override fun deliveryComplete(token: IMqttDeliveryToken?) {}
                 })
 
+
                 mqttClient.subscribe("sending_telemetri2")
+
 
             } catch (e: MqttException) {
                 e.printStackTrace()
@@ -199,6 +211,32 @@ class DeviceAdapter(
                 e.printStackTrace()
                 println("❌ Error lainnya: ${e.message}")
                 Logger.log("MQTT", "❌ Error lainnya: ${e.message}")
+            }
+        }
+
+        fun publishMqttTopic(mqttTopic: String, newTopic: String, newTopic2: String) {
+            try {
+                // Membuat payload dalam format JSON
+                val jsonPayload = JSONObject().apply {
+                    put("topic", newTopic)
+                    put("topic2", newTopic2)
+                }
+
+                // Konversi JSON ke string
+                val message = jsonPayload.toString()
+                val mqttMessage = MqttMessage().apply {
+                    payload = message.toByteArray()
+                    qos = 1  // QoS 1 agar pesan pasti sampai
+                    isRetained = false
+                }
+
+
+                // Publish pesan ke MQTT broker
+                mqttClient.publish(mqttTopic, mqttMessage)
+                println("📡 MQTT Topic Sent: $message")
+
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
 

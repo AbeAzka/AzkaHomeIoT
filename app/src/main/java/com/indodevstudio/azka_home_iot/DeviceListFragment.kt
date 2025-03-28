@@ -1,5 +1,6 @@
 package com.indodevstudio.azka_home_iot
 
+import android.adservices.topics.Topic
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
@@ -56,7 +57,16 @@ class DeviceListFragment : Fragment() {
             override fun onResetWiFi(device: DeviceModel) {
                 resetDeviceWiFi(device)
             }
+
+            override fun onPublish(deviceId: String) {
+                deviceAdapter.publish("sending_order2", deviceId, "refresh")
+            }
+
+            /*override fun onTopic(device: DeviceModel) {
+                setTopic(device)
+            }*/
         })
+        deviceAdapter.publish("sending_order2", "arduino_1", "refresh")
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = deviceAdapter
@@ -80,6 +90,8 @@ class DeviceListFragment : Fragment() {
 
         return view
     }
+
+
 
     // 🔹 Fungsi untuk menyimpan daftar perangkat ke SharedPreferences
     private fun saveDeviceList() {
@@ -220,7 +232,7 @@ class DeviceListFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        deviceAdapter.disconnectAllMqttClients() // Memutus semua koneksi MQTT
+        //deviceAdapter.disconnectAllMqttClients() // Memutus semua koneksi MQTT
     }
 
 

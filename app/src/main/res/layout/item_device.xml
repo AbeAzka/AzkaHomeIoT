@@ -73,6 +73,7 @@
                 android:src="@drawable/ic_edit"
                 app:tint="@color/green"
                 android:contentDescription="Rename Device"
+                android:tooltipText="Ubah Nama Perangkat"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="8dp" />
 
@@ -83,6 +84,18 @@
                 android:layout_weight="1"
                 android:src="@drawable/ic_trash_can"
                 app:tint="@color/red"
+                android:contentDescription="Delete Device"
+                android:tooltipText="Hapus Perangkat"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="8dp" />
+            <ImageButton
+                android:id="@+id/btnRefresh"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_refresh"
+                app:tint="@color/cyan"
+                android:tooltipText="Refresh"
                 android:contentDescription="Delete Device"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="8dp" />
