@@ -31,8 +31,9 @@
         android:textSize="16sp"
         android:textStyle="bold"
         android:gravity="center"
+        android:textColor="?attr/textContent"
         android:padding="8dp"
-        android:background="@color/gray"
+        android:background="?attr/SPcardBG"
         android:layout_marginBottom="16dp"/>
 
     <!-- Tombol Connect ke Wemos_Setup -->
@@ -45,6 +46,20 @@
         android:backgroundTint="@color/cyan"
         android:textColor="@android:color/white"
         android:layout_marginBottom="16dp"/>
+
+
+        <TextView
+            android:id="@+id/textInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Jika apps tidak connect wifi otomatis, Anda dapat mengkoneksikan wifi secara manual. \n\n - Nyalakan WiFi \n - Pilih WiFi dengan nama 'Wemos_Setup' \n - Klik tombol Connect To Wemos lagi"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="?attr/textContent"
+            android:gravity="center"
+            android:padding="8dp"
+            android:background="?attr/SPcardBG"
+            android:layout_marginBottom="16dp"/>
 
     <!-- Input SSID -->
     <EditText

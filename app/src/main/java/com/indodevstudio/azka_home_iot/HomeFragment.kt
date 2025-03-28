@@ -77,7 +77,7 @@ class HomeFragment : Fragment() {
     var srlData: SwipeRefreshLayout? = null
     var pbData: ProgressBar? = null
     var cards2: CardView? = null
-
+    lateinit var shimmerLayout : ShimmerFrameLayout
 
 
 
@@ -103,7 +103,7 @@ class HomeFragment : Fragment() {
     ): View? {
         val view =  inflater.inflate(R.layout.fragment_home, container, false)
 
-
+        shimmerLayout = view.findViewById<ShimmerFrameLayout>(R.id.shimmer_layout)
         rvData = view.findViewById(R.id.rv_data)
         srlData = view.findViewById(R.id.srl_data)
         pbData = view.findViewById(R.id.pb_data)
@@ -119,24 +119,43 @@ class HomeFragment : Fragment() {
 //        chart = view.findViewById(R.id.chart)
 //        pbData_BG = view.findViewById(R.id.load)
          val imageGraphSample = view.findViewById<ImageView>(R.id.imageGrafikSample)
-
+        val imageGraphSample2 = view.findViewById<ImageView>(R.id.imageGrafikSampleTest)
         lmData = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         (lmData as LinearLayoutManager).setReverseLayout(true);
         (lmData as LinearLayoutManager).setStackFromEnd(true);
         with(rvData){this?.setLayoutManager(lmData)}
 
-        with (srlData){
+        with (srlData) {
             this?.setOnRefreshListener {
                 setRefreshing(true)
+
+                // Start the shimmer effect
+
+                shimmerLayout.startShimmer() // Start shimmer
+                shimmerLayout.visibility = View.VISIBLE
+                // Clear the image initially
                 imageGraphSample.setImageBitmap(null)
+                imageGraphSample2.setImageResource(R.drawable.sample)
+
+                // Simulate your data retrieval methods (replace with your actual logic)
                 retrieveData()
-//                getNotice()
                 retrieveTemp()
                 retrieveImage()
+
+
+
+                    // Set the actual image after data has been retrieved
+                    // For example, setImageBitmap(actualImage)
+                    // imageGrafikSample.setImageBitmap(actualImage)
+
+
+
                 setRefreshing(false)
+                // Stop the shimmer after a short delay (ensure image retrieval completes first)
 
             }
         }
+
         // Inflate the layout for this fragment
         val user = FirebaseAuth.getInstance().currentUser
         val greeting = view.findViewById<TextView>(R.id.greetings)
@@ -242,6 +261,7 @@ class HomeFragment : Fragment() {
 
     fun retrieveImage(){
         //START OF GET IMAGE
+        val imageGraphSample2 = view?.findViewById<ImageView>(R.id.imageGrafikSampleTest)
         val imageGraphSample = view?.findViewById<ImageView>(R.id.imageGrafikSample)
         val URL: String = "https://abeazka.my.id/telemetri/tandongrafikbunda.php"
         if (URL.isNotEmpty()) {
@@ -268,6 +288,7 @@ class HomeFragment : Fragment() {
                     Log.i("Response", "Received response from server. Response")
                     if (response.code == 200) {
                         //Thread.sleep(3_000)
+                         // Adjust this delay to match your data loading time
                         println("GAMBAR BERHASIL DIBUILD")
                         println("TAHAP MUNCULIN GAMBAR.....")
                         //Popup
@@ -279,6 +300,9 @@ class HomeFragment : Fragment() {
                             val `in` = URL2.openStream()
                             image = BitmapFactory.decodeStream(`in`)
                             handler.post{
+                                shimmerLayout.stopShimmer()
+                                shimmerLayout.visibility = View.GONE // Hide shimmer after loading
+                                imageGraphSample?.visibility = View.VISIBLE
                                 //imageGrafik.setImageBitmap(image)
 
 //                                var inflater = LayoutInflater.from(getActivity())
@@ -290,6 +314,9 @@ class HomeFragment : Fragment() {
 
                                 if (imageGraphSample != null) {
                                     imageGraphSample.setImageBitmap(image)
+
+                                }else{
+                                    imageGraphSample?.setImageResource(R.drawable.sample)
                                 }
                                 //imagee.setRotation(90f)
 //                                builder.setBackgroundDrawable(

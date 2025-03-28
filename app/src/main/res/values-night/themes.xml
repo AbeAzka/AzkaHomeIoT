@@ -57,7 +57,7 @@
         <item name="cardBG">@color/black_2</item>
         <item name="textContent">@color/white</item>
         <item name="stroke_Spin">@color/white</item>
-
+        <item name="SPcardBG">@color/black_2</item>
         <item name="android:alertDialogTheme">@color/white</item>
 
     </style>

@@ -9,7 +9,6 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,24 +18,17 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import com.indodevstudio.azka_home_iot.Model.DeviceModel
-import com.indodevstudio.azka_home_iot.Model.DeviceViewModel
-import okhttp3.OkHttpClient
-import okhttp3.*
 import java.io.IOException
 
-class SetupWemosFragment : Fragment() {
+class SetupWiFiFragment : Fragment() {
 
     private lateinit var statusTextView: TextView
     private lateinit var buttonConnect: Button
     private lateinit var editTextSSID: EditText
     private lateinit var editTextPassword: EditText
     private lateinit var buttonSubmitWiFi: Button
-    private lateinit var editTextDeviceName: EditText
-    private lateinit var buttonSubmitDevice: Button
-    private lateinit var textInfo :TextView
-    var IPA = ""
+    private lateinit var textInfo: TextView
+
     private lateinit var wifiManager: WifiManager
     private var isReceiverRegistered = false
     private val wemosSSID = "Wemos_Setup"
@@ -53,13 +45,13 @@ class SetupWemosFragment : Fragment() {
                 val results: List<ScanResult> = wifiManager.scanResults
                 for (result in results) {
                     if (result.SSID == wemosSSID) {
-                        Logger.log("SetupWemosFragment", "Wemos ditemukan: ${result.SSID}")
+                        Logger.log("SetupWiFiFragment", "Wemos ditemukan: ${result.SSID}")
                         unregisterReceiverSafe()
                         connectToWemos()
                         return
                     }
                 }
-                Logger.log("SetupWemosFragment", "Wemos tidak ditemukan")
+                Logger.log("SetupWiFiFragment", "Wemos tidak ditemukan")
                 statusTextView.text = "Wemos not found. Please try again."
             }
         }
@@ -67,15 +59,12 @@ class SetupWemosFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_setup_wemos, container, false)
-
         textInfo = view.findViewById(R.id.textInfo)
         statusTextView = view.findViewById(R.id.statusTextView)
         buttonConnect = view.findViewById(R.id.buttonConnect)
         editTextSSID = view.findViewById(R.id.editTextSSID)
         editTextPassword = view.findViewById(R.id.editTextPassword)
         buttonSubmitWiFi = view.findViewById(R.id.buttonSubmitWiFi)
-        editTextDeviceName = view.findViewById(R.id.editTextDeviceName)
-        buttonSubmitDevice = view.findViewById(R.id.buttonSubmitDevice)
 
         wifiManager = requireContext().applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
@@ -87,49 +76,22 @@ class SetupWemosFragment : Fragment() {
             submitNewWiFiCredentials()
         }
 
-        val deviceViewModel: DeviceViewModel by activityViewModels()
-
-        buttonSubmitDevice.setOnClickListener {
-//            getLatestDeviceIp()
-            val deviceName = editTextDeviceName.text.toString()
-            val deviceIp = getCurrentIpAddress() // Ambil IP Wemos
-
-            if (deviceName.isNotEmpty() && deviceIp.isNotEmpty()) {
-                val newDevice = DeviceModel(deviceName, deviceIp) // Simpan dengan IP
-                deviceViewModel.addDevice(newDevice)
-
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, DeviceListFragment())
-                    .commit()
-
-                Logger.log("SetupWemosFragment", "Device Disimpan: Name = $deviceName, IP = $deviceIp")
-            } else {
-                Toast.makeText(requireContext(), "Enter device name & ensure connection", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-
         (activity as? AppCompatActivity)?.supportActionBar?.hide()
-
         val toolbar = view.findViewById<Toolbar>(R.id.toolbarSetup)
         toolbar.setNavigationOnClickListener(View.OnClickListener {
             //What to do on back clicked
             onBackPressed()
         })
-
         return view
     }
 
-     fun onBackPressed() {
+    fun onBackPressed() {
 
         // Menggunakan parentFragmentManager untuk mengganti fragmen di dalam aktivitas
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, DeviceListFragment()) // Gantilah dengan fragmen yang sesuai
             .commit()
     }
-
-
-
 
     private fun getCurrentIpAddress(): String {
         val dhcpInfo = wifiManager.dhcpInfo
@@ -144,40 +106,10 @@ class SetupWemosFragment : Fragment() {
         )
     }
 
-    fun getLatestDeviceIp() {
-        val client = OkHttpClient()
-        val request = Request.Builder()
-            .url("https://ahi.abeazka.my.id/api/get_latest_ip.php") // Endpoint untuk mendapatkan IP
-            .build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                Log.e("IP Fetch", "Error fetching IP: ${e.message}")
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
-                    // Mengambil IP dari body response
-                    val ip = response.body?.string()?.trim()  // Pastikan response.body tidak null dan ambil IP
-                    if (ip != null) {
-                        IPA = ip
-                        Logger.log("IP", "${ip}")
-                    } else {
-                        Log.e("IP Fetch", "Received empty IP")
-                    }
-                } else {
-                    Log.e("IP Fetch", "Error: ${response.code}")
-                }
-            }
-        })
-    }
-
-
     override fun onDestroyView() {
         super.onDestroyView()
         (activity as? AppCompatActivity)?.supportActionBar?.show()
     }
-
 
     override fun onResume() {
         super.onResume()
@@ -197,12 +129,12 @@ class SetupWemosFragment : Fragment() {
         }
 
         statusTextView.text = "Scanning for Wemos..."
-        Logger.log("SetupWemosFragment", "Memulai scanning WiFi...")
+        Logger.log("SetupWiFiFragment", "Memulai scanning WiFi...")
 
         if (!isReceiverRegistered) {
             requireContext().registerReceiver(wifiReceiver, IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION))
             isReceiverRegistered = true
-            Logger.log("SetupWemosFragment", "Receiver WiFi didaftarkan")
+            Logger.log("SetupWiFiFragment", "Receiver WiFi didaftarkan")
         }
 
         wifiManager.startScan()
@@ -212,9 +144,9 @@ class SetupWemosFragment : Fragment() {
         if (isReceiverRegistered) {
             try {
                 requireContext().unregisterReceiver(wifiReceiver)
-                Logger.log("SetupWemosFragment", "Receiver berhasil di-unregister")
+                Logger.log("SetupWiFiFragment", "Receiver berhasil di-unregister")
             } catch (e: IllegalArgumentException) {
-                Logger.log("SetupWemosFragment", "Receiver tidak terdaftar, tidak perlu di-unregister")
+                Logger.log("SetupWiFiFragment", "Receiver tidak terdaftar, tidak perlu di-unregister")
             }
             isReceiverRegistered = false
         }
@@ -222,7 +154,7 @@ class SetupWemosFragment : Fragment() {
 
     private fun connectToWemos() {
         statusTextView.text = "Connecting to Wemos..."
-        Logger.log("SetupWemosFragment", "Menghubungkan ke Wemos...")
+        Logger.log("SetupWiFiFragment", "Menghubungkan ke Wemos...")
 
         val wifiConfig = WifiConfiguration().apply {
             SSID = "\"$wemosSSID\""
@@ -238,7 +170,7 @@ class SetupWemosFragment : Fragment() {
             val currentIp = getCurrentIpAddress()
             if (wifiManager.connectionInfo.ssid == "\"$wemosSSID\"" && currentIp.isNotEmpty()) {
                 statusTextView.text = "Connected to Wemos"
-                Logger.log("SetupWemosFragment", "Terhubung ke Wemos: $currentIp")
+                Logger.log("SetupWiFiFragment", "Terhubung ke Wemos: $currentIp")
                 textInfo.visibility = View.GONE
                 buttonConnect.visibility = View.GONE
                 editTextSSID.visibility = View.VISIBLE
@@ -246,7 +178,7 @@ class SetupWemosFragment : Fragment() {
                 buttonSubmitWiFi.visibility = View.VISIBLE
             } else {
                 statusTextView.text = "Failed to connect"
-                Logger.log("SetupWemosFragment", "Gagal terhubung ke Wemos")
+                Logger.log("SetupWiFiFragment", "Gagal terhubung ke Wemos")
             }
         }, 5000)
 
@@ -259,6 +191,7 @@ class SetupWemosFragment : Fragment() {
             }
         }
     }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 1) {
@@ -296,29 +229,26 @@ class SetupWemosFragment : Fragment() {
 
             override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
                 response.use {
-                    if (!response.isSuccessful) {
-                        activity?.runOnUiThread {
+                    activity?.runOnUiThread {
+                        if (!response.isSuccessful) {
                             Toast.makeText(activity, "Error: ${response.message}", Toast.LENGTH_SHORT).show()
-                        }
-                    } else {
-                        activity?.runOnUiThread {
-                            Toast.makeText(activity, "WiFi Setup Successful!", Toast.LENGTH_SHORT).show()
-                            statusTextView.text = "Wemos Configured!"
+                        } else {
+                            /*Toast.makeText(activity, "WiFi Setup Successful!", Toast.LENGTH_SHORT).show()
+                            statusTextView.text = "Wemos Configured!"*/
+                            activity?.runOnUiThread {
+                                Toast.makeText(activity, "WiFi Setup Successful!", Toast.LENGTH_SHORT).show()
+                                statusTextView.text = "Wemos Configured!"
 
-                            // Cek apakah IP Wemos berubah setelah koneksi sukses
-                            val newIp = getCurrentIpAddress()
-                            Logger.log("SetupWemosFragment", "Wemos IP setelah setup: $newIp")
+                                // Navigasi ke DeviceListFragment
+                                parentFragmentManager.beginTransaction()
+                                    .replace(R.id.fragment_container, DeviceListFragment()) // Ganti dengan ID container fragment di layout
+                                    .commit()
+                            }
 
-                            editTextSSID.visibility = View.GONE
-                            editTextPassword.visibility = View.GONE
-                            buttonSubmitWiFi.visibility = View.GONE
-                            editTextDeviceName.visibility = View.VISIBLE
-                            buttonSubmitDevice.visibility = View.VISIBLE
                         }
                     }
                 }
             }
         })
     }
-
 }

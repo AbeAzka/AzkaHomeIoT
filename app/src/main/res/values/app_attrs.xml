@@ -8,6 +8,7 @@
     <attr name="drawerBackground" format="color"/>
     <attr name="textContent" format="color"/>
     <attr name="cardBG" format="color"/>
+    <attr name="SPcardBG" format="color"/>
     <attr name="stroke_Spin" format="color"/>
     <attr name="selected_icon" format="color"/>
 </resources>

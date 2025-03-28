@@ -2,6 +2,8 @@ package com.indodevstudio.azka_home_iot
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.*
 import android.widget.TextView
@@ -139,7 +141,8 @@ class DeviceListFragment : Fragment() {
 
         builder.setPositiveButton("Delete") { _, _ ->
             deviceViewModel.deleteDevice(device)
-            resetDeviceWiFi(device.ipAddress) // 🔹 Reset WiFi setelah delete
+            //resetDeviceWiFi(device) // 🔹 Reset WiFi setelah delete
+            deviceAdapter.publish("sending_order2", "arduino_1", "delete")
             Toast.makeText(requireContext(), "Device deleted", Toast.LENGTH_SHORT).show()
         }
 
@@ -179,18 +182,16 @@ class DeviceListFragment : Fragment() {
 
     // Reset WiFi
     private fun resetDeviceWiFi(device: DeviceModel) {
-        val url = "http://${device.ipAddress}/reset_wifi" // Gunakan alamat IP perangkat
+        val url = "http://${device.ipAddress}/reset_wifi"
         val requestBody = "".toRequestBody(null) // Body kosong untuk POST
-        val request = okhttp3.Request.Builder()
-            .url(url)
-            .post(requestBody) // Pakai POST, bukan GET
-            .build()
+        val request = okhttp3.Request.Builder().url(url).post(requestBody).build()
         val client = okhttp3.OkHttpClient()
 
         client.newCall(request).enqueue(object : okhttp3.Callback {
             override fun onFailure(call: okhttp3.Call, e: java.io.IOException) {
                 requireActivity().runOnUiThread {
                     Toast.makeText(requireContext(), "Failed to reset WiFi", Toast.LENGTH_SHORT).show()
+                    Logger.log("[ERROR RESET WIFI] ", "${e.message}")
                 }
             }
 
@@ -201,12 +202,28 @@ class DeviceListFragment : Fragment() {
                             Toast.makeText(requireContext(), "Error: ${response.message}", Toast.LENGTH_SHORT).show()
                         } else {
                             Toast.makeText(requireContext(), "WiFi Reset Successful", Toast.LENGTH_SHORT).show()
+
+                            // 🔄 Tunggu 5 detik sebelum pindah ke Fragment Setup WiFi
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                val fragment = SetupWiFiFragment()
+                                val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                                transaction.replace(R.id.fragment_container, fragment)
+                                transaction.addToBackStack(null)
+                                transaction.commit()
+                            }, 5000)
                         }
                     }
                 }
             }
         })
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        deviceAdapter.disconnectAllMqttClients() // Memutus semua koneksi MQTT
+    }
+
+
 
 
 
@@ -215,6 +232,30 @@ class DeviceListFragment : Fragment() {
         deviceViewModel.addDevice(newDevice)
         saveDeviceList()
     }
+
+    fun checkDeviceStatus(device: DeviceModel, callback: (Boolean) -> Unit) {
+        val url = "http://${device.ipAddress}/status" // Sesuaikan dengan endpoint di Arduino
+
+        val request = okhttp3.Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        val client = okhttp3.OkHttpClient()
+
+        client.newCall(request).enqueue(object : okhttp3.Callback {
+            override fun onFailure(call: okhttp3.Call, e: IOException) {
+                callback(false) // Perangkat dianggap offline jika gagal terhubung
+            }
+
+            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                response.use {
+                    callback(response.isSuccessful) // Jika respon sukses, berarti online
+                }
+            }
+        })
+    }
+
 
 
 

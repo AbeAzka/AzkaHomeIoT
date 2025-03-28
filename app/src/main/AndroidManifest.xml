@@ -40,7 +40,8 @@
         tools:targetApi="34">
         <activity
             android:name=".DeviceControlActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".LoginSuccessActivity"
             android:exported="true">
@@ -69,6 +70,7 @@
 
 
 
+
         <activity
             android:name=".SplashActivity"
             android:exported="true"
@@ -88,6 +90,7 @@
             android:name=".InboxActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".SettingsActivity"
             android:exported="false"

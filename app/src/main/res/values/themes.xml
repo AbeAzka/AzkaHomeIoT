@@ -62,6 +62,7 @@
         <item name="cardBG">@color/white_2</item>
         <item name="stroke_Spin">@color/black</item>
         <item name="textContent">@color/black</item>
+        <item name="SPcardBG">@color/gray</item>
 
         <!-- Customize your theme here. -->
 

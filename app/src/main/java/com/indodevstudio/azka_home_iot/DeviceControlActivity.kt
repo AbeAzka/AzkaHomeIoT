@@ -15,6 +15,8 @@ class DeviceControlActivity : AppCompatActivity() {
     private lateinit var textViewStatus: TextView
     private lateinit var buttonOn: Button
     private lateinit var buttonOff: Button
+    private lateinit var buttonOn2: Button
+    private lateinit var buttonOff2: Button
 
     private val client = OkHttpClient()
     private lateinit var baseUrl: String
@@ -26,6 +28,8 @@ class DeviceControlActivity : AppCompatActivity() {
         textViewStatus = findViewById(R.id.textViewStatus)
         buttonOn = findViewById(R.id.buttonOn)
         buttonOff = findViewById(R.id.buttonOff)
+        buttonOn2 = findViewById(R.id.buttonOn2)
+        buttonOff2 = findViewById(R.id.buttonOff2)
 
         val deviceName = intent.getStringExtra("deviceName") ?: "Unknown Device"
         baseUrl = "http://taryem.my.id/Lab01/labx.php"
@@ -37,6 +41,9 @@ class DeviceControlActivity : AppCompatActivity() {
 
         buttonOn.setOnClickListener { sendCommand("on") }
         buttonOff.setOnClickListener { sendCommand("off") }
+
+        buttonOn2.setOnClickListener { sendCommand("on2") }
+        buttonOff2.setOnClickListener { sendCommand("off2") }
 
         toolbar.setNavigationOnClickListener(View.OnClickListener {
             //What to do on back clicked

@@ -20,6 +20,43 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
+        <!-- LinearLayout untuk menampilkan status dan IP secara horizontal -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp">
+
+            <TextView
+                android:id="@+id/textStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Offline"
+                android:tooltipText="Status"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/holo_red_dark"
+                android:layout_marginEnd="8dp"/>
+            <!-- Separator berupa tanda "-" -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="?attr/textContent"
+                android:layout_marginEnd="8dp"/>
+            <TextView
+                android:id="@+id/textIP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="null"
+                android:tooltipText="IP Address"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/holo_blue_dark"/>
+        </LinearLayout>
+
         <!-- LinearLayout untuk ImageButton dibuat horizontal -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -49,18 +86,6 @@
                 android:contentDescription="Delete Device"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="8dp" />
-
-            <ImageButton
-                android:id="@+id/btnResetWiFi"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/ic_change"
-                app:tint="@color/cyan"
-                android:contentDescription="Reset WiFi"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="8dp" />
-
         </LinearLayout>
 
     </LinearLayout>
