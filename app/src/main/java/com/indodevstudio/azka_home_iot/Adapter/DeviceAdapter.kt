@@ -1,5 +1,6 @@
 package com.indodevstudio.azka_home_iot.Adapter
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Handler
@@ -10,8 +11,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.indodevstudio.azka_home_iot.DeviceControlActivity
+import com.indodevstudio.azka_home_iot.InviteActivity
 import com.indodevstudio.azka_home_iot.Logger
 import com.indodevstudio.azka_home_iot.Model.DeviceModel
 import com.indodevstudio.azka_home_iot.R
@@ -58,9 +62,43 @@ class DeviceAdapter(
             intent.putExtra("deviceName", device.name)
             holder.itemView.context.startActivity(intent)
         }
+
+        holder.itemView.setOnLongClickListener{
+            if (device.isShared) {
+                Toast.makeText(holder.itemView.context, "You don't have permission to modify this device", Toast.LENGTH_SHORT).show()
+                return@setOnLongClickListener true
+            }
+            showInviteDialog(holder.itemView.context, device)
+            true
+        }
     }
 
     override fun getItemCount(): Int = deviceList.size
+
+    private fun showInviteDialog(context: Context, device: DeviceModel) {
+        if (device.isShared) {
+            Toast.makeText(context, "You don't have permission to modify this device", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("Undang Pengguna")
+        builder.setMessage("Ingin mengundang pengguna lain untuk melihat perangkat ini?")
+
+        builder.setPositiveButton("Undang") { _, _ ->
+            // Pindah ke Fragment/Activity undangan
+            val intent = Intent(context, InviteActivity::class.java) // Ganti dengan activity yang sesuai
+            intent.putExtra("device_id", device.id) // Kirim ID perangkat ke activity
+            intent.putExtra("device_nama", device.name) // Kirim ID perangkat ke activity
+            context.startActivity(intent)
+        }
+
+        builder.setNegativeButton("Batal") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        builder.show()
+    }
+
 
     fun updateData(newDevices: List<DeviceModel>) {
         deviceList.clear()
@@ -89,15 +127,27 @@ class DeviceAdapter(
         private val btnDelete: ImageButton = itemView.findViewById(R.id.btnDelete)
         private val btnRefresh: ImageButton = itemView.findViewById(R.id.btnRefresh)
         val deviceStatus: TextView = itemView.findViewById(R.id.textStatus)
+        private val tvShared: TextView = itemView.findViewById(R.id.tvShared)
         val ip: TextView = itemView.findViewById(R.id.textIP)
         lateinit var mqttClient: MqttClient
 
         fun bind(device: DeviceModel, listener: DeviceActionListener, position: Int) {
-            tvDeviceName.text = device.name
+            tvDeviceName.text = "${device.name} - ID: ${device.id}"
 
             btnRename.setOnClickListener { listener.onRenameDevice(device, position) }
-            btnDelete.setOnClickListener { listener.onDeleteDevice(device, position) }
+            btnDelete.setOnClickListener {
+                if (!device.isShared) {
+                    listener.onDeleteDevice(device, position)
+                }
+            }
             btnRefresh.setOnClickListener{listener.onPublish("arduino_1")}
+            btnDelete.visibility = if (device.isShared) View.GONE else View.VISIBLE
+            // 🔹 Tampilkan label "Shared" jika perangkat adalah hasil sharing
+            if (device.isShared) {
+                tvShared.visibility = View.VISIBLE
+            } else {
+                tvShared.visibility = View.GONE
+            }
             setupMqttClient()
             listener.onPublish("arduino_1")
 
@@ -126,19 +176,29 @@ class DeviceAdapter(
 
                     override fun messageArrived(topic: String?, message: MqttMessage?) {
                         itemView.post {
-                            deviceStatus.text = "Online"
-                            deviceStatus.setTextColor(Color.GREEN)
-
                             val payload = message?.payload?.toString(Charsets.UTF_8) ?: ""
+
                             println("📩 Pesan Diterima dari $topic: $payload")
 
-                            // Cek apakah pesan adalah IP Address
-                            if (isValidIPAddress(payload)) {
-                                println("✅ IP Address Terbaca: $payload")
-                                ip.text = payload
-                            } else {
-                                println("⚠️ Bukan IP Address: $payload")
-                                ip.text = "0.0.0.0"
+                            try {
+                                // Parsing JSON
+                                val json = JSONObject(payload)
+                                val deviceId = json.getString("device_id")
+                                val deviceIp = json.getString("ip")
+
+                                println("✅ Device ID: $deviceId, IP: $deviceIp")
+
+                                // **Simpan device_id ke SharedPreferences**
+                                val sharedPreferences = itemView.context.getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
+                                sharedPreferences.edit().putString("device_id", deviceId).apply()
+
+                                // Tampilkan ke UI
+                                deviceStatus.text = "Online"
+                                deviceStatus.setTextColor(Color.GREEN)
+                                ip.text = deviceIp
+
+                            } catch (e: Exception) {
+                                println("❌ Gagal parsing JSON: ${e.message}")
                             }
                         }
                     }

@@ -23,7 +23,6 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
@@ -39,9 +38,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="34">
         <activity
+            android:name=".InviteActivity"
+            android:exported="false" />
+        <activity
             android:name=".DeviceControlActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".LoginSuccessActivity"
             android:exported="true">
@@ -68,9 +70,6 @@
                 tools:replace="android:resource" />
         </provider>
 
-
-
-
         <activity
             android:name=".SplashActivity"
             android:exported="true"
@@ -82,15 +81,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
-
-
         <activity
             android:name=".InboxActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".SettingsActivity"
             android:exported="false"

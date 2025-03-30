@@ -20,6 +20,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.google.firebase.auth.FirebaseAuth
+import com.indodevstudio.azka_home_iot.API.DeviceSharingService
 import com.indodevstudio.azka_home_iot.Model.DeviceModel
 import com.indodevstudio.azka_home_iot.Model.DeviceViewModel
 import okhttp3.OkHttpClient
@@ -41,6 +43,7 @@ class SetupWemosFragment : Fragment() {
     private var isReceiverRegistered = false
     private val wemosSSID = "Wemos_Setup"
     private val wemosPassword = ""
+    private var email: String? = null
 
     private val wifiReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -49,6 +52,8 @@ class SetupWemosFragment : Fragment() {
                     requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
                     return
                 }
+
+
 
                 val results: List<ScanResult> = wifiManager.scanResults
                 for (result in results) {
@@ -77,6 +82,17 @@ class SetupWemosFragment : Fragment() {
         editTextDeviceName = view.findViewById(R.id.editTextDeviceName)
         buttonSubmitDevice = view.findViewById(R.id.buttonSubmitDevice)
 
+        val firebaseUser = FirebaseAuth.getInstance().currentUser
+        if(firebaseUser != null){
+            email = firebaseUser.email
+        }
+        val userData = getUserData()
+        val prefs = requireContext().getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
+        val authToken = prefs.getString("auth_token", null)
+        if(authToken != null) {
+            email = userData["email"]
+        }
+
         wifiManager = requireContext().applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
         buttonConnect.setOnClickListener {
@@ -91,12 +107,19 @@ class SetupWemosFragment : Fragment() {
 
         buttonSubmitDevice.setOnClickListener {
 //            getLatestDeviceIp()
+            val ownerEmail = email // Ambil dari session/login
             val deviceName = editTextDeviceName.text.toString()
             val deviceIp = getCurrentIpAddress() // Ambil IP Wemos
-
+            val sharedPreferences = requireContext().getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
+            val deviceId = sharedPreferences.getString("device_id", "UNKNOWN_ID") ?: "UNKNOWN_ID"
+            saveDeviceName(requireContext(), deviceName)
+            saveDeviceIP(requireContext(), deviceIp)
             if (deviceName.isNotEmpty() && deviceIp.isNotEmpty()) {
-                val newDevice = DeviceModel(deviceName, deviceIp) // Simpan dengan IP
+                val newDevice = DeviceModel(deviceId,deviceName, deviceIp) // Simpan dengan IP
                 deviceViewModel.addDevice(newDevice)
+                if (ownerEmail != null) {
+                    DeviceSharingService.sendDevice(ownerEmail , deviceName, deviceId, deviceIp)
+                }
 
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, DeviceListFragment())
@@ -120,6 +143,17 @@ class SetupWemosFragment : Fragment() {
         return view
     }
 
+    private fun getUserData(): Map<String, String?> {
+        val prefs = requireContext().getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
+        return mapOf(
+            "token" to prefs.getString("auth_token", null),
+            "username" to prefs.getString("username", null),
+            "email" to prefs.getString("email", null),
+            "avatar" to prefs.getString("avatar", null),
+            "isVerified" to prefs.getString("isVerified", null)
+        )
+    }
+
      fun onBackPressed() {
 
         // Menggunakan parentFragmentManager untuk mengganti fragmen di dalam aktivitas
@@ -128,6 +162,19 @@ class SetupWemosFragment : Fragment() {
             .commit()
     }
 
+    private fun saveDeviceName(context: Context, deviceName: String) {
+        val sharedPreferences = context.getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("DEVICE_NAME", deviceName)
+        editor.apply()
+    }
+
+    private fun saveDeviceIP(context: Context, deviceName: String) {
+        val sharedPreferences = context.getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("DEVICE_IP", deviceName)
+        editor.apply()
+    }
 
 
 

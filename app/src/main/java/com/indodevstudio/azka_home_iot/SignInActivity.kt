@@ -25,6 +25,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.indodevstudio.azka_home_iot.API.DeviceSharingService
 import com.indodevstudio.azka_home_iot.databinding.ActivitySignInBinding
 
 
@@ -228,6 +229,11 @@ class SignInActivity : AppCompatActivity() {
                 intent.putExtra("email" , account.email)
                 intent.putExtra("name" , account.displayName)
                 intent.putExtra("isFirebase", true)
+                account.email?.let { it1 -> account.displayName?.let { it2 ->
+                    DeviceSharingService.addUser(it1,
+                        it2
+                    )
+                } };
                 saveEmailToSharedPref(this, account.email.toString())
                 if(firebaseAuth.currentUser!!.isEmailVerified == true){
                     Log.i("Status", "Account verified for " + account.email)
@@ -258,6 +264,11 @@ class SignInActivity : AppCompatActivity() {
                 bundle.putString("name", user!!.displayName)
                 intent.putExtra("email", user!!.email)
                 intent.putExtra("name", user!!.displayName)
+                user!!.email?.let { user!!.displayName?.let { it1 ->
+                    DeviceSharingService.addUser(it,
+                        it1
+                    )
+                } }
                 startActivity(intent)
                 /*Toast.makeText(
                     applicationContext,

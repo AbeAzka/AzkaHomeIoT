@@ -21,6 +21,10 @@
     <color name="realGray">#505050</color>
     <color name="transparant">#00FFFFFF</color>
     <color name="orange">#FF7700</color>
+    <color name="light_gray">#E0E0E0</color>
+
+    <color name="very_blue">#0000FF</color>
+    <color name="light_blue">#6EDBFF</color>
 
     <color name="green">#4CAF50</color> <!-- Ganti dengan warna hijau yang diinginkan -->
 

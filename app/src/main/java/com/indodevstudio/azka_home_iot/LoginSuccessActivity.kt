@@ -11,6 +11,7 @@ import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
+import com.indodevstudio.azka_home_iot.API.DeviceSharingService
 import org.json.JSONObject
 
 class LoginSuccessActivity : AppCompatActivity() {
@@ -25,6 +26,9 @@ class LoginSuccessActivity : AppCompatActivity() {
 
         if (!token.isNullOrEmpty() && !username.isNullOrEmpty()) {
             saveUserData(token, username, email, avatar)
+            if (email != null) {
+                DeviceSharingService.addUser(email, username)
+            }
             val intent = Intent(this, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)

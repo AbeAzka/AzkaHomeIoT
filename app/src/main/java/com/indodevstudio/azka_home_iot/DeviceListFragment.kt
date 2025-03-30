@@ -10,20 +10,26 @@ import android.view.*
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
+import com.indodevstudio.azka_home_iot.API.DeviceSharingService
 import com.indodevstudio.azka_home_iot.Adapter.DeviceAdapter
 import com.indodevstudio.azka_home_iot.Model.DeviceModel
 import com.indodevstudio.azka_home_iot.Model.DeviceViewModel
 import okhttp3.Call
 import okhttp3.Callback
+import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import org.json.JSONArray
+import org.json.JSONException
 import java.io.IOException
 
 class DeviceListFragment : Fragment() {
@@ -33,7 +39,7 @@ class DeviceListFragment : Fragment() {
     private lateinit var tvNoDevices: TextView
     private val deviceList = mutableListOf<DeviceModel>()
     private val deviceViewModel: DeviceViewModel by activityViewModels()
-
+    private var email: String? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -43,8 +49,29 @@ class DeviceListFragment : Fragment() {
         recyclerView = view.findViewById(R.id.recyclerView)
         tvNoDevices = view.findViewById(R.id.tvNoDevices)
         val fabAddDevice: FloatingActionButton = view.findViewById(R.id.fabAddDevice)
-        loadDeviceList() // 🔹 Muat daftar perangkat saat fragment dibuka
-        // Inisialisasi adapter dengan listener
+        val firebaseUser = FirebaseAuth.getInstance().currentUser
+        if (firebaseUser != null) {
+            email = firebaseUser.email
+        }
+
+        val userData = getUserData()
+        val prefs = requireContext().getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
+        val authToken = prefs.getString("auth_token", null)
+        if (authToken != null) {
+            email = userData["email"].toString()
+        }
+
+// 🔹 Muat daftar perangkat lokal sebelum cek shared devices
+        loadDeviceList()
+
+// Jika ada email, baru cek shared devices (opsional)
+        email?.let { userEmail ->
+            fetchDevices(userEmail) {
+                fetchSharedDevices(userEmail)
+            }
+        }
+
+
         deviceAdapter = DeviceAdapter(deviceList, object : DeviceAdapter.DeviceActionListener {
             override fun onRenameDevice(device: DeviceModel, position: Int) {
                 renameDevice(device, position)
@@ -71,6 +98,7 @@ class DeviceListFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = deviceAdapter
 
+
         // Observasi ViewModel untuk update data
         deviceViewModel.getDeviceList().observe(viewLifecycleOwner) { devices ->
             deviceList.clear()
@@ -91,8 +119,175 @@ class DeviceListFragment : Fragment() {
         return view
     }
 
+    private fun getUserData(): Map<String, String?> {
+        val prefs = requireContext().getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
+        return mapOf(
+            "token" to prefs.getString("auth_token", null),
+            "username" to prefs.getString("username", null),
+            "email" to prefs.getString("email", null),
+            "avatar" to prefs.getString("avatar", null),
+            "isVerified" to prefs.getString("isVerified", null)
+        )
+    }
 
 
+    private fun fetchSharedDevices(userEmail: String) {
+        val request = Request.Builder()
+            .url("http://ahi.abeazka.my.id/api/arduino/get_shared_devices.php?shared_email=$userEmail")
+            .build()
+
+        OkHttpClient().newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(), "Gagal terhubung ke server", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.body?.string()?.let { jsonString ->
+                    Log.d("fetchSharedDevices", "Shared devices JSON: $jsonString")
+                    Logger.log("fetchSharedDevices", "Shared devices JSON: $jsonString")
+
+                    if (jsonString.isNullOrEmpty() || jsonString == "[]") {
+                        requireActivity().runOnUiThread {
+                            //fetchDevices(userEmail)
+                            Toast.makeText(requireContext(), "Tidak ada perangkat yang dibagikan", Toast.LENGTH_SHORT).show()
+                        }
+                        return
+                    }
+
+                    val sharedDevices = parseDevicesJson(jsonString).map { device ->
+                        device.copy(isShared = true) // 🔹 Tandai sebagai perangkat shared
+                    }
+
+                    requireActivity().runOnUiThread {
+                        val uniqueDevices = (deviceList + sharedDevices).distinctBy { it.isShared  }
+                        deviceList.clear()
+                        deviceList.addAll(uniqueDevices)
+                        deviceViewModel.updateDeviceList(uniqueDevices)
+                        updateUI()
+                    }
+                }
+            }
+        })
+    }
+
+    private fun fetchDevices(userEmail: String, onComplete: () -> Unit) {
+        val url = "http://ahi.abeazka.my.id/api/arduino/get_devices.php?owner_email=$userEmail"
+        val requestBody = FormBody.Builder()
+            .add("owner_email", userEmail)
+            .build()
+        val request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        OkHttpClient().newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(), "Gagal mengambil daftar perangkat", Toast.LENGTH_SHORT).show()
+                }
+                onComplete() // Lanjutkan ke fetchSharedDevices meskipun gagal
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.body?.string()?.let { jsonString ->
+                    Logger.log("fetchDevices", "Response: $jsonString") // Tambahkan log ini
+                    Log.d("fetchDevices", "Response: $jsonString") // Tambahkan log ini
+                    if (!jsonString.isNullOrEmpty() && jsonString != "[]") {
+                        val ownedDevices = parseDevicesJson(jsonString).map { device ->
+                            if (device.isShared) {
+                                device.copy(isShared = true) // 🔹 Jika perangkat dibagikan
+                            } else {
+                                device.copy(isShared = false) // 🔹 Jika perangkat milik user sendiri
+                            }
+                        }
+
+
+
+
+                        //val ownedDevices = parseDevicesJson(jsonString)
+                        requireActivity().runOnUiThread {
+
+                            val normalDevices = deviceList.map { it.copy(isShared = false) }
+
+                            val uniqueDevices = (normalDevices + ownedDevices).distinctBy { it.isShared }
+                            deviceList.clear()
+                            deviceList.addAll(uniqueDevices)
+                            deviceViewModel.updateDeviceList(uniqueDevices)
+                            updateUI()
+                        }
+                    }
+                }
+                onComplete() // Lanjutkan ke fetchSharedDevices setelah fetchDevices selesai
+            }
+        })
+    }
+
+
+
+    private fun loadLocalDevices(): List<DeviceModel> {
+        val sharedPreferences = requireContext().getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
+        val json = sharedPreferences.getString("device_list", null)
+
+        return if (json != null) {
+            val gson = com.google.gson.Gson()
+            val type = object : com.google.gson.reflect.TypeToken<List<DeviceModel>>() {}.type
+            gson.fromJson(json, type)
+        } else {
+            emptyList()
+        }
+    }
+
+
+
+    private fun parseDevicesJson(jsonString: String?): List<DeviceModel> {
+        val devices = mutableListOf<DeviceModel>()
+
+        if (jsonString.isNullOrEmpty()) {
+            Logger.log("DeviceListFragment", "No shared devices found.")
+            return devices
+        }
+
+        try {
+            val jsonArray = JSONArray(jsonString)
+            for (i in 0 until jsonArray.length()) {
+                val obj = jsonArray.getJSONObject(i)
+                val deviceId = obj.optString("device_id", "")
+                val deviceName = getSavedDeviceName(requireContext())
+                val deviceIp = getSavedDeviceIP(requireContext())
+
+                val newDevice = DeviceModel(deviceId, deviceName, deviceIp)
+                devices.add(newDevice)
+            }
+        } catch (e: JSONException) {
+            Logger.log("DeviceListFragment", "JSON Parsing Error: ${e.message}")
+            e.printStackTrace()
+        }
+
+        return devices
+    }
+
+
+    private fun getSavedDeviceName(context: Context): String {
+        val sharedPreferences = context.getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("DEVICE_NAME", "No Device") ?: "No Device"
+    }
+
+    private fun getSavedDeviceIP(context: Context): String {
+        val sharedPreferences = context.getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("DEVICE_IP", "0.0.0.0") ?: "0.0.0.0"
+    }
+
+
+
+
+    private fun saveDeviceName(context: Context, deviceName: String) {
+        val sharedPreferences = context.getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("DEVICE_NAME", deviceName)
+        editor.apply()
+    }
     // 🔹 Fungsi untuk menyimpan daftar perangkat ke SharedPreferences
     private fun saveDeviceList() {
         val sharedPreferences = requireContext().getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
@@ -133,15 +328,29 @@ class DeviceListFragment : Fragment() {
         builder.setPositiveButton("Rename") { _, _ ->
             val newName = input.text.toString()
             if (newName.isNotEmpty()) {
-                deviceViewModel.updateDeviceName(position, newName) // Perbarui nama di ViewModel
+                // 🔹 Update nama perangkat tanpa menghilangkan status "isShared"
+                val updatedDevice = device.copy(name = newName, isShared = device.isShared)
+
+                // 🔹 Perbarui data di ViewModel & Adapter
+                deviceViewModel.updateDeviceName(position, newName)
+                deviceList[position] = updatedDevice
                 deviceAdapter.notifyItemChanged(position)
+
+                // 🔹 Simpan perubahan
+                saveDeviceName(requireContext(), newName)
+                updateDev(device.id, newName, device.ipAddress)
+
                 Toast.makeText(requireContext(), "Device renamed to $newName", Toast.LENGTH_SHORT).show()
+            }else{
+                Toast.makeText(requireContext(), "Rename form must be filled", Toast.LENGTH_SHORT).show()
+
             }
         }
 
         builder.setNegativeButton("Cancel", null)
         builder.show()
     }
+
 
 
 
@@ -154,6 +363,7 @@ class DeviceListFragment : Fragment() {
         builder.setPositiveButton("Delete") { _, _ ->
             deviceViewModel.deleteDevice(device)
             //resetDeviceWiFi(device) // 🔹 Reset WiFi setelah delete
+            email?.let { deleteDevice(device.id, it) }
             deviceAdapter.publish("sending_order2", "arduino_1", "delete")
             Toast.makeText(requireContext(), "Device deleted", Toast.LENGTH_SHORT).show()
         }
@@ -162,33 +372,76 @@ class DeviceListFragment : Fragment() {
         builder.show()
     }
 
-
-    fun resetDeviceWiFi(deviceIp: String) {
-        val client = OkHttpClient()
-        val requestBody = "".toRequestBody(null) // Request body kosong untuk POST
-
-        val request = Request.Builder()
-            .url("http://$deviceIp/reset_wifi")
-            .post(requestBody) // Pastikan pakai POST
+    private fun deleteDevice(deviceId: String, ownerEmail: String) {
+        val requestBody = FormBody.Builder()
+            .add("device_id", deviceId)
+            .add("owner_email", ownerEmail)
             .build()
 
-        client.newCall(request).enqueue(object : Callback {
+        val request = Request.Builder()
+            .url("http://ahi.abeazka.my.id/api/arduino/delete_device.php")
+            .post(requestBody)
+            .build()
+
+        OkHttpClient().newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                Log.e("WiFi Reset", "Failed: ${e.message}")
-                Logger.log("Wifi Reset", "Failed: ${e.message}")
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(), "Gagal menghapus perangkat", Toast.LENGTH_SHORT).show()
+                }
             }
 
             override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
-                    Log.d("WiFi Reset", "Success: ${response.body?.string()}")
-                    Logger.log("WiFi Reset", "Success: ${response.body?.string()}")
-                } else {
-                    Log.e("WiFi Reset", "Failed: ${response.code}")
-                    Logger.log("WiFi Reset", "Failed: ${response.code}")
+                response.body?.string()?.let { jsonString ->
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(requireContext(), jsonString, Toast.LENGTH_SHORT).show()
+                        email?.let { fetchDevices(it){
+
+                        } } // 🔹 Refresh daftar perangkat setelah dihapus
+                    }
                 }
             }
         })
     }
+
+    private fun updateDev(deviceId: String, deviceName: String, deviceIP: String) {
+        val userEmail = email// 🔹 Ambil email pengguna saat ini
+
+        val requestBody = FormBody.Builder()
+            .add("device_id", deviceId)
+            .add("device_name", deviceName)
+            .add("device_ip", deviceIP)
+            .build()
+
+
+        val request = Request.Builder()
+            .url("http://ahi.abeazka.my.id/api/arduino/update_devices.php")
+            .post(requestBody)
+            .build()
+
+
+
+        OkHttpClient().newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(), "Gagal rename perangkat", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.body?.string()?.let { jsonString ->
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(requireContext(), jsonString, Toast.LENGTH_SHORT).show()
+//                        fetchDevices() // 🔹 Refresh daftar perangkat setelah dihapus
+                        if (userEmail != null) {
+                            fetchSharedDevices(userEmail)
+                        }
+                    }
+                }
+            }
+        })
+
+    }
+
 
 
 
@@ -215,14 +468,14 @@ class DeviceListFragment : Fragment() {
                         } else {
                             Toast.makeText(requireContext(), "WiFi Reset Successful", Toast.LENGTH_SHORT).show()
 
-                            // 🔄 Tunggu 5 detik sebelum pindah ke Fragment Setup WiFi
-                            Handler(Looper.getMainLooper()).postDelayed({
-                                val fragment = SetupWiFiFragment()
-                                val transaction = requireActivity().supportFragmentManager.beginTransaction()
-                                transaction.replace(R.id.fragment_container, fragment)
-                                transaction.addToBackStack(null)
-                                transaction.commit()
-                            }, 5000)
+//                            // 🔄 Tunggu 5 detik sebelum pindah ke Fragment Setup WiFi
+//                            Handler(Looper.getMainLooper()).postDelayed({
+//                                val fragment = SetupWiFiFragment()
+//                                val transaction = requireActivity().supportFragmentManager.beginTransaction()
+//                                transaction.replace(R.id.fragment_container, fragment)
+//                                transaction.addToBackStack(null)
+//                                transaction.commit()
+//                            }, 5000)
                         }
                     }
                 }
@@ -239,11 +492,7 @@ class DeviceListFragment : Fragment() {
 
 
 
-    fun addDevice(name: String, ip: String) {
-        val newDevice = DeviceModel(name, ip) // Tambahkan IP Address
-        deviceViewModel.addDevice(newDevice)
-        saveDeviceList()
-    }
+
 
     fun checkDeviceStatus(device: DeviceModel, callback: (Boolean) -> Unit) {
         val url = "http://${device.ipAddress}/status" // Sesuaikan dengan endpoint di Arduino
