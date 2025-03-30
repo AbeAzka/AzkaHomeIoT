@@ -46,10 +46,10 @@ class DeviceViewModel(application: Application) : AndroidViewModel(application) 
         deviceList.value = newList.toMutableList()
     }
 
-    fun updateDeviceName(position: Int, newName: String) {
+    fun updateDeviceName(position: Int, newName: String, newIP : String) {
         val currentList = deviceList.value ?: return
         if (position in currentList.indices) {
-            currentList[position] = DeviceModel(currentList[position].id, newName, currentList[position].ipAddress)
+            currentList[position] = DeviceModel(currentList[position].id, newName, newIP)
             deviceList.value = currentList
         }
     }

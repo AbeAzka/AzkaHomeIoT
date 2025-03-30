@@ -1,5 +1,6 @@
 package com.indodevstudio.azka_home_iot
 
+import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -33,6 +34,8 @@ class DeviceControlActivity : AppCompatActivity() {
     private val client = OkHttpClient()
     private lateinit var baseUrl: String
 
+    var device_id = ""
+
     var sharedPreferences: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +51,8 @@ class DeviceControlActivity : AppCompatActivity() {
         textSwitch2 = findViewById(R.id.textSwitch2)
         textSwitch1 = findViewById(R.id.textSwitch1)
 
+        val sharedPreferences2 = getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
+        device_id = sharedPreferences2?.getString("device_id", null).toString()
         sharedPreferences = getSharedPreferences("MyPrefs", 0)
 
         // 🔹 Set teks yang tersimpan
@@ -65,18 +70,18 @@ class DeviceControlActivity : AppCompatActivity() {
         }
 
         val deviceName = intent.getStringExtra("deviceName") ?: "Unknown Device"
-        baseUrl = "http://taryem.my.id/Lab01/labx.php"
+        baseUrl = "http://taryem.my.id/Lab01/ahi.php"
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
         getSupportActionBar()?.setDisplayShowHomeEnabled(true);
         supportActionBar?.title = "Control $deviceName"
 
-        buttonOn.setOnClickListener { sendCommand("on") }
-        buttonOff.setOnClickListener { sendCommand("off") }
+        buttonOn.setOnClickListener { sendCommand("on", device_id) }
+        buttonOff.setOnClickListener { sendCommand("off", device_id) }
 
-        buttonOn2.setOnClickListener { sendCommand("on2") }
-        buttonOff2.setOnClickListener { sendCommand("off2") }
+        buttonOn2.setOnClickListener { sendCommand("on2", device_id) }
+        buttonOff2.setOnClickListener { sendCommand("off2", device_id) }
 
         toolbar.setNavigationOnClickListener(View.OnClickListener {
             //What to do on back clicked
@@ -114,8 +119,8 @@ class DeviceControlActivity : AppCompatActivity() {
         onBackPressedDispatcher.onBackPressed()
     }
 
-    private fun sendCommand(command: String) {
-        val url = "$baseUrl?type=$command"
+    private fun sendCommand(command: String, deviceID : String) {
+        val url = "$baseUrl?type=$command&device_id=$deviceID"
 
         val request = Request.Builder()
             .url(url)

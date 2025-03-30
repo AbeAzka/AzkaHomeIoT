@@ -39,7 +39,10 @@ class DeviceListFragment : Fragment() {
     private lateinit var tvNoDevices: TextView
     private val deviceList = mutableListOf<DeviceModel>()
     private val deviceViewModel: DeviceViewModel by activityViewModels()
-    private var email: String? = null
+    private var email = ""
+    var deviceId = ""
+    private var ipAddress = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -48,12 +51,18 @@ class DeviceListFragment : Fragment() {
 
         recyclerView = view.findViewById(R.id.recyclerView)
         tvNoDevices = view.findViewById(R.id.tvNoDevices)
+        val sharedPreferences = requireContext().getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
+        deviceId = sharedPreferences.getString("device_id", null).toString()
+        ipAddress = sharedPreferences.getString("device_ip", "0.0.0.0").toString()
+        Log.d("MQTT", deviceId)
+        //FOR FIREBASE LOGIN (AKA. GOOGLE)
         val fabAddDevice: FloatingActionButton = view.findViewById(R.id.fabAddDevice)
         val firebaseUser = FirebaseAuth.getInstance().currentUser
         if (firebaseUser != null) {
-            email = firebaseUser.email
+            email = firebaseUser.email.toString()
         }
 
+        //FOR INDODEVSTUDIO LOGIN
         val userData = getUserData()
         val prefs = requireContext().getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
         val authToken = prefs.getString("auth_token", null)
@@ -61,16 +70,14 @@ class DeviceListFragment : Fragment() {
             email = userData["email"].toString()
         }
 
-// 🔹 Muat daftar perangkat lokal sebelum cek shared devices
+        // 🔹 Muat daftar perangkat lokal sebelum cek shared devices
         loadDeviceList()
 
-// Jika ada email, baru cek shared devices (opsional)
-        email?.let { userEmail ->
-            fetchDevices(userEmail) {
-                fetchSharedDevices(userEmail)
-            }
+        // Jika ada email, baru cek shared devices (opsional)
+        val userEmail = email
+        fetchDevices(userEmail) {
+            fetchSharedDevices(userEmail)
         }
-
 
         deviceAdapter = DeviceAdapter(deviceList, object : DeviceAdapter.DeviceActionListener {
             override fun onRenameDevice(device: DeviceModel, position: Int) {
@@ -85,15 +92,12 @@ class DeviceListFragment : Fragment() {
                 resetDeviceWiFi(device)
             }
 
-            override fun onPublish(deviceId: String) {
-                deviceAdapter.publish("sending_order2", deviceId, "refresh")
+            override fun onPublish(device: String) {
+                deviceAdapter.publish("sending_order_$deviceId", deviceId, "refresh")
             }
 
-            /*override fun onTopic(device: DeviceModel) {
-                setTopic(device)
-            }*/
         })
-        deviceAdapter.publish("sending_order2", "arduino_1", "refresh")
+        deviceAdapter.publish("sending_order_$deviceId", deviceId, "refresh")
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = deviceAdapter
@@ -332,7 +336,7 @@ class DeviceListFragment : Fragment() {
                 val updatedDevice = device.copy(name = newName, isShared = device.isShared)
 
                 // 🔹 Perbarui data di ViewModel & Adapter
-                deviceViewModel.updateDeviceName(position, newName)
+                deviceViewModel.updateDeviceName(position, newName, ipAddress)
                 deviceList[position] = updatedDevice
                 deviceAdapter.notifyItemChanged(position)
 
@@ -364,7 +368,7 @@ class DeviceListFragment : Fragment() {
             deviceViewModel.deleteDevice(device)
             //resetDeviceWiFi(device) // 🔹 Reset WiFi setelah delete
             email?.let { deleteDevice(device.id, it) }
-            deviceAdapter.publish("sending_order2", "arduino_1", "delete")
+            deviceAdapter.publish("sending_order_$deviceId", deviceId, "delete")
             Toast.makeText(requireContext(), "Device deleted", Toast.LENGTH_SHORT).show()
         }
 

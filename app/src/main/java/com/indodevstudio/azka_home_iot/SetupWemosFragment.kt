@@ -118,7 +118,7 @@ class SetupWemosFragment : Fragment() {
                 val newDevice = DeviceModel(deviceId,deviceName, deviceIp) // Simpan dengan IP
                 deviceViewModel.addDevice(newDevice)
                 if (ownerEmail != null) {
-                    DeviceSharingService.sendDevice(ownerEmail , deviceName, deviceId, deviceIp)
+                    DeviceSharingService.sendDevice(ownerEmail , deviceName, deviceId, getCurrentIpAddress())
                 }
 
                 parentFragmentManager.beginTransaction()

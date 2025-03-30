@@ -39,7 +39,7 @@ class DeviceAdapter(
         fun onDeleteDevice(device: DeviceModel, position: Int)
         fun onResetWiFi(device: DeviceModel)
 
-        fun onPublish(deviceId: String)
+        fun onPublish(device: String)
 
         /*fun onTopic(device: DeviceModel)*/
     }
@@ -122,6 +122,7 @@ class DeviceAdapter(
 
 
     class DeviceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
         private val tvDeviceName: TextView = itemView.findViewById(R.id.textViewDeviceName)
         private val btnRename: ImageButton = itemView.findViewById(R.id.btnRename)
         private val btnDelete: ImageButton = itemView.findViewById(R.id.btnDelete)
@@ -130,9 +131,11 @@ class DeviceAdapter(
         private val tvShared: TextView = itemView.findViewById(R.id.tvShared)
         val ip: TextView = itemView.findViewById(R.id.textIP)
         lateinit var mqttClient: MqttClient
-
+        var deviceId = ""
         fun bind(device: DeviceModel, listener: DeviceActionListener, position: Int) {
             tvDeviceName.text = "${device.name} - ID: ${device.id}"
+            val sharedPreferences = itemView.context.getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
+            deviceId = sharedPreferences.getString("device_id", null).toString()
 
             btnRename.setOnClickListener { listener.onRenameDevice(device, position) }
             btnDelete.setOnClickListener {
@@ -140,7 +143,17 @@ class DeviceAdapter(
                     listener.onDeleteDevice(device, position)
                 }
             }
-            btnRefresh.setOnClickListener{listener.onPublish("arduino_1")}
+            btnRefresh.setOnClickListener {
+                Log.d("MQTT", "🔄 Refresh ditekan untuk device: ${device.id}")
+                if (::mqttClient.isInitialized && mqttClient.isConnected) {
+                    publishMessage("sending_order_${device.id}", device.id, "refresh")
+                } else {
+                    Log.e("MQTT", "❌ MQTT Client tidak terhubung saat mencoba refresh")
+                    Toast.makeText(itemView.context, "MQTT tidak terhubung!", Toast.LENGTH_SHORT).show()
+                    setupMqttClient(device) // Coba reconnect MQTT
+                }
+            }
+
             btnDelete.visibility = if (device.isShared) View.GONE else View.VISIBLE
             // 🔹 Tampilkan label "Shared" jika perangkat adalah hasil sharing
             if (device.isShared) {
@@ -148,13 +161,13 @@ class DeviceAdapter(
             } else {
                 tvShared.visibility = View.GONE
             }
-            setupMqttClient()
-            listener.onPublish("arduino_1")
+            setupMqttClient(device)
+            listener.onPublish(device.id)
 
             //publishMqttTopic("set_mqtt_topic", topic1, topic2)
         }
 
-        private fun setupMqttClient() {
+        private fun setupMqttClient(device: DeviceModel) {
             val brokerUrl = "tcp://taryem.my.id:1883"
             val clientId = "kotlin123"
             val persistence = MemoryPersistence()
@@ -165,7 +178,7 @@ class DeviceAdapter(
                 options.isAutomaticReconnect = true
                 options.isCleanSession = true
                 options.connectionTimeout = 10
-                options.keepAliveInterval = 10
+                options.keepAliveInterval = 300
 
                 mqttClient.connect(options)
 
@@ -178,19 +191,21 @@ class DeviceAdapter(
                         itemView.post {
                             val payload = message?.payload?.toString(Charsets.UTF_8) ?: ""
 
-                            println("📩 Pesan Diterima dari $topic: $payload")
+                            Log.d("MQTT","📩 Pesan Diterima dari $topic: $payload")
 
                             try {
                                 // Parsing JSON
                                 val json = JSONObject(payload)
-                                val deviceId = json.getString("device_id")
+                                val deviceId2 = json.getString("device_id")
                                 val deviceIp = json.getString("ip")
-
-                                println("✅ Device ID: $deviceId, IP: $deviceIp")
+                                //deviceId = deviceId2
+                                Log.d("MQTT","✅ Device ID: $deviceId, IP: $deviceIp")
 
                                 // **Simpan device_id ke SharedPreferences**
                                 val sharedPreferences = itemView.context.getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
-                                sharedPreferences.edit().putString("device_id", deviceId).apply()
+                                sharedPreferences.edit().putString("device_id", deviceId2).apply()
+                                sharedPreferences.edit().putString("device_ip", deviceIp).apply()
+
 
                                 // Tampilkan ke UI
                                 deviceStatus.text = "Online"
@@ -207,7 +222,7 @@ class DeviceAdapter(
                 })
 
 
-                mqttClient.subscribe("sending_telemetri2")
+                mqttClient.subscribe("sending_telemetri_${device.id}")
 
 
             } catch (e: MqttException) {

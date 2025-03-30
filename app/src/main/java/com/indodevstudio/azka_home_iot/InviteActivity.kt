@@ -77,6 +77,7 @@ class InviteActivity : AppCompatActivity() {
     private fun kirimUndanganKeServer(deviceID: String, sharedEmail: String) {
         val ownerEmail = email // Ambil dari session/login
         if (ownerEmail != null) {
+            devicename = intent.getStringExtra("device_nama")
             devicename?.let {
                 DeviceSharingService.sendInvite(ownerEmail, sharedEmail, deviceID,
                     it
