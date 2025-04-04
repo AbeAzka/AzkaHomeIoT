@@ -9,6 +9,7 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +27,7 @@ import com.indodevstudio.azka_home_iot.Model.DeviceModel
 import com.indodevstudio.azka_home_iot.Model.DeviceViewModel
 import okhttp3.OkHttpClient
 import okhttp3.*
+import org.json.JSONObject
 import java.io.IOException
 
 class SetupWemosFragment : Fragment() {
@@ -39,6 +41,7 @@ class SetupWemosFragment : Fragment() {
     private lateinit var buttonSubmitDevice: Button
     private lateinit var textInfo :TextView
     var IPA = ""
+    var DVCID = ""
     private lateinit var wifiManager: WifiManager
     private var isReceiverRegistered = false
     private val wemosSSID = "Wemos_Setup"
@@ -283,6 +286,7 @@ class SetupWemosFragment : Fragment() {
 
         Handler().postDelayed({
             val currentIp = getCurrentIpAddress()
+
             if (wifiManager.connectionInfo.ssid == "\"$wemosSSID\"" && currentIp.isNotEmpty()) {
                 statusTextView.text = "Connected to Wemos"
                 Logger.log("SetupWemosFragment", "Terhubung ke Wemos: $currentIp")
@@ -291,6 +295,10 @@ class SetupWemosFragment : Fragment() {
                 editTextSSID.visibility = View.VISIBLE
                 editTextPassword.visibility = View.VISIBLE
                 buttonSubmitWiFi.visibility = View.VISIBLE
+
+                getDeviceInfo {
+                    DVCID
+                }
             } else {
                 statusTextView.text = "Failed to connect"
                 Logger.log("SetupWemosFragment", "Gagal terhubung ke Wemos")
@@ -298,6 +306,40 @@ class SetupWemosFragment : Fragment() {
         }, 5000)
 
     }
+
+    fun getDeviceInfo(onResult: (String) -> Unit) {
+        val url = "http://192.168.4.1/info"
+
+        val request = Request.Builder().url(url).build()
+        val client = OkHttpClient()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("MQTT", "Failed: ${e.message}")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val body = response.body?.string()
+                val json = JSONObject(body ?: "{}")
+                val deviceId = json.getString("device_id")
+
+                val sharedPreferences = context?.getSharedPreferences(
+                    "DevicePrefs",
+                    Context.MODE_PRIVATE
+                )
+                sharedPreferences?.edit()?.putString("device_id", deviceId)?.apply()
+
+                DVCID = deviceId.toString()
+                Log.d("MQTT", "DVCID = $deviceId")
+
+                // Kirim balik ke UI thread
+                Handler(Looper.getMainLooper()).post {
+                    onResult(deviceId)
+                }
+            }
+        })
+    }
+
 
     private fun checkPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

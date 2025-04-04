@@ -21,6 +21,8 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
@@ -90,20 +92,38 @@ class CameraFragment: Fragment() {
         captureButton = view.findViewById(R.id.captureButton)
         flashButton = view.findViewById(R.id.flashButton)
         galleryButton = view.findViewById(R.id.galleryButton)
-        closeButton = view.findViewById(R.id.closeButton)
+        /*closeButton = view.findViewById(R.id.closeButton)*/
         captureButton.setOnClickListener { takePhoto() }
         flashButton.setOnClickListener { toggleFlash() } // Toggle flash
         galleryButton.setOnClickListener { openGallery() } // Pilih gambar dari galeri
 
-        closeButton.setOnClickListener{
+       /* closeButton.setOnClickListener{
             requireActivity().supportFragmentManager.popBackStack()
-        }
+        }*/
+
+        (activity as? AppCompatActivity)?.supportActionBar?.hide()
+
+        val toolbar = view.findViewById<Toolbar>(R.id.toolbarSetup)
+        toolbar.setNavigationOnClickListener(View.OnClickListener {
+            //What to do on back clicked
+            requireActivity().supportFragmentManager.popBackStack()
+        })
 
         cameraExecutor = Executors.newSingleThreadExecutor()
         startCamera()
 
         return view
     }
+
+    fun onBackPressed() {
+
+        // Menggunakan parentFragmentManager untuk mengganti fragmen di dalam aktivitas
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, DeviceListFragment()) // Gantilah dengan fragmen yang sesuai
+            .commit()
+    }
+
+
 
    /* override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -266,6 +286,7 @@ class CameraFragment: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         cameraExecutor.shutdown()
+        (activity as? AppCompatActivity)?.supportActionBar?.show()
     }
 }
 

@@ -5,369 +5,306 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/Theme.MainActivity"
-    tools:context=".HomeFragment"
-    android:layout_gravity="center_vertical"
-    android:gravity="center_vertical"
     android:background="?attr/drawerBackground"
-    android:orientation="vertical">
-
-
+    tools:context=".HomeFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/srl_data"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:visibility="visible"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="-117dp"
-        tools:visibility="visible"
-        >
+        android:layout_height="match_parent">
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:fillViewport="true">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            >
-            <View
-                android:id="@+id/viewHeaderBG"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-
-                android:background="@color/lavender"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-            <TextView
-                android:id="@+id/dash"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
-                android:layout_marginEnd="20sp"
-                android:layout_marginTop="30sp"
-                android:layout_marginBottom="5sp"
-                android:text="DASHBOARD"
-                android:textAlignment="center"
-                android:textStyle="bold"
-                android:textSize="40sp"
-                android:textColor="@color/white"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/cards_info"/>
+                android:paddingBottom="100dp">
 
-
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cards_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        app:cardCornerRadius="16sp"
-
-        android:layout_marginStart="16sp"
-        android:layout_marginEnd="16sp"
-        app:cardBackgroundColor="?attr/cardBG"
-        app:cardElevation="10dp"
-        app:layout_constraintBottom_toTopOf="@id/weh"
-        app:layout_constraintTop_toBottomOf="@id/dash"
-        >
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-            android:orientation="vertical"
-            android:padding="14dp"
-            >
-
-            <TextView
-                android:id="@+id/greetings"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-
-                android:text="Title"
-                android:fontFamily="sans-serif"
-                android:textColor="?attr/textContent"
-                android:textSize="20dp"
-
-               />
-            <View
-                android:id="@+id/divider"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginTop="10dp"
-                android:background="@color/purple_500"
-                app:layout_constraintBottom_toTopOf="@id/tess"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/greetings" />
-
-            <LinearLayout
-
-                android:id="@+id/tess"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="14dp"
-
-                app:layout_constraintEnd_toStartOf="@id/tesss"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/divider">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:accessibilityPaneTitle="test"
-                    android:src="@drawable/ic_temperature" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Temperature"
-                    android:textSize="18sp"
-                    android:textStyle="normal" />
-
-                <TextView
-                    android:id="@+id/temperature_txt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:text="null"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/tesss"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:padding="14dp"
-                app:layout_constraintTop_toBottomOf="@id/divider"
-                app:layout_constraintStart_toEndOf="@id/tess"
-                app:layout_constraintEnd_toEndOf="parent"
-                >
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:accessibilityPaneTitle="test"
-                    android:src="@drawable/ic_humidity"/>
-                <TextView
-
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textSize="18sp"
-                    android:text="Humidity"
-                    android:textStyle="normal"
-                    />
-                <TextView
-                    android:id="@+id/humidity_txt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:textSize="20sp"
-                    android:text="null"
-                    android:textStyle="bold"
-                    />
-
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/last_update"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:gravity="center"
-                android:text=""
-                android:textStyle="normal"
-                android:fontFamily="sans-serif"
-                android:textColor="?attr/textContent"
-                android:textSize="14sp"
-                app:layout_constraintTop_toBottomOf="@id/tesss"
-                />
-
-
-            <TextView
-                android:id="@+id/test"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10sp"
-                android:layout_marginBottom="10dp"
-                android:text="Latest Inbox"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif"
-                android:textColor="?attr/textContent"
-                android:textSize="20dp"
-                app:layout_constraintTop_toBottomOf="@id/last_update"
-                />
-
-            <View
-                android:id="@+id/divider2"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginTop="20dp"
-
-                android:background="@color/purple_500"
-                app:layout_constraintBottom_toTopOf="@id/text_Inbox"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/test" />
-
-            <TextView
-                android:id="@+id/text_Inbox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="No Inbox Messages Yet"
-                android:textAlignment="center"
-                android:textColor="?attr/textContent"
-                android:textSize="20dp"
-                app:layout_constraintTop_toBottomOf="@id/test"
-                tools:visibility="visible" />
-            <ScrollView
-                android:id="@+id/srl_dta"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:visibility="visible"
-                android:layout_marginTop="10dp"
-                app:reverseLayout="true"
-                app:stackFromEnd="true"
-                android:scrollbars="none"
-                app:layout_constraintTop_toBottomOf="@id/divider2"
-                tools:visibility="gone">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_data"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:listitem="@layout/card_item"
-                    tools:visibility="visible" />
-
-            </ScrollView>
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/weh"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="20dp"
-        android:layout_marginStart="16sp"
-        android:layout_marginEnd="16sp"
-        app:cardBackgroundColor="?attr/cardBG"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="50dp"
-        app:layout_constraintTop_toBottomOf="@id/cards_info"
-
-        app:cardElevation="10dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-
-            android:padding="10dp"
-            android:orientation="vertical">
-
-
-            <TextView
-                android:id="@+id/mbuh"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:text="Tandon Bunda"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif"
-                android:textColor="?attr/textContent"
-                android:textSize="20dp"
-
-                />
-
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/shimmer_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:shimmer_duration="1500"
-                app:shimmer_auto_start="true"
-                android:visibility="visible">
-
-                <ImageView
-                    android:id="@+id/imageGrafikSampleTest"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:clickable="true"
-                    android:src="@drawable/sample"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                <!-- HEADER -->
+                <View
+                    android:id="@+id/viewHeaderBG"
+                    android:layout_width="0dp"
+                    android:layout_height="200dp"
+                    android:background="@color/lavender"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
-            </com.facebook.shimmer.ShimmerFrameLayout>
-            <ImageView
-                android:id="@+id/imageGrafikSample"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:clickable="true"
-                android:src="@drawable/sample"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:visibility="gone"/>
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <TextView
+                    android:id="@+id/dash"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="DASHBOARD"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <!-- CARD: INFO -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cards_info"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp"
+                    app:cardBackgroundColor="?attr/cardBG"
+                    app:layout_constraintTop_toBottomOf="@id/dash"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:id="@+id/greetings"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Welcome!"
+                            android:textSize="20sp"
+                            android:textColor="?attr/textContent"
+                            android:textStyle="bold"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:layout_marginVertical="10dp"
+                            android:background="@color/purple_500"/>
+
+                        <!-- Temperature and Humidity Row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center"
+                            android:weightSum="2">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:gravity="center">
+
+                                <androidx.appcompat.widget.AppCompatImageView
+                                    android:layout_width="28dp"
+                                    android:layout_height="28dp"
+                                    android:src="@drawable/ic_temperature"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Temperature"
+                                    android:textSize="14sp"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/temperature_txt"
+                                    android:text=""
+                                    android:textSize="16sp"
+                                    android:textStyle="bold"/>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:gravity="center">
+
+                                <androidx.appcompat.widget.AppCompatImageView
+                                    android:layout_width="28dp"
+                                    android:layout_height="28dp"
+                                    android:src="@drawable/ic_humidity"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Humidity"
+                                    android:textSize="14sp"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/humidity_txt"
+                                    android:text=""
+                                    android:textSize="16sp"
+                                    android:textStyle="bold"/>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/last_update"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Last updated: --"
+                            android:textSize="12sp"
+                            android:textAlignment="center"
+                            android:layout_marginTop="8dp"/>
+
+                        <!-- Inbox Title -->
+                        <TextView
+                            android:id="@+id/test"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Latest Inbox"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="16dp"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:layout_marginTop="8dp"
+                            android:background="@color/purple_500"/>
+
+                        <!-- Inbox content -->
+                        <TextView
+                            android:id="@+id/text_Inbox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="No Inbox Messages Yet"
+                            android:textSize="16sp"
+                            android:gravity="center"
+                            android:padding="12dp"
+                            android:visibility="visible"
+                            android:textColor="?attr/textContent"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_data"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:layout_marginTop="10dp"
+                            tools:listitem="@layout/card_item"
+                            tools:visibility="gone" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- CARD: Grafik -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/weh"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp"
+
+                    app:cardBackgroundColor="?attr/cardBG"
+                    app:layout_constraintTop_toBottomOf="@id/cards_info"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+                        <TextView
+                            android:id="@+id/mbuh"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Tandon Bunda"
+                            android:textSize="18sp"
+                            android:textStyle="bold"/>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:layout_marginTop="8dp"
+                            android:background="@color/purple_500"/>
+                        <!-- Start & End Date in one row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center"
+                            android:layout_marginBottom="8dp"
+                            android:weightSum="2">
+
+                            <EditText
+                                android:id="@+id/startDateInput"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:hint="Start Date (yyyy-MM-dd)"
+                                android:focusable="false"
+                                android:padding="8dp"
+                                android:background="@drawable/bg_edittext" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="50dp"
+                                android:background="@color/purple_500"/>
 
 
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+                            <EditText
+                                android:id="@+id/endDateInput"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:hint="End Date (yyyy-MM-dd)"
+                                android:focusable="false"
+                                android:padding="8dp"
+                                android:background="@drawable/bg_edittext" />
+                        </LinearLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </ScrollView>
 
+
+                        <com.facebook.shimmer.ShimmerFrameLayout
+                            android:id="@+id/shimmer_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            app:shimmer_auto_start="true"
+                            app:shimmer_duration="1500">
+
+                            <ImageView
+                                android:id="@+id/imageGrafikSampleTest"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/sample"/>
+                        </com.facebook.shimmer.ShimmerFrameLayout>
+
+                        <ImageView
+                            android:id="@+id/imageGrafikSample"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:scaleType="centerCrop"
+                            android:visibility="gone"
+                            android:src="@drawable/sample"/>
+
+                        <com.github.mikephil.charting.charts.LineChart
+                            android:id="@+id/lineChart"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:visibility="gone"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--        android:id="@+id/load"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:visibility="invisible"-->
-<!--        android:background="@color/gray_transparant"-->
-<!--        >-->
     <ProgressBar
         android:id="@+id/pb_data"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_gravity="center"
         android:visibility="invisible"
         android:indeterminate="true"
-        android:indeterminateTintMode="src_atop"
-        android:indeterminateTint="@color/lavender"
-        />
-<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+        android:indeterminateTint="@color/lavender"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

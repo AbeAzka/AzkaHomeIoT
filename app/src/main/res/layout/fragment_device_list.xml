@@ -14,7 +14,7 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_centerInParent="true"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

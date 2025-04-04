@@ -61,6 +61,8 @@ class DeviceListFragment : Fragment() {
         if (firebaseUser != null) {
             email = firebaseUser.email.toString()
         }
+        /*deviceAdapter.connect()*/
+
 
         //FOR INDODEVSTUDIO LOGIN
         val userData = getUserData()
@@ -489,7 +491,8 @@ class DeviceListFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        //deviceAdapter.disconnectAllMqttClients() // Memutus semua koneksi MQTT
+
+        deviceAdapter.disconnectAllMqttClients() // Memutus semua koneksi MQTT
     }
 
 

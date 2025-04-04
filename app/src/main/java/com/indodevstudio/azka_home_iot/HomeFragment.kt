@@ -1,15 +1,20 @@
 package com.indodevstudio.azka_home_iot
 
+import android.app.DatePickerDialog
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupWindow
@@ -20,16 +25,28 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 
 import com.google.firebase.auth.FirebaseAuth
 import com.indodevstudio.azka_home_iot.API.APIRequestData
 import com.indodevstudio.azka_home_iot.API.RetroServer
+import com.indodevstudio.azka_home_iot.API.TandonClient
+import com.indodevstudio.azka_home_iot.API.TandonData
 import com.indodevstudio.azka_home_iot.Adapter.AdapterData
 import com.indodevstudio.azka_home_iot.Model.DataModel
 import com.indodevstudio.azka_home_iot.Model.ResponseModel
@@ -42,7 +59,9 @@ import okhttp3.Response
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -73,17 +92,21 @@ class HomeFragment : Fragment() {
     var adData : RecyclerView.Adapter<*>? = null
     var lmData : RecyclerView.LayoutManager? = null
     var listData: List<DataModel> = ArrayList<DataModel>()
-    var srlDat: ScrollView? = null
+    var srlDat: NestedScrollView? = null
     var srlData: SwipeRefreshLayout? = null
     var pbData: ProgressBar? = null
     var cards2: CardView? = null
     lateinit var shimmerLayout : ShimmerFrameLayout
+    private lateinit var lineChart: LineChart
 
-
-
+    private lateinit var startDateInput: EditText
+    private lateinit var endDateInput: EditText
     lateinit var textTime : TextView
     lateinit var textHum : TextView
     lateinit var textTemo : TextView
+
+    private val refreshHandler = Handler(Looper.getMainLooper())
+    private lateinit var refreshRunnable: Runnable
 
 
     lateinit var text_card : TextView
@@ -97,6 +120,8 @@ class HomeFragment : Fragment() {
         }
     }
 
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -108,13 +133,41 @@ class HomeFragment : Fragment() {
         srlData = view.findViewById(R.id.srl_data)
         pbData = view.findViewById(R.id.pb_data)
         text = view.findViewById(R.id.text_Inbox)
-        srlDat = view.findViewById(R.id.srl_dta)
-
+        //srlDat = view.findViewById(R.id.srl_dta)
+        lineChart = view.findViewById(R.id.lineChart)
+        startDateInput = view.findViewById(R.id.startDateInput)
+        endDateInput = view.findViewById(R.id.endDateInput)
 //        cards2 = view.findViewById(R.id.cards_info2)
 //        text_card = view.findViewById(R.id.pp)
         textTime = view.findViewById(R.id.last_update)
         textHum = view.findViewById(R.id.humidity_txt)
         textTemo = view.findViewById(R.id.temperature_txt)
+
+        val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+        startDateInput.setOnClickListener {
+            showDatePicker { date ->
+                startDateInput.setText(date)
+                getChartData() // refresh grafik dengan filter
+            }
+        }
+
+        endDateInput.setOnClickListener {
+            showDatePicker { date ->
+                endDateInput.setText(date)
+                getChartData()
+            }
+        }
+        getChartData2()
+// Set interval auto-refresh
+        /*refreshRunnable = object : Runnable {
+            override fun run() {
+                getChartData() // Panggil fungsi ambil data grafik
+                refreshHandler.postDelayed(this, 30000) // 30 detik
+            }
+        }
+        refreshHandler.post(refreshRunnable)*/
+
 
 //        chart = view.findViewById(R.id.chart)
 //        pbData_BG = view.findViewById(R.id.load)
@@ -140,7 +193,10 @@ class HomeFragment : Fragment() {
                 // Simulate your data retrieval methods (replace with your actual logic)
                 retrieveData()
                 retrieveTemp()
-                retrieveImage()
+                //retrieveImage()
+
+                // Panggil grafik pakai tanggal default
+                getChartData2()
 
 
 
@@ -251,13 +307,182 @@ class HomeFragment : Fragment() {
 
         return view
     }
+    override fun onPause() {
+        super.onPause()
+        //refreshHandler.removeCallbacks(refreshRunnable)
+    }
     override fun onResume(){
         super.onResume()
         retrieveData()
         retrieveTemp()
-        retrieveImage()
+        getChartData2()
+        //refreshHandler.post(refreshRunnable)
+        /*//retrieveImage()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+        // Tanggal hari ini
+        val today = Calendar.getInstance()
+
+        // Tanggal kemarin
+        val yesterday = Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_MONTH, -1)
+        }
+
+        // Set default di input
+        startDateInput.setText(dateFormat.format(yesterday.time))
+        endDateInput.setText(dateFormat.format(today.time))
+
+        // Panggil grafik pakai tanggal default
+        getChartData()*/
+
 
     }
+
+    private fun showDatePicker(onDateSelected: (String) -> Unit) {
+        val calendar = Calendar.getInstance()
+        context?.let {
+            val dpd = DatePickerDialog(it, { _, year, month, dayOfMonth ->
+                val selectedDate = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth)
+                onDateSelected(selectedDate)
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+            dpd.show()
+        }
+
+    }
+
+    private fun getChartData() {
+        val start = startDateInput.text.toString().takeIf { it.isNotEmpty() }
+        val end = endDateInput.text.toString().takeIf { it.isNotEmpty() }
+
+        TandonClient.instance.getTandonData(start, end).enqueue(object : retrofit2.Callback<ArrayList<TandonData>> {
+            override fun onResponse(call: retrofit2.Call<ArrayList<TandonData>>, response: retrofit2.Response<ArrayList<TandonData>>) {
+                if (response.isSuccessful) {
+                    val chartData = response.body()
+                    if (chartData != null) {
+                        showLineChart(chartData)
+                    }
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.post{
+                        shimmerLayout.stopShimmer()
+                        shimmerLayout.visibility = View.GONE // Hide shimmer after loading
+                        lineChart.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onFailure(call: retrofit2.Call<ArrayList<TandonData>>, t: Throwable) {
+                context?.let {
+                    Toast.makeText(it, "Gagal: ${t.message}", Toast.LENGTH_LONG).show()
+
+                }
+            }
+        })
+    }
+
+    private fun getChartData2() {
+        val start = startDateInput.text.toString().takeIf { it.isNotEmpty() }
+        val end = endDateInput.text.toString().takeIf { it.isNotEmpty() }
+
+        TandonClient.instance.getTandonData2().enqueue(object : retrofit2.Callback<ArrayList<TandonData>> {
+            override fun onResponse(call: retrofit2.Call<ArrayList<TandonData>>, response: retrofit2.Response<ArrayList<TandonData>>) {
+                if (response.isSuccessful) {
+                    val chartData = response.body()
+
+                    if (chartData != null) {
+                        showLineChart(chartData)
+                    }
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.post{
+                        shimmerLayout.stopShimmer()
+                        shimmerLayout.visibility = View.GONE // Hide shimmer after loading
+                        lineChart.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onFailure(call: retrofit2.Call<ArrayList<TandonData>>, t: Throwable) {
+                context?.let {
+                    Toast.makeText(it, "Gagal: ${t.message}", Toast.LENGTH_LONG).show()
+
+                }
+            }
+        })
+    }
+
+    private fun showLineChart(data: ArrayList<TandonData>) {
+        val typedValue = TypedValue()
+        val theme = requireContext().theme
+        theme.resolveAttribute(R.attr.textContent, typedValue, true)
+        val textColor = typedValue.data
+        if (data.isEmpty()) {
+            lineChart.clear()
+            lineChart.setNoDataText("Tidak ada data tandon tersedia")
+            lineChart.setNoDataTextColor(Color.RED)
+            lineChart.invalidate()
+            lineChart.setNoDataText("Tidak ada data tersedia")
+            lineChart.setNoDataTextColor(textColor)
+            lineChart.setNoDataTextTypeface(Typeface.DEFAULT_BOLD)
+
+            return
+        }
+
+        val entries = data.mapIndexed { index, item ->
+            Entry(index.toFloat(), item.tandon)
+        }
+        val labelTanggal = data.map { it.date } // ["2025-04-01", "2025-04-02", "2025-04-03"]
+
+
+        val dataSet = LineDataSet(entries, "Tinggi Air (cm)").apply {
+            context?.let {
+                color = ContextCompat.getColor(it, R.color.very_blue)
+
+                valueTextColor = ContextCompat.getColor(it, R.color.yellow)
+                //fillColor = ContextCompat.getColor(it, R.color.light_blue)
+            }
+
+            valueTextSize = 12f
+            setDrawValues(false)
+            lineWidth = 2f
+            setDrawCircles(true)
+            setDrawFilled(false)
+            fillAlpha = 100
+            mode = LineDataSet.Mode.CUBIC_BEZIER
+        }
+        val legend = lineChart.legend
+        legend.textColor = textColor
+        legend.textSize = 12f
+        legend.form = Legend.LegendForm.LINE
+
+        lineChart.axisLeft.textColor = textColor
+        lineChart.axisLeft.gridColor = textColor
+
+        lineChart.axisRight.textColor = textColor
+        lineChart.axisRight.gridColor = textColor
+        lineChart.axisRight.isEnabled = false
+        lineChart.axisLeft.setDrawGridLines(true)
+        lineChart.axisLeft.gridColor = Color.LTGRAY
+
+        val lineData = LineData(dataSet)
+        lineChart.data = lineData
+
+        lineChart.setTouchEnabled(true)
+        lineChart.setPinchZoom(true)
+
+
+        val desc = Description()
+        desc.text = "Grafik Tandon Air"
+        lineChart.description = desc
+        lineChart.xAxis.valueFormatter = IndexAxisValueFormatter(labelTanggal)
+        lineChart.xAxis.granularity = 1f // penting agar label tidak tumpang tindih
+        lineChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
+        lineChart.xAxis.textColor = textColor
+        lineChart.xAxis.labelRotationAngle = -45f // miringkan label biar muat
+        lineChart.xAxis.setDrawGridLines(false)
+
+
+        lineChart.invalidate()
+    }
+
 
     fun retrieveImage(){
         //START OF GET IMAGE

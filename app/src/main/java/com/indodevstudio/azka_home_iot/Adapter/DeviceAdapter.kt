@@ -106,6 +106,12 @@ class DeviceAdapter(
         notifyDataSetChanged()
     }
 
+    /*fun connect(){
+        for (holder in viewHolders){
+            holder.setupMqttClient()
+        }
+    }*/
+
     fun disconnectAllMqttClients() {
         // Panggil fungsi disconnect untuk semua ViewHolder yang tersimpan
         for (holder in viewHolders) {
@@ -132,10 +138,24 @@ class DeviceAdapter(
         val ip: TextView = itemView.findViewById(R.id.textIP)
         lateinit var mqttClient: MqttClient
         var deviceId = ""
+
+/*        init{
+            setupMqttClient()
+            publishMessage("sending_order_${deviceId}", deviceId, "refresh")
+        }*/
         fun bind(device: DeviceModel, listener: DeviceActionListener, position: Int) {
-            tvDeviceName.text = "${device.name} - ID: ${device.id}"
             val sharedPreferences = itemView.context.getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
             deviceId = sharedPreferences.getString("device_id", null).toString()
+            //setupMqttClient()
+            setupMqttClient()
+            //listener.onPublish(device.id)
+            publishMessage("sending_order_${deviceId}", deviceId, "refresh")
+            tvDeviceName.text = "${device.name} - ID: ${deviceId}"
+
+            //deviceId = sharedPreferences.getString("device_id", null).toString()
+
+            //sharedPreferences.edit().putString("device_id", device.id).apply()
+            /*sharedPreferences.edit().putString("device_ip", deviceIp).apply()*/
 
             btnRename.setOnClickListener { listener.onRenameDevice(device, position) }
             btnDelete.setOnClickListener {
@@ -144,14 +164,15 @@ class DeviceAdapter(
                 }
             }
             btnRefresh.setOnClickListener {
-                Log.d("MQTT", "🔄 Refresh ditekan untuk device: ${device.id}")
-                if (::mqttClient.isInitialized && mqttClient.isConnected) {
-                    publishMessage("sending_order_${device.id}", device.id, "refresh")
-                } else {
+                Log.d("MQTT", "🔄 Refresh ditekan untuk device: ${deviceId}")
+                publishMessage("sending_order_${deviceId}", deviceId, "refresh")
+                /*if (::mqttClient.isInitialized && mqttClient.isConnected) {
+
+                }*/ /*else {
                     Log.e("MQTT", "❌ MQTT Client tidak terhubung saat mencoba refresh")
                     Toast.makeText(itemView.context, "MQTT tidak terhubung!", Toast.LENGTH_SHORT).show()
                     setupMqttClient(device) // Coba reconnect MQTT
-                }
+                }*/
             }
 
             btnDelete.visibility = if (device.isShared) View.GONE else View.VISIBLE
@@ -161,13 +182,13 @@ class DeviceAdapter(
             } else {
                 tvShared.visibility = View.GONE
             }
-            setupMqttClient(device)
-            listener.onPublish(device.id)
+
+            Log.d("MQTT", "Test = $deviceId")
 
             //publishMqttTopic("set_mqtt_topic", topic1, topic2)
         }
 
-        private fun setupMqttClient(device: DeviceModel) {
+        fun setupMqttClient() {
             val brokerUrl = "tcp://taryem.my.id:1883"
             val clientId = "kotlin123"
             val persistence = MemoryPersistence()
@@ -178,12 +199,12 @@ class DeviceAdapter(
                 options.isAutomaticReconnect = true
                 options.isCleanSession = true
                 options.connectionTimeout = 10
-                options.keepAliveInterval = 300
+                options.keepAliveInterval = 120
 
                 mqttClient.connect(options)
 
-                Log.d("MQTT", "Konek")
-                Logger.log("MQTT", "KONEK")
+                Log.d("MQTT", "Connecting......")
+                Logger.log("MQTT", "Connecting....")
                 mqttClient.setCallback(object : MqttCallback {
                     override fun connectionLost(cause: Throwable?) {}
 
@@ -222,7 +243,7 @@ class DeviceAdapter(
                 })
 
 
-                mqttClient.subscribe("sending_telemetri_${device.id}")
+                mqttClient.subscribe("sending_telemetri_${deviceId}")
 
 
             } catch (e: MqttException) {
@@ -239,7 +260,7 @@ class DeviceAdapter(
 
 
         //NORMAL PUBLISH
-        fun publishMessage(topic: String, message: String) {
+/*        fun publishMessage(topic: String, message: String) {
             if (::mqttClient.isInitialized && mqttClient.isConnected) {
                 try {
                     val mqttMessage = MqttMessage()
@@ -249,7 +270,7 @@ class DeviceAdapter(
                     e.printStackTrace()
                 }
             }
-        }
+        }*/
         //WITH DEVICEID PUBLISH
         fun publishMessage(topic: String, deviceId: String, command: String) {
             try {
