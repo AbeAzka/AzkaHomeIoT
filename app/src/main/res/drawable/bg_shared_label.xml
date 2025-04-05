@@ -2,6 +2,6 @@
     android:shape="rectangle">
     <corners android:topRightRadius="10dp"/>
     <corners android:bottomRightRadius="8dp"/>
-    <solid android:color="@color/red"/>
+    <solid android:color="?attr/shared"/>
     <padding android:left="8dp" android:right="8dp" android:top="4dp" android:bottom="4dp"/>
 </shape>

@@ -11,4 +11,5 @@
     <attr name="SPcardBG" format="color"/>
     <attr name="stroke_Spin" format="color"/>
     <attr name="selected_icon" format="color"/>
+    <attr name="shared" format="color"/>
 </resources>

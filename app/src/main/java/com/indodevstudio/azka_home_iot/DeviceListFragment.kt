@@ -353,31 +353,33 @@ class DeviceListFragment : Fragment() {
         builder.setView(input)
 
         builder.setPositiveButton("Rename") { _, _ ->
-            val newName = input.text.toString()
+            val newName = input.text.toString().trim()
             if (newName.isNotEmpty()) {
-                // 🔹 Update nama perangkat tanpa menghilangkan status "isShared"
-                val updatedDevice = device.copy(name = newName, isShared = device.isShared)
+                // 🔹 Salin dan update nama device
+                val updatedDevice = device.copy(name = newName)
 
-                // 🔹 Perbarui data di ViewModel & Adapter
-                deviceViewModel.updateDeviceName(position, newName, ipAddress)
+                // 🔹 Update di ViewModel berdasarkan ID (biar aman walau ada device yang shared)
+                deviceViewModel.updateDeviceNameById(device.id, newName)
+
+                // 🔹 Update local list dan adapter
                 deviceList[position] = updatedDevice
                 deviceAdapter.notifyItemChanged(position)
 
-                // 🔹 Simpan perubahan
-                saveDeviceName(requireContext(), newName, deviceId)
-                saveDeviceInfo(deviceId, newName, getCurrentIpAddress())
+                // 🔹 Simpan perubahan ke SharedPreferences/server
+                saveDeviceName(requireContext(), newName, device.id)
+                saveDeviceInfo(device.id, newName, getCurrentIpAddress())
                 updateDev(device.id, newName, device.ipAddress)
 
                 Toast.makeText(requireContext(), "Device renamed to $newName", Toast.LENGTH_SHORT).show()
-            }else{
+            } else {
                 Toast.makeText(requireContext(), "Rename form must be filled", Toast.LENGTH_SHORT).show()
-
             }
         }
 
         builder.setNegativeButton("Cancel", null)
         builder.show()
     }
+
 
 
 
