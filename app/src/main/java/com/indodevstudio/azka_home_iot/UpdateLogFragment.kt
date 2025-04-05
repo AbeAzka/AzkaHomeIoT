@@ -1,63 +1,100 @@
 package com.indodevstudio.azka_home_iot
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.indodevstudio.azka_home_iot.API.UpdateLogService
+import com.indodevstudio.azka_home_iot.API.UpdateLogf
+import com.indodevstudio.azka_home_iot.Adapter.UpdateLogAdapter
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [UpdateLogFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class UpdateLogFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: UpdateLogAdapter
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        val view =  inflater.inflate(R.layout.fragment_update_log, container, false)
-        //version = view.findViewById(R.id.version)
-        //var versionName = requireActivity().applicationContext.packageManager.getPackageInfo(requireActivity().applicationContext.packageName, 0).versionName
-        //version.text = "Version: " +  versionName
-        return view
+        return inflater.inflate(R.layout.fragment_update_log, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment UpdateLogFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            UpdateLogFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        recyclerView = view.findViewById(R.id.recyclerView)
+        progressBar = view.findViewById(R.id.progressBar)
+
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        fetchUpdateLogs()
+        /*(activity as? AppCompatActivity)?.supportActionBar?.hide()
+
+        val toolbar = view.findViewById<Toolbar>(R.id.toolbarSetup)
+        toolbar.setNavigationOnClickListener(View.OnClickListener {
+            //What to do on back clicked
+            onBackPressed()
+        })*/
     }
+
+    fun onBackPressed() {
+
+        // Menggunakan parentFragmentManager untuk mengganti fragmen di dalam aktivitas
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, HomeFragment()) // Gantilah dengan fragmen yang sesuai
+            .commit()
+    }
+
+    /*override fun onDestroyView() {
+        super.onDestroyView()
+        (activity as? AppCompatActivity)?.supportActionBar?.show()
+    }*/
+
+    private fun fetchUpdateLogs() {
+        progressBar.visibility = View.VISIBLE
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://abeazka.my.id/ahi/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val apiService = retrofit.create(UpdateLogService::class.java)
+
+        val call = apiService.getUpdateLogs()
+        call.enqueue(object : retrofit2.Callback<ArrayList<UpdateLogf>> {
+            override fun onResponse(
+                call: Call<ArrayList<UpdateLogf>>,
+                response: retrofit2.Response<ArrayList<UpdateLogf>>
+            ) {
+                if (response.isSuccessful && response.body() != null) {
+                    val logs = response.body()!!
+                    adapter = UpdateLogAdapter(logs)
+                    recyclerView.adapter = adapter
+                } else {
+                    Toast.makeText(requireContext(), "Response kosong", Toast.LENGTH_SHORT).show()
+                }
+                progressBar.visibility = View.GONE
+            }
+
+            override fun onFailure(call: Call<ArrayList<UpdateLogf>>, t: Throwable) {
+                Toast.makeText(requireContext(), "Gagal ambil data: ${t.message}", Toast.LENGTH_SHORT).show()
+                progressBar.visibility = View.GONE
+            }
+        })
+    }
+
+
 }

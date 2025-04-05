@@ -113,8 +113,8 @@ class SetupWemosFragment : Fragment() {
             val ownerEmail = email // Ambil dari session/login
             val deviceName = editTextDeviceName.text.toString()
             val deviceIp = getCurrentIpAddress() // Ambil IP Wemos
-            val sharedPreferences = requireContext().getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
-            val deviceId = sharedPreferences.getString("device_id", "UNKNOWN_ID") ?: "UNKNOWN_ID"
+            val sharedPreferences = requireContext().getSharedPreferences("DevicePrefs2", Context.MODE_PRIVATE)
+            val deviceId = sharedPreferences.getString("dvc", "UNKNOWN_ID") ?: "UNKNOWN_ID"
             saveDeviceName(requireContext(), deviceName)
             saveDeviceIP(requireContext(), deviceIp)
             if (deviceName.isNotEmpty() && deviceIp.isNotEmpty()) {
@@ -324,10 +324,10 @@ class SetupWemosFragment : Fragment() {
                 val deviceId = json.getString("device_id")
 
                 val sharedPreferences = context?.getSharedPreferences(
-                    "DevicePrefs",
+                    "DevicePrefs2",
                     Context.MODE_PRIVATE
                 )
-                sharedPreferences?.edit()?.putString("device_id", deviceId)?.apply()
+                sharedPreferences?.edit()?.putString("dvc", deviceId)?.apply()
 
                 DVCID = deviceId.toString()
                 Log.d("MQTT", "DVCID = $deviceId")

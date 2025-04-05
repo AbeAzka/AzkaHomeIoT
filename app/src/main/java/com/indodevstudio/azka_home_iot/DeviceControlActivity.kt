@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.indodevstudio.azka_home_iot.Model.DeviceModel
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -51,7 +52,7 @@ class DeviceControlActivity : AppCompatActivity() {
         textSwitch2 = findViewById(R.id.textSwitch2)
         textSwitch1 = findViewById(R.id.textSwitch1)
 
-        val sharedPreferences2 = getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
+        val sharedPreferences2 = getSharedPreferences("Bagogo", Context.MODE_PRIVATE)
         device_id = sharedPreferences2?.getString("device_id", null).toString()
         sharedPreferences = getSharedPreferences("MyPrefs", 0)
 

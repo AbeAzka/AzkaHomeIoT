@@ -33,6 +33,12 @@
 
             app:entries="@array/dark_mode_entries"
             app:entryValues="@array/dark_mode_entries_values"/>
+        <Preference
+            android:key="notification_ringtone"
+            android:title="Nada Dering Notifikasi"
+            android:summary="Pilih nada dering notifikasi"
+            android:fragment="com.indodevstudio.azka_home_iot.RingtonePickerFragment" />
+
         <!--<SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="notification"
@@ -50,13 +56,7 @@
                             android:data="https://www.abeazka.my.id"/>
 
                     </Preference>
-                    <Preference android:title="Update Log"
-                        app:key="link"
-                        android:summary="See the update log!">
-                        <intent android:action="android.intent.action.VIEW"
-                            android:data="https://www.abeazka.my.id/ahi/update"/>
 
-                    </Preference>
                     <Preference android:title="License"
                         android:summary="Copyright © 2024 Azka - All Rights Reserved">
                     </Preference>

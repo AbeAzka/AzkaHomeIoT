@@ -9,6 +9,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import android.view.View
@@ -18,6 +20,7 @@ import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
@@ -36,12 +39,21 @@ const val channelName = "com.indodevstudio.azka_home_iot"
 class MyFirebaseMessagingService : FirebaseMessagingService(){
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         remoteMessage.notification?.let {
+            val ringtoneUriString = PreferenceManager
+                .getDefaultSharedPreferences(this)
+                .getString("notification_ringtone", null)
 
-            sendNotification(it.title, it.body)
+            val ringtoneUri = if (ringtoneUriString.isNullOrEmpty()) {
+                RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+            } else {
+                Uri.parse(ringtoneUriString)
+            }
+            sendNotification(it.title, it.body, ringtoneUri)
         }
     }
 
-    private fun sendNotification(title: String?, messageBody: String?) {
+    private fun sendNotification(title: String?, messageBody: String?, ringtone: Uri) {
+
         val channelId = "event_reminder"
         val notificationId = System.currentTimeMillis().toInt()
 
@@ -56,6 +68,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService(){
         )
 
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
+            .setSound(ringtone)
             .setSmallIcon(R.drawable.ic_event) // Ganti dengan icon yang sesuai
             .setContentTitle(title ?: "Notifikasi Baru")
             .setContentText(messageBody ?: "Tekan untuk melihat detail event.")

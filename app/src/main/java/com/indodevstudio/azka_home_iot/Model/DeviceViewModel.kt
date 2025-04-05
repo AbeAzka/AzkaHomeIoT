@@ -39,6 +39,7 @@ class DeviceViewModel(application: Application) : AndroidViewModel(application) 
         val json = gson.toJson(deviceList.value)
 
         sharedPreferences.edit().putString("device_list", json).apply()
+
         Logger.log("DeviceViewModel", "Device list saved: $json")
     }
 

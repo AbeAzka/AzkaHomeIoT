@@ -2,6 +2,7 @@ package com.indodevstudio.azka_home_iot
 
 import android.adservices.topics.Topic
 import android.content.Context
+import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -33,7 +34,7 @@ import org.json.JSONException
 import java.io.IOException
 
 class DeviceListFragment : Fragment() {
-
+    private lateinit var wifiManager: WifiManager
     private lateinit var recyclerView: RecyclerView
     private lateinit var deviceAdapter: DeviceAdapter
     private lateinit var tvNoDevices: TextView
@@ -48,12 +49,23 @@ class DeviceListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_device_list, container, false)
+        wifiManager = requireContext().applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
         recyclerView = view.findViewById(R.id.recyclerView)
         tvNoDevices = view.findViewById(R.id.tvNoDevices)
-        val sharedPreferences = requireContext().getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
-        deviceId = sharedPreferences.getString("device_id", null).toString()
-        ipAddress = sharedPreferences.getString("device_ip", "0.0.0.0").toString()
+        val sharedPreferences2 = context?.getSharedPreferences("Bagogo", Context.MODE_PRIVATE)
+        val deviceIdd = sharedPreferences2?.getString("device_id", null)
+        val deviceIpp = sharedPreferences2?.getString("device_ip", null)
+        if (deviceIdd != null && deviceIpp != null) {
+            deviceId = deviceIdd
+            ipAddress = deviceIpp
+            Log.d("SharedPrefs", "Loaded device_id: $deviceIdd")
+            // Lanjut pakai deviceId sesuai kebutuhan
+        } else {
+            Log.d("SharedPrefs", "No device_id found")
+        }
+        //val sharedPreferences = requireContext().getSharedPreferences("DevicePrefs2", Context.MODE_PRIVATE)
+        //ipAddress = sharedPreferences.getString("device_ip", "0.0.0.0").toString()
         Log.d("MQTT", deviceId)
         //FOR FIREBASE LOGIN (AKA. GOOGLE)
         val fabAddDevice: FloatingActionButton = view.findViewById(R.id.fabAddDevice)
@@ -167,7 +179,7 @@ class DeviceListFragment : Fragment() {
                     }
 
                     requireActivity().runOnUiThread {
-                        val uniqueDevices = (deviceList + sharedDevices).distinctBy { it.isShared  }
+                        val uniqueDevices = (sharedDevices + deviceList).distinctBy { it.id  }
                         deviceList.clear()
                         deviceList.addAll(uniqueDevices)
                         deviceViewModel.updateDeviceList(uniqueDevices)
@@ -217,7 +229,7 @@ class DeviceListFragment : Fragment() {
 
                             val normalDevices = deviceList.map { it.copy(isShared = false) }
 
-                            val uniqueDevices = (normalDevices + ownedDevices).distinctBy { it.isShared }
+                            val uniqueDevices = (normalDevices + ownedDevices).distinctBy {it.id + it.isShared.toString() }
                             deviceList.clear()
                             deviceList.addAll(uniqueDevices)
                             deviceViewModel.updateDeviceList(uniqueDevices)
@@ -260,8 +272,8 @@ class DeviceListFragment : Fragment() {
             for (i in 0 until jsonArray.length()) {
                 val obj = jsonArray.getJSONObject(i)
                 val deviceId = obj.optString("device_id", "")
-                val deviceName = getSavedDeviceName(requireContext())
-                val deviceIp = getSavedDeviceIP(requireContext())
+                val deviceName = getSavedDeviceName(requireContext(), deviceId)
+                val deviceIp = getSavedDeviceIP(requireContext(), deviceId)
 
                 val newDevice = DeviceModel(deviceId, deviceName, deviceIp)
                 devices.add(newDevice)
@@ -275,23 +287,32 @@ class DeviceListFragment : Fragment() {
     }
 
 
-    private fun getSavedDeviceName(context: Context): String {
+    private fun getSavedDeviceName(context: Context, deviceId: String): String {
         val sharedPreferences = context.getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
-        return sharedPreferences.getString("DEVICE_NAME", "No Device") ?: "No Device"
+        return sharedPreferences.getString("DEVICE_NAME_$deviceId", "No Device") ?: "No Device"
     }
 
-    private fun getSavedDeviceIP(context: Context): String {
+    private fun getSavedDeviceIP(context: Context, deviceId: String): String {
         val sharedPreferences = context.getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
-        return sharedPreferences.getString("DEVICE_IP", "0.0.0.0") ?: "0.0.0.0"
+        return sharedPreferences.getString("DEVICE_IP_$deviceId", "0.0.0.0") ?: "0.0.0.0"
+    }
+
+    private fun saveDeviceInfo(deviceId: String, deviceName: String, deviceIp: String) {
+        val sharedPreferences = requireContext().getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
+        with (sharedPreferences.edit()) {
+            putString("DEVICE_NAME_$deviceId", deviceName)
+            putString("DEVICE_IP_$deviceId", deviceIp)
+            apply()
+        }
     }
 
 
 
 
-    private fun saveDeviceName(context: Context, deviceName: String) {
+    private fun saveDeviceName(context: Context, deviceName: String, deviceId: String) {
         val sharedPreferences = context.getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.putString("DEVICE_NAME", deviceName)
+        editor.putString("DEVICE_NAME_$deviceId", deviceName)
         editor.apply()
     }
     // 🔹 Fungsi untuk menyimpan daftar perangkat ke SharedPreferences
@@ -343,7 +364,8 @@ class DeviceListFragment : Fragment() {
                 deviceAdapter.notifyItemChanged(position)
 
                 // 🔹 Simpan perubahan
-                saveDeviceName(requireContext(), newName)
+                saveDeviceName(requireContext(), newName, deviceId)
+                saveDeviceInfo(deviceId, newName, getCurrentIpAddress())
                 updateDev(device.id, newName, device.ipAddress)
 
                 Toast.makeText(requireContext(), "Device renamed to $newName", Toast.LENGTH_SHORT).show()
@@ -524,7 +546,18 @@ class DeviceListFragment : Fragment() {
         })
     }
 
+    private fun getCurrentIpAddress(): String {
+        val dhcpInfo = wifiManager.dhcpInfo
+        val ip = dhcpInfo.gateway // IP Gateway biasanya IP Wemos
 
+        return String.format(
+            "%d.%d.%d.%d",
+            (ip and 0xFF),
+            (ip shr 8 and 0xFF),
+            (ip shr 16 and 0xFF),
+            (ip shr 24 and 0xFF)
+        )
+    }
 
 
     private fun updateUI() {

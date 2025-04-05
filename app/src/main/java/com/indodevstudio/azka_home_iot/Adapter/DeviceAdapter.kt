@@ -31,7 +31,8 @@ import java.io.IOException
 
 class DeviceAdapter(
     private val deviceList: MutableList<DeviceModel>,
-    private val listener: DeviceActionListener
+    private val listener: DeviceActionListener,
+
 ) : RecyclerView.Adapter<DeviceAdapter.DeviceViewHolder>() {
 
     interface DeviceActionListener {
@@ -58,10 +59,20 @@ class DeviceAdapter(
         holder.bind(device, listener, position)
 
         holder.itemView.setOnClickListener {
+            val deviceIdd = device.id
+            val deviceNam = device.name
+            Toast.makeText(holder.itemView.context, "Device ID: $deviceIdd", Toast.LENGTH_SHORT).show()
+            val sharedPreferences = holder.itemView.context.getSharedPreferences("Bagogo", Context.MODE_PRIVATE)
+            sharedPreferences.edit().putString("device_id", device.id).apply()
+            sharedPreferences.edit().putString("device_ip", device.ipAddress).apply()
+
+            // Atau kirim ke Activity lain:
             val intent = Intent(holder.itemView.context, DeviceControlActivity::class.java)
-            intent.putExtra("deviceName", device.name)
+            intent.putExtra("device_id", deviceIdd)
+            intent.putExtra("deviceName", deviceNam)
             holder.itemView.context.startActivity(intent)
         }
+
 
         holder.itemView.setOnLongClickListener{
             if (device.isShared) {
@@ -137,7 +148,7 @@ class DeviceAdapter(
         private val tvShared: TextView = itemView.findViewById(R.id.tvShared)
         val ip: TextView = itemView.findViewById(R.id.textIP)
         lateinit var mqttClient: MqttClient
-        var deviceId = ""
+
 
 /*        init{
             setupMqttClient()
@@ -145,12 +156,15 @@ class DeviceAdapter(
         }*/
         fun bind(device: DeviceModel, listener: DeviceActionListener, position: Int) {
             val sharedPreferences = itemView.context.getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
-            deviceId = sharedPreferences.getString("device_id", null).toString()
+            //deviceId = sharedPreferences.getString("device_id", null).toString()
             //setupMqttClient()
-            setupMqttClient()
+            val sharedPreferences2 = itemView.context.getSharedPreferences("Bagogo", Context.MODE_PRIVATE)
+            Log.d("MQTT", "IPUT ${device.id}")
+            //deviceId = sharedPreferences2.getString("device_id", null).toString()
+            setupMqttClient(device)
             //listener.onPublish(device.id)
-            publishMessage("sending_order_${deviceId}", deviceId, "refresh")
-            tvDeviceName.text = "${device.name} - ID: ${deviceId}"
+            publishMessage("sending_order_${device.id}", device.id, "refresh")
+            tvDeviceName.text = "${device.name} - ID: ${device.id}"
 
             //deviceId = sharedPreferences.getString("device_id", null).toString()
 
@@ -164,8 +178,8 @@ class DeviceAdapter(
                 }
             }
             btnRefresh.setOnClickListener {
-                Log.d("MQTT", "🔄 Refresh ditekan untuk device: ${deviceId}")
-                publishMessage("sending_order_${deviceId}", deviceId, "refresh")
+                Log.d("MQTT", "🔄 Refresh ditekan untuk device: ${device.id}")
+                publishMessage("sending_order_${device.id}", device.id, "refresh")
                 /*if (::mqttClient.isInitialized && mqttClient.isConnected) {
 
                 }*/ /*else {
@@ -183,12 +197,10 @@ class DeviceAdapter(
                 tvShared.visibility = View.GONE
             }
 
-            Log.d("MQTT", "Test = $deviceId")
-
             //publishMqttTopic("set_mqtt_topic", topic1, topic2)
         }
 
-        fun setupMqttClient() {
+        fun setupMqttClient(device: DeviceModel) {
             val brokerUrl = "tcp://taryem.my.id:1883"
             val clientId = "kotlin123"
             val persistence = MemoryPersistence()
@@ -220,11 +232,11 @@ class DeviceAdapter(
                                 val deviceId2 = json.getString("device_id")
                                 val deviceIp = json.getString("ip")
                                 //deviceId = deviceId2
-                                Log.d("MQTT","✅ Device ID: $deviceId, IP: $deviceIp")
+                                Log.d("MQTT","✅ Device ID: ${device.id}, IP: $deviceIp")
 
                                 // **Simpan device_id ke SharedPreferences**
                                 val sharedPreferences = itemView.context.getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
-                                sharedPreferences.edit().putString("device_id", deviceId2).apply()
+                                //sharedPreferences.edit().putString("device_id", deviceId2).apply()
                                 sharedPreferences.edit().putString("device_ip", deviceIp).apply()
 
 
@@ -243,7 +255,7 @@ class DeviceAdapter(
                 })
 
 
-                mqttClient.subscribe("sending_telemetri_${deviceId}")
+                mqttClient.subscribe("sending_telemetri_${device.id}")
 
 
             } catch (e: MqttException) {

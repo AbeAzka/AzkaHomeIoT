@@ -1005,7 +1005,13 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                     .replace(R.id.fragment_container, DeviceListFragment()).commit()
                 navigationView.setCheckedItem(R.id.nav_book)
             }
-
+            R.id.nav_log -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, UpdateLogFragment()).commit()
+                navigationView.setCheckedItem(R.id.nav_book)
+            }
 
             //R.id.nav_update -> supportFragmentManager.beginTransaction()
              //   .replace(R.id.fragment_container, UpdateLogFragment()).commit()
