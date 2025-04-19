@@ -128,7 +128,8 @@
                     android:tooltipText="Refresh"
                     android:contentDescription="Refresh Device"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    android:visibility="gone"/>
             </LinearLayout>
 
         </LinearLayout>

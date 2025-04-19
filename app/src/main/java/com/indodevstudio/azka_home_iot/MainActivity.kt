@@ -90,6 +90,7 @@ import java.net.NetworkInterface
 import java.net.URL
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 import com.indodevstudio.azka_home_iot.utils.FirebaseUtils.firebaseUser
 
@@ -449,6 +450,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             Toast.makeText(this, "User login dengan akun IndodevStudio", Toast.LENGTH_SHORT).show()
             nama.text = userData["username"]
             val obfuscatedEmail = userData["email"]?.let { obfuscateEmail(it) }
+            email = userData["email"].toString()
             em.text = obfuscatedEmail
             // Ambil avatar dari userData
             val avatarPath = userData["avatar"].toString()
@@ -1039,11 +1041,10 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         val isNightMode = resources.configuration.uiMode and
                 Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
-        val dialogStyle = if (isNightMode) R.style.CustomAlertDialogStyle_Night else R.style.CustomAlertDialogStyle
-        val dialog = AlertDialog.Builder(this)
+        MaterialAlertDialogBuilder(this)
             .setTitle("Logout")
             .setMessage("Are you sure you want to logout?")
-            .setPositiveButton("Yes") { dialog, which ->
+            .setPositiveButton("Yes") { _, _ ->
                 // Proceed with the action (e.g., delete the data)
 
                 // Hapus token dari SharedPreferences (untuk login via web)
@@ -1053,21 +1054,17 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
                 // Sign out dari Firebase Authentication (untuk login via Google)
                 FirebaseAuth.getInstance().signOut()
-                    val intent = Intent(this, SignInActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-                    Toast.makeText(this, "Successfully logout!", Toast.LENGTH_SHORT).show()
-                    finish()
+                val intent = Intent(this, SignInActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                Toast.makeText(this, "Successfully logout!", Toast.LENGTH_SHORT).show()
+                finish()
 
             }
-            .setNegativeButton("No") { dialog, which ->
-                // Dismiss the dialog, no action needed
+            .setNegativeButton("No") { dialog, _ ->
                 dialog.dismiss()
             }
-            .create()
-
-        // Show the dialog
-        dialog.show()
+            .show()
     }
     fun requestPermissionMain(){
         if (ContextCompat.checkSelfPermission(

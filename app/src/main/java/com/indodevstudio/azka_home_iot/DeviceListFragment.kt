@@ -16,7 +16,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.indodevstudio.azka_home_iot.API.DeviceSharingService
 import com.indodevstudio.azka_home_iot.Adapter.DeviceAdapter
@@ -44,13 +49,17 @@ class DeviceListFragment : Fragment() {
     var deviceId = ""
     private var ipAddress = ""
 
+    lateinit var shimmerLayout : ShimmerFrameLayout
+    lateinit var swipeRefresh: SwipeRefreshLayout
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_device_list, container, false)
         wifiManager = requireContext().applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-
+        shimmerLayout = view.findViewById<ShimmerFrameLayout>(R.id.shimmerLayout)
+        swipeRefresh = view.findViewById(R.id.swipeRefreshLayout)
         recyclerView = view.findViewById(R.id.recyclerView)
         tvNoDevices = view.findViewById(R.id.tvNoDevices)
         val sharedPreferences2 = context?.getSharedPreferences("Bagogo", Context.MODE_PRIVATE)
@@ -85,13 +94,13 @@ class DeviceListFragment : Fragment() {
         }
 
         // 🔹 Muat daftar perangkat lokal sebelum cek shared devices
-        loadDeviceList()
+//        loadDeviceList()
+
 
         // Jika ada email, baru cek shared devices (opsional)
-        val userEmail = email
-        fetchDevices(userEmail) {
-            fetchSharedDevices(userEmail)
-        }
+
+        loadData()
+
 
         deviceAdapter = DeviceAdapter(deviceList, object : DeviceAdapter.DeviceActionListener {
             override fun onRenameDevice(device: DeviceModel, position: Int) {
@@ -109,20 +118,17 @@ class DeviceListFragment : Fragment() {
             override fun onPublish(device: String) {
                 deviceAdapter.publish("sending_order_$deviceId", deviceId, "refresh")
             }
-
         })
-        deviceAdapter.publish("sending_order_$deviceId", deviceId, "refresh")
-
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = deviceAdapter
 
 
-        // Observasi ViewModel untuk update data
-        deviceViewModel.getDeviceList().observe(viewLifecycleOwner) { devices ->
-            deviceList.clear()
-            deviceList.addAll(devices)
-            deviceAdapter.notifyDataSetChanged()
-            updateUI()
+        with (swipeRefresh) {
+            swipeRefresh?.setOnRefreshListener {
+                setRefreshing(true)
+                loadData {
+                    setRefreshing(false) // Hanya setelah data selesai dimuat
+                }
+            }
+
         }
 
         // Tombol tambah perangkat
@@ -136,6 +142,63 @@ class DeviceListFragment : Fragment() {
 
         return view
     }
+
+    private fun loadData(onFinished: (() -> Unit)? = null) {
+        // Mulai shimmer effect
+        shimmerLayout.visibility = View.VISIBLE
+        shimmerLayout.startShimmer()
+        recyclerView.visibility = View.GONE
+        tvNoDevices.visibility = View.GONE
+
+        // Simulasi delay untuk loading
+        Handler(Looper.getMainLooper()).postDelayed({
+
+            // Ambil data perangkat dari ViewModel
+            val userEmail = email
+            loadDeviceList()
+            fetchDevices(userEmail) {
+                fetchSharedDevices(userEmail)
+            }
+
+            // Mengupdate data perangkat dari ViewModel
+            deviceViewModel.getDeviceList().observe(viewLifecycleOwner) { devices ->
+                // Hentikan shimmer dan tampilkan RecyclerView
+                shimmerLayout.stopShimmer()
+                shimmerLayout.visibility = View.GONE
+                recyclerView.visibility = View.VISIBLE
+
+                // Set layout manager dan adapter jika belum
+                if (recyclerView.adapter == null) {
+                    recyclerView.layoutManager = LinearLayoutManager(requireContext())
+                    recyclerView.adapter = deviceAdapter
+                }
+
+                // Perbarui data di deviceList
+                deviceList.clear()
+                deviceList.addAll(devices)
+
+                // Update adapter setelah data berubah
+                deviceAdapter.notifyDataSetChanged()
+
+                // Publish hanya jika ada data
+                if (deviceList.isNotEmpty()) {
+                    deviceAdapter.publish("sending_order_$deviceId", deviceId, "refresh")
+                }
+
+                // Update UI jika diperlukan
+                updateUI()
+
+                // Callback selesai
+                onFinished?.invoke()
+            }
+
+        }, 2000)
+    }
+
+
+
+
+
 
     private fun getUserData(): Map<String, String?> {
         val prefs = requireContext().getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
@@ -176,6 +239,7 @@ class DeviceListFragment : Fragment() {
 
                     val sharedDevices = parseDevicesJson(jsonString).map { device ->
                         device.copy(isShared = true) // 🔹 Tandai sebagai perangkat shared
+
                     }
 
                     requireActivity().runOnUiThread {
@@ -272,7 +336,7 @@ class DeviceListFragment : Fragment() {
             for (i in 0 until jsonArray.length()) {
                 val obj = jsonArray.getJSONObject(i)
                 val deviceId = obj.optString("device_id", "")
-                val deviceName = getSavedDeviceName(requireContext(), deviceId)
+                val deviceName = obj.optString("device_name", "")
                 val deviceIp = getSavedDeviceIP(requireContext(), deviceId)
 
                 val newDevice = DeviceModel(deviceId, deviceName, deviceIp)
@@ -344,7 +408,7 @@ class DeviceListFragment : Fragment() {
     }
 
     // Rename device
-    private fun renameDevice(device: DeviceModel, position: Int) {
+    private fun renameDevice( device: DeviceModel, position: Int) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Rename Device")
 
@@ -352,32 +416,48 @@ class DeviceListFragment : Fragment() {
         input.setText(device.name)
         builder.setView(input)
 
-        builder.setPositiveButton("Rename") { _, _ ->
-            val newName = input.text.toString().trim()
-            if (newName.isNotEmpty()) {
-                // 🔹 Salin dan update nama device
-                val updatedDevice = device.copy(name = newName)
-
-                // 🔹 Update di ViewModel berdasarkan ID (biar aman walau ada device yang shared)
-                deviceViewModel.updateDeviceNameById(device.id, newName)
-
-                // 🔹 Update local list dan adapter
-                deviceList[position] = updatedDevice
-                deviceAdapter.notifyItemChanged(position)
-
-                // 🔹 Simpan perubahan ke SharedPreferences/server
-                saveDeviceName(requireContext(), newName, device.id)
-                saveDeviceInfo(device.id, newName, getCurrentIpAddress())
-                updateDev(device.id, newName, device.ipAddress)
-
-                Toast.makeText(requireContext(), "Device renamed to $newName", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(requireContext(), "Rename form must be filled", Toast.LENGTH_SHORT).show()
-            }
+        val textInputLayout = TextInputLayout(requireContext()).apply {
+            setPadding(50, 40, 50, 0)
+            hint = "Masukkan nama"
         }
 
-        builder.setNegativeButton("Cancel", null)
-        builder.show()
+        val editText = TextInputEditText(textInputLayout.context).apply {
+            setText(device.name)
+            setTextSize(16f)
+        }
+        DeviceSharingService.getDeviceStatus(device.id)
+        textInputLayout.addView(editText)
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Edit Nama")
+            .setView(textInputLayout)
+            .setPositiveButton("Simpan") { _, _ ->
+                val newName = editText.text.toString().trim()
+                if (newName.isNotEmpty()) {
+                    // 🔹 Salin dan update nama device
+                    val updatedDevice = device.copy(name = newName)
+
+                    // 🔹 Update di ViewModel berdasarkan ID (biar aman walau ada device yang shared)
+                    deviceViewModel.updateDeviceNameById(device.id, newName)
+
+                    // 🔹 Update local list dan adapter
+                    deviceList[position] = updatedDevice
+                    deviceAdapter.notifyItemChanged(position)
+
+                    // 🔹 Simpan perubahan ke SharedPreferences/server
+                    saveDeviceName(requireContext(), newName, device.id)
+                    saveDeviceInfo(device.id, newName, getCurrentIpAddress())
+                    updateDev(device.id, newName, device.ipAddress)
+
+                    Toast.makeText(requireContext(), "Device renamed to $newName", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "Rename form must be filled", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Batal") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
 

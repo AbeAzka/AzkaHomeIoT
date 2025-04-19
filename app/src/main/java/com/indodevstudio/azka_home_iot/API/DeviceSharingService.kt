@@ -1,11 +1,66 @@
 package com.indodevstudio.azka_home_iot.API
 
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.indodevstudio.azka_home_iot.Logger
 import okhttp3.*
+import retrofit2.Retrofit
+
+import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 
 object DeviceSharingService {
     private val client = OkHttpClient()
+    val deviceStatus = MutableLiveData<String?>()
+    val deviceStatus2 = MutableLiveData<String?>()
+    private var pollingHandler: Handler? = null
+    private var pollingRunnable: Runnable? = null
+
+    fun startPollingDeviceStatus(deviceId: String, intervalMillis: Long = 3000L) {
+        pollingHandler = Handler(Looper.getMainLooper())
+        pollingRunnable = object : Runnable {
+            override fun run() {
+                getDeviceStatus(deviceId)
+                pollingHandler?.postDelayed(this, intervalMillis)
+            }
+        }
+        pollingHandler?.post(pollingRunnable!!)
+    }
+
+    fun stopPolling() {
+        pollingHandler?.removeCallbacks(pollingRunnable!!)
+    }
+    fun getDeviceStatus(deviceId: String) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://ahi.abeazka.my.id/api/arduino/") // Ganti dengan URL server kamu
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val apiService = retrofit.create(ArduinoService::class.java)
+
+        apiService.getDeviceStatus(deviceId).enqueue(object : retrofit2.Callback<DeviceStatusResponse> {
+            override fun onResponse(
+                call: retrofit2.Call<DeviceStatusResponse>,
+                response: retrofit2.Response<DeviceStatusResponse>
+            ) {
+                if (response.isSuccessful && response.body()?.success == true) {
+                    deviceStatus.value = response.body()?.status_s1
+                    deviceStatus2.value = response.body()?.status_s2
+                } else {
+                    deviceStatus.value = "Unknown"
+                    deviceStatus2.value = "Unknown"
+                }
+            }
+
+            override fun onFailure(call: retrofit2.Call<DeviceStatusResponse>, t: Throwable) {
+                deviceStatus.value = "Error"
+                deviceStatus2.value = "Error"
+            }
+        })
+    }
+
 
     // Fungsi untuk mengirim undangan berbagi perangkat
     fun sendInvite(ownerEmail: String, sharedEmail: String, deviceID: String, deviceName: String, callback: (Boolean, String) -> Unit) {

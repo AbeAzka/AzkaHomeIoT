@@ -24,9 +24,13 @@
     <!-- Base application theme. -->
 
 
-    <style name="Theme.MainActivity" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.MainActivity" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-<!--        <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownStyle</item>-->
+        <item name="alertDialogTheme">@style/ThemeOverlay.Material3.MaterialAlertDialog</item>
+        <item name="color_btn_dvc">#616161</item>
+        <item name="color_btn_dva">@color/black_2</item>
+
+        <!--        <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownStyle</item>-->
         <item name="colorPrimary">@color/lavender</item>
         <item name="colorPrimaryVariant">@color/white</item>
         <item name="colorOnPrimary">@color/white</item>
@@ -56,6 +60,8 @@
         <item name="drawerBackground">@color/black</item>
         <item name="cardBG">@color/black_2</item>
         <item name="textContent">@color/white</item>
+        <item name="textContent2">@color/black</item>
+
         <item name="stroke_Spin">@color/white</item>
         <item name="SPcardBG">@color/black_2</item>
         <item name="android:alertDialogTheme">@color/white</item>

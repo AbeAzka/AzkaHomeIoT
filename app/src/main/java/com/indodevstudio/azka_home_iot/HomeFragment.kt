@@ -187,7 +187,10 @@ class HomeFragment : Fragment() {
                 shimmerLayout.startShimmer() // Start shimmer
                 shimmerLayout.visibility = View.VISIBLE
                 // Clear the image initially
+
                 imageGraphSample.setImageBitmap(null)
+                lineChart.visibility = View.GONE
+                imageGraphSample.visibility = View.GONE
                 imageGraphSample2.setImageResource(R.drawable.sample)
 
                 // Simulate your data retrieval methods (replace with your actual logic)
@@ -410,17 +413,22 @@ class HomeFragment : Fragment() {
     }
 
     private fun showLineChart(data: ArrayList<TandonData>) {
-        val typedValue = TypedValue()
-        val theme = requireContext().theme
-        theme.resolveAttribute(R.attr.textContent, typedValue, true)
-        val textColor = typedValue.data
+        var textColor: Int? = null
+        context?.theme?.let { theme ->
+            val typedValue = TypedValue()
+            theme.resolveAttribute(R.attr.textContent, typedValue, true)
+            textColor = typedValue.data
+            // pakai textColor selanjutnya...
+        }
+
+
         if (data.isEmpty()) {
             lineChart.clear()
             lineChart.setNoDataText("Tidak ada data tandon tersedia")
             lineChart.setNoDataTextColor(Color.RED)
             lineChart.invalidate()
             lineChart.setNoDataText("Tidak ada data tersedia")
-            lineChart.setNoDataTextColor(textColor)
+            textColor?.let { lineChart.setNoDataTextColor(it) }
             lineChart.setNoDataTextTypeface(Typeface.DEFAULT_BOLD)
 
             return
@@ -449,15 +457,15 @@ class HomeFragment : Fragment() {
             mode = LineDataSet.Mode.CUBIC_BEZIER
         }
         val legend = lineChart.legend
-        legend.textColor = textColor
+        legend.textColor = textColor!!
         legend.textSize = 12f
         legend.form = Legend.LegendForm.LINE
 
-        lineChart.axisLeft.textColor = textColor
-        lineChart.axisLeft.gridColor = textColor
+        lineChart.axisLeft.textColor = textColor!!
+        lineChart.axisLeft.gridColor = textColor as Int
 
-        lineChart.axisRight.textColor = textColor
-        lineChart.axisRight.gridColor = textColor
+        lineChart.axisRight.textColor = textColor as Int
+        lineChart.axisRight.gridColor = textColor as Int
         lineChart.axisRight.isEnabled = false
         lineChart.axisLeft.setDrawGridLines(true)
         lineChart.axisLeft.gridColor = Color.LTGRAY
@@ -475,7 +483,7 @@ class HomeFragment : Fragment() {
         lineChart.xAxis.valueFormatter = IndexAxisValueFormatter(labelTanggal)
         lineChart.xAxis.granularity = 1f // penting agar label tidak tumpang tindih
         lineChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
-        lineChart.xAxis.textColor = textColor
+        lineChart.xAxis.textColor = textColor as Int
         lineChart.xAxis.labelRotationAngle = -45f // miringkan label biar muat
         lineChart.xAxis.setDrawGridLines(false)
 

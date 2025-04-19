@@ -51,6 +51,24 @@
     </item>
 
     <item
+        android:title="IBADAH"
+        android:id="@+id/ibadah"
+
+        >
+        <menu>
+            <group
+                android:checkableBehavior="single"
+                >
+                <item
+                    android:id="@+id/peforma_sholat"
+                    android:icon="@drawable/masjid_ic"
+                    android:title="Performa Sholat"/>
+
+            </group>
+        </menu>
+    </item>
+
+    <item
         android:title="ACARA/AGENDA"
         android:id="@+id/events"
 
@@ -150,23 +168,7 @@
             </group>
         </menu>
     </item>
-    <item
-        android:title="IBADAH"
-        android:id="@+id/ibadah"
 
-        >
-        <menu>
-            <group
-                android:checkableBehavior="single"
-                >
-                <item
-                    android:id="@+id/peforma_sholat"
-                    android:icon="@drawable/masjid_ic"
-                    android:title="Performa Sholat"/>
-
-            </group>
-        </menu>
-    </item>
 
 
 

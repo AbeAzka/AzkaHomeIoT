@@ -14,6 +14,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
+import com.indodevstudio.azka_home_iot.API.DeviceSharingService
 import com.indodevstudio.azka_home_iot.DeviceControlActivity
 import com.indodevstudio.azka_home_iot.InviteActivity
 import com.indodevstudio.azka_home_iot.Logger
@@ -66,6 +67,23 @@ class DeviceAdapter(
             sharedPreferences.edit().putString("device_id", device.id).apply()
             sharedPreferences.edit().putString("device_ip", device.ipAddress).apply()
 
+
+            DeviceSharingService.getDeviceStatus(deviceIdd)
+            if (!DeviceSharingService.deviceStatus.value.isNullOrEmpty()) {
+                val status = DeviceSharingService.deviceStatus.value
+                val status2 = DeviceSharingService.deviceStatus2.value
+                Log.d("CheckStatus", "Status sekarang: $status")
+                Log.d("CheckStatus", "Status sekarang: $status2")
+            }
+
+            val currentStatus = DeviceSharingService.deviceStatus.value
+            val currentStatus2 = DeviceSharingService.deviceStatus2.value
+
+            val shd = holder.itemView.context.getSharedPreferences("STAT", Context.MODE_PRIVATE)
+            val editor = shd.edit()
+            editor.putString("STATUS1_$deviceIdd", currentStatus)
+            editor.putString("STATUS2_$deviceIdd", currentStatus2)
+            editor.apply()
             // Atau kirim ke Activity lain:
             val intent = Intent(holder.itemView.context, DeviceControlActivity::class.java)
             intent.putExtra("device_id", deviceIdd)
@@ -136,6 +154,12 @@ class DeviceAdapter(
         }
     }
 
+    fun publish_Button(topic: String, deviceId: String, command: String){
+        for (holder in viewHolders){
+            holder.publichBtn(topic, deviceId, command)
+        }
+    }
+
 
 
     class DeviceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -190,6 +214,7 @@ class DeviceAdapter(
             }
 
             btnDelete.visibility = if (device.isShared) View.GONE else View.VISIBLE
+            btnRename.visibility = if (device.isShared) View.GONE else View.VISIBLE
             // 🔹 Tampilkan label "Shared" jika perangkat adalah hasil sharing
             if (device.isShared) {
                 tvShared.visibility = View.VISIBLE
@@ -223,8 +248,10 @@ class DeviceAdapter(
                     override fun messageArrived(topic: String?, message: MqttMessage?) {
                         itemView.post {
                             val payload = message?.payload?.toString(Charsets.UTF_8) ?: ""
-
+                            val payload2 = message.toString()
                             Log.d("MQTT","📩 Pesan Diterima dari $topic: $payload")
+
+
 
                             try {
                                 // Parsing JSON
@@ -248,13 +275,36 @@ class DeviceAdapter(
                             } catch (e: Exception) {
                                 println("❌ Gagal parsing JSON: ${e.message}")
                             }
+
+                            when (topic) {
+                                "${device.id}/switch1/status" -> {
+                                    /*isSwitch1On = isOn
+                                    updateSwitchUI(switch1Layout, indicator1, isOn)*/
+                                    val isOn = payload2.equals("on", ignoreCase = true)
+
+                                    val sharedPreferences = itemView.context.getSharedPreferences("STATUS", Context.MODE_PRIVATE)
+                                    sharedPreferences.edit().putBoolean("STATS", isOn).apply()
+
+                                }
+
+                                "${device.id}/switch2/status" -> {
+                                    /*isSwitch2On = isOn
+                                    updateSwitchUI(switch2Layout, indicator2, isOn)*/
+                                    val isOn = payload2.equals("on2", ignoreCase = true)
+
+                                    val sharedPreferences = itemView.context.getSharedPreferences("STATUS2", Context.MODE_PRIVATE)
+                                    sharedPreferences.edit().putBoolean("STATS", isOn).apply()
+
+                                }
+                            }
                         }
                     }
 
                     override fun deliveryComplete(token: IMqttDeliveryToken?) {}
                 })
 
-
+                mqttClient.subscribe("${device.id}/switch1/status")
+                mqttClient.subscribe("${device.id}/switch2/status")
                 mqttClient.subscribe("sending_telemetri_${device.id}")
 
 
@@ -283,6 +333,51 @@ class DeviceAdapter(
                 }
             }
         }*/
+        //WITH BUTON
+        fun publichBtn(topic: String, deviceId: String, command: String) {
+            try {
+                if (::mqttClient.isInitialized && mqttClient.isConnected) {
+                    // Buat JSON payload
+                    val jsonPayload = JSONObject().apply {
+                        put("device_id", deviceId)
+                        put("command", command)
+                    }
+
+                    // Konversi ke String
+                    val message = jsonPayload.toString()
+
+                    // Buat MQTT Message
+                    val mqttMessage = MqttMessage().apply {
+                        payload = message.toByteArray()
+                        qos = 1  // QoS 1 agar pesan pasti sampai
+                        isRetained = false
+                    }
+
+                    // Publish ke MQTT
+                    mqttClient.publish(topic, mqttMessage)
+                    Toast.makeText(
+                        itemView.context,
+                        "Command $command sent",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    Log.d("MQTT", topic)
+                    println("✅ Pesan dikirim: $message ke topik $topic")
+
+                } else {
+                    println("❌ MQTT Client tidak terhubung. Tidak bisa mengirim pesan.")
+                    Logger.log("MQTT", "❌ MQTT Client tidak terhubung. Tidak bisa mengirim pesan.")
+                }
+            } catch (e: MqttException) {
+                e.printStackTrace()
+                println("❌ Gagal mengirim pesan MQTT: ${e.message}")
+                Logger.log("MQTT", "❌ Gagal mengirim pesan MQTT: ${e.message}")
+            } catch (e: Exception) {
+                e.printStackTrace()
+                println("❌ Error lainnya: ${e.message}")
+                Logger.log("MQTT", "❌ Error lainnya: ${e.message}")
+            }
+        }
+
         //WITH DEVICEID PUBLISH
         fun publishMessage(topic: String, deviceId: String, command: String) {
             try {

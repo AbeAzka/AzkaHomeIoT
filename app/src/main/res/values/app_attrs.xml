@@ -7,9 +7,13 @@
     <attr name="navHeaderDescriptionColor" format="color"/>
     <attr name="drawerBackground" format="color"/>
     <attr name="textContent" format="color"/>
+    <attr name="textContent2" format="color"/>
+
     <attr name="cardBG" format="color"/>
     <attr name="SPcardBG" format="color"/>
     <attr name="stroke_Spin" format="color"/>
     <attr name="selected_icon" format="color"/>
     <attr name="shared" format="color"/>
+    <attr name="color_btn_dvc" format="color"/>
+    <attr name="color_btn_dva" format="color"/>
 </resources>

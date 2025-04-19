@@ -27,4 +27,43 @@
         <item name="android:divider">@android:color/darker_gray</item>
         <item name="android:padding">8dp</item>
     </style>
-    </resources>
+
+    <style name="WhatsAppDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@drawable/bg_dialog_whatsapp</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+    </style>
+    <style name="ShapeAppearance.App.MediumComponent" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="alertDialogStyle">@style/MaterialAlertDialog</item>
+    </style>
+    <!--    Theme for alert dialog -->
+    <style name="MaterialAlertDialog" parent="MaterialAlertDialog.Material3">
+        <item name="shapeAppearance">@style/ShapeAppearance.App.MediumComponent</item>
+        <item name="shapeAppearanceOverlay">@null</item>
+    </style>
+    <!-- themes.xml -->
+
+
+    <!--    This is the theme which is being used in our floating window-->
+    <style name="FloatingWindow" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <!--window animation style-->
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
+        <!--alert dialog theme-->
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+    </style>
+
+</resources>
+
