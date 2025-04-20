@@ -3,7 +3,10 @@ package com.indodevstudio.azka_home_iot
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.ProgressBar
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -39,10 +42,35 @@ class InboxActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inbox)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        val spinner: Spinner = findViewById(R.id.spinner_topic)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
         supportActionBar?.setDisplayShowHomeEnabled(true);
         supportActionBar?.title = "Inbox"
+        val tvFilterStatus = findViewById<TextView>(R.id.tv_filter_status)
+
+        // List topik yang tersedia
+        val topicList = listOf("Semua", "Arduino Control", "Tandon", "Movement Detection")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, topicList)
+        spinner.adapter = adapter
+
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val selectedTopic = parent.getItemAtPosition(position).toString()
+                rvData.removeAllViewsInLayout()
+                shimmerFrame.startShimmer()
+                shimmerFrame.visibility = View.VISIBLE
+                if (selectedTopic == "Semua") {
+                    tvFilterStatus.text = "Showing All Data"
+                } else {
+                    tvFilterStatus.text = "Showing Data with Topic: \"$selectedTopic\""
+                }
+                retrieveData(selectedTopic)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
 
         text = findViewById(R.id.title_data_inbox)
         shimmerFrame = findViewById(R.id.shimmerLayout);
@@ -65,7 +93,7 @@ class InboxActivity : AppCompatActivity() {
                 shimmerFrame.startShimmer();
                 shimmerFrame.setVisibility(View.VISIBLE);
                 rvData.removeAllViewsInLayout()
-                retrieveData()
+                retrieveData("Semua")
                 setRefreshing(false)
 
             }
@@ -91,7 +119,7 @@ class InboxActivity : AppCompatActivity() {
     }
     override fun onResume(){
         super.onResume()
-        retrieveData()
+        retrieveData("Semua")
     }
     override fun onBackPressed() {
         super.onBackPressed()
@@ -100,11 +128,16 @@ class InboxActivity : AppCompatActivity() {
         onBackPressedDispatcher.onBackPressed()
     }
 
-    fun retrieveData(){
+    fun retrieveData(topic: String){
         pbData!!.visibility = View.VISIBLE
 
         val ardData: APIRequestData = RetroServer.konekRetrofit().create(APIRequestData::class.java)
-        val tampilData: Call<ResponseModel> = ardData.ardRetrieveData2()
+//        val tampilData: Call<ResponseModel> = ardData.ardRetrieveData2()
+        val tampilData: Call<ResponseModel> = if (topic == "Semua") {
+            ardData.ardRetrieveData2("") // ambil semua data
+        } else {
+            ardData.ardRetrieveData2(topic)
+        }
         tampilData.enqueue(object: Callback<ResponseModel>{
             override fun onResponse(call: Call<ResponseModel>, response: Response<ResponseModel>) {
 
