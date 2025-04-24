@@ -70,7 +70,7 @@ class SignInActivity : AppCompatActivity() {
         btnLoginWebsite.setOnClickListener {
 
                 val redirectUrl = "myapp://link_success"  // Deep link kembali ke aplikasi
-                val loginUrl = "https://games.abeazka.my.id/users/login.php?redirect=$redirectUrl"
+                val loginUrl = "https://games.abeazka.my.id/u/login?redirect=$redirectUrl"
 
                 val builder = CustomTabsIntent.Builder()
                 val customTabsIntent = builder.build()

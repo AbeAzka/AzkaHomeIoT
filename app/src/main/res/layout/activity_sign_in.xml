@@ -25,11 +25,12 @@
         android:textSize="50sp"
         android:textStyle="bold" />
 
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="50dp"
-        
+
         app:cardCornerRadius="30dp"
         app:cardElevation="20dp">
         <LinearLayout
@@ -236,25 +237,25 @@
             <Button
 
                 android:id="@+id/gSignInPct"
-                android:layout_width="250dp"
+                android:layout_width="240dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/roundshp"
                 android:drawableLeft="@drawable/google_pct"
                 android:drawablePadding="8dp"
-                app:backgroundTint="?attr/drawerItemBackground"
+                app:backgroundTint="#F2F2F2"
                 android:layout_gravity="center|top"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-
+                android:fontFamily="@font/roboto_medium"
                 android:text="Sign in with Google"
                 android:textAllCaps="false"
-                android:textColor="?attr/textContent"
+                android:textColor="#1F1F1F "
                 android:textStyle="bold" />
 
             <Button
 
                 android:id="@+id/idsLogin"
-                android:layout_width="250dp"
+                android:layout_width="240dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/roundshp"
                 android:drawableLeft="@drawable/idspct"
@@ -263,7 +264,7 @@
                 android:layout_gravity="center|top"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-
+                android:fontFamily="@font/roboto_medium"
                 android:text="Sign in with IndodevStudio account"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
@@ -271,20 +272,20 @@
 
 
 
-<!--            <TextView-->
-<!--                android:id="@+id/btnRegLogin"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-
-<!--                android:layout_marginTop="10dp"-->
-<!--                android:text="Don't have a account?"-->
-<!--                android:gravity="center"-->
-<!--                android:textSize="18dp"-->
-<!--                android:textStyle="normal"-->
-<!--                android:layout_marginBottom="10dp"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent" />-->
+            <TextView
+                android:id="@+id/ingf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:layout_marginTop="10dp"
+                android:text="Copyright @ 2025 Abe Azka"
+                android:gravity="center"
+                android:textSize="18dp"
+                android:textStyle="normal"
+                android:layout_marginBottom="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </LinearLayout>
 
@@ -293,6 +294,7 @@
 
 
     </androidx.cardview.widget.CardView>
+
 
 
 
