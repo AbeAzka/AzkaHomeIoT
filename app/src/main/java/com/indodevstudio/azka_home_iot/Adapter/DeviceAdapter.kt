@@ -20,6 +20,8 @@ import com.indodevstudio.azka_home_iot.InviteActivity
 import com.indodevstudio.azka_home_iot.Logger
 import com.indodevstudio.azka_home_iot.Model.DeviceModel
 import com.indodevstudio.azka_home_iot.R
+import okhttp3.internal.notify
+import okhttp3.internal.notifyAll
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
 import org.eclipse.paho.client.mqttv3.MqttCallback
 import org.eclipse.paho.client.mqttv3.MqttClient
@@ -59,6 +61,9 @@ class DeviceAdapter(
         val device = deviceList[position]
         holder.bind(device, listener, position)
 
+        val sharedPreferences = holder.itemView.context.getSharedPreferences("Bagogo", Context.MODE_PRIVATE)
+        sharedPreferences.edit().putString("device_id", device.id).apply()
+        sharedPreferences.edit().putString("device_ip", device.ipAddress).apply()
         holder.itemView.setOnClickListener {
             val deviceIdd = device.id
             val deviceNam = device.name
@@ -66,7 +71,6 @@ class DeviceAdapter(
             val sharedPreferences = holder.itemView.context.getSharedPreferences("Bagogo", Context.MODE_PRIVATE)
             sharedPreferences.edit().putString("device_id", device.id).apply()
             sharedPreferences.edit().putString("device_ip", device.ipAddress).apply()
-
 
             DeviceSharingService.getDeviceStatus(deviceIdd)
             if (!DeviceSharingService.deviceStatus.value.isNullOrEmpty()) {
@@ -248,15 +252,14 @@ class DeviceAdapter(
                     override fun messageArrived(topic: String?, message: MqttMessage?) {
                         itemView.post {
                             val payload = message?.payload?.toString(Charsets.UTF_8) ?: ""
-                            val payload2 = message.toString()
                             Log.d("MQTT","📩 Pesan Diterima dari $topic: $payload")
 
 
 
                             try {
                                 // Parsing JSON
+
                                 val json = JSONObject(payload)
-                                val deviceId2 = json.getString("device_id")
                                 val deviceIp = json.getString("ip")
                                 //deviceId = deviceId2
                                 Log.d("MQTT","✅ Device ID: ${device.id}, IP: $deviceIp")
@@ -264,8 +267,8 @@ class DeviceAdapter(
                                 // **Simpan device_id ke SharedPreferences**
                                 val sharedPreferences = itemView.context.getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
                                 //sharedPreferences.edit().putString("device_id", deviceId2).apply()
-                                sharedPreferences.edit().putString("device_ip", deviceIp).apply()
 
+                                sharedPreferences.edit().putString("device_ip", deviceIp).apply()
 
                                 // Tampilkan ke UI
                                 deviceStatus.text = "Online"
@@ -276,27 +279,6 @@ class DeviceAdapter(
                                 println("❌ Gagal parsing JSON: ${e.message}")
                             }
 
-                            when (topic) {
-                                "${device.id}/switch1/status" -> {
-                                    /*isSwitch1On = isOn
-                                    updateSwitchUI(switch1Layout, indicator1, isOn)*/
-                                    val isOn = payload2.equals("on", ignoreCase = true)
-
-                                    val sharedPreferences = itemView.context.getSharedPreferences("STATUS", Context.MODE_PRIVATE)
-                                    sharedPreferences.edit().putBoolean("STATS", isOn).apply()
-
-                                }
-
-                                "${device.id}/switch2/status" -> {
-                                    /*isSwitch2On = isOn
-                                    updateSwitchUI(switch2Layout, indicator2, isOn)*/
-                                    val isOn = payload2.equals("on2", ignoreCase = true)
-
-                                    val sharedPreferences = itemView.context.getSharedPreferences("STATUS2", Context.MODE_PRIVATE)
-                                    sharedPreferences.edit().putBoolean("STATS", isOn).apply()
-
-                                }
-                            }
                         }
                     }
 

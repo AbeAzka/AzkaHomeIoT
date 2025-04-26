@@ -129,7 +129,7 @@
                     android:contentDescription="Refresh Device"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:padding="8dp"
-                    android:visibility="gone"/>
+                    android:visibility="visible"/>
             </LinearLayout>
 
         </LinearLayout>

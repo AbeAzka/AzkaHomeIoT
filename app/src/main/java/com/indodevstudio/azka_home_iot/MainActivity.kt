@@ -398,8 +398,8 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                 val avatarPath = userData["avatar"].toString()
 
 // Base URL untuk server
-                val baseUrl = "https://games.abeazka.my.id/users/"
-                val baseUrl2 = "https://games.abeazka.my.id/users/images/"
+                val baseUrl = "https://games.abeazka.my.id/u/"
+                val baseUrl2 = "https://games.abeazka.my.id/u/images/"
 
                 /*// Pastikan path benar
                 val fullAvatarUrl = when {
@@ -408,7 +408,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                     avatarPath.startsWith("http") -> avatarPath // Jika sudah full URL
                     else -> baseUrl2 + "user.png" // Jika path tidak diketahui
                 }*/
-                val fullAvatarUrl = "https://games.abeazka.my.id/users/$avatarPath"
+                val fullAvatarUrl = "https://games.abeazka.my.id/u/$avatarPath"
 
                 Log.d("AvatarURL", "Final URL2: $fullAvatarUrl") // Debugging
 
@@ -456,8 +456,8 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             val avatarPath = userData["avatar"].toString()
             userData["email"]?.let { sendFCMTokenToServer(applicationContext,it) }
 // Base URL untuk server
-            val baseUrl = "https://games.abeazka.my.id/users/"
-            val baseUrl2 = "https://games.abeazka.my.id/users/images/"
+            val baseUrl = "https://games.abeazka.my.id/u/"
+            val baseUrl2 = "https://games.abeazka.my.id/u/images/"
 
             // Pastikan path benar
             /*val fullAvatarUrl = when {
@@ -467,7 +467,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                 else -> baseUrl2 + "user.png" // Jika path tidak diketahui
             }*/
 
-            val fullAvatarUrl = "https://games.abeazka.my.id/users/$avatarPath"
+            val fullAvatarUrl = "https://games.abeazka.my.id/u/$avatarPath"
 
             Log.d("AvatarURL", "Final URL: $fullAvatarUrl") // Debugging
 
@@ -485,7 +485,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
     fun openWebLogin(context: Context) {
         val redirectUrl = "myapp://link_success"  // Deep link kembali ke aplikasi
-        val loginUrl = "https://games.abeazka.my.id/users/login.php?redirect=$redirectUrl"
+        val loginUrl = "https://games.abeazka.my.id/u/login?redirect=$redirectUrl"
 
         val builder = CustomTabsIntent.Builder()
         val customTabsIntent = builder.build()

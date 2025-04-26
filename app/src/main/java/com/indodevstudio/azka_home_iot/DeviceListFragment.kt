@@ -99,7 +99,9 @@ class DeviceListFragment : Fragment() {
 
         // Jika ada email, baru cek shared devices (opsional)
 
-        loadData()
+        loadData{
+            updateUI()
+        }
 
 
         deviceAdapter = DeviceAdapter(deviceList, object : DeviceAdapter.DeviceActionListener {
@@ -126,6 +128,7 @@ class DeviceListFragment : Fragment() {
                 setRefreshing(true)
                 loadData {
                     setRefreshing(false) // Hanya setelah data selesai dimuat
+                    updateUI()
                 }
             }
 
@@ -155,9 +158,10 @@ class DeviceListFragment : Fragment() {
 
             // Ambil data perangkat dari ViewModel
             val userEmail = email
-            loadDeviceList()
+
             fetchDevices(userEmail) {
                 fetchSharedDevices(userEmail)
+                //loadDeviceList()
             }
 
             // Mengupdate data perangkat dari ViewModel
@@ -181,9 +185,11 @@ class DeviceListFragment : Fragment() {
                 deviceAdapter.notifyDataSetChanged()
 
                 // Publish hanya jika ada data
-                if (deviceList.isNotEmpty()) {
-                    deviceAdapter.publish("sending_order_$deviceId", deviceId, "refresh")
-                }
+//                if (deviceList.isNotEmpty()) {
+//                    deviceAdapter.publish("sending_order_$deviceId", deviceId, "refresh")
+//                }
+
+
 
                 // Update UI jika diperlukan
                 updateUI()
@@ -214,7 +220,7 @@ class DeviceListFragment : Fragment() {
 
     private fun fetchSharedDevices(userEmail: String) {
         val request = Request.Builder()
-            .url("http://ahi.abeazka.my.id/api/arduino/get_shared_devices.php?shared_email=$userEmail")
+            .url("https://ahi.abeazka.my.id/api/arduino/get_shared_devices.php?shared_email=$userEmail")
             .build()
 
         OkHttpClient().newCall(request).enqueue(object : Callback {
@@ -255,7 +261,7 @@ class DeviceListFragment : Fragment() {
     }
 
     private fun fetchDevices(userEmail: String, onComplete: () -> Unit) {
-        val url = "http://ahi.abeazka.my.id/api/arduino/get_devices.php?owner_email=$userEmail"
+        val url = "https://ahi.abeazka.my.id/api/arduino/get_devices.php?owner_email=$userEmail"
         val requestBody = FormBody.Builder()
             .add("owner_email", userEmail)
             .build()
@@ -284,9 +290,6 @@ class DeviceListFragment : Fragment() {
                                 device.copy(isShared = false) // 🔹 Jika perangkat milik user sendiri
                             }
                         }
-
-
-
 
                         //val ownedDevices = parseDevicesJson(jsonString)
                         requireActivity().runOnUiThread {
@@ -489,7 +492,7 @@ class DeviceListFragment : Fragment() {
             .build()
 
         val request = Request.Builder()
-            .url("http://ahi.abeazka.my.id/api/arduino/delete_device.php")
+            .url("https://ahi.abeazka.my.id/api/arduino/delete_device.php")
             .post(requestBody)
             .build()
 
@@ -524,7 +527,7 @@ class DeviceListFragment : Fragment() {
 
 
         val request = Request.Builder()
-            .url("http://ahi.abeazka.my.id/api/arduino/update_devices.php")
+            .url("https://ahi.abeazka.my.id/api/arduino/update_devices.php")
             .post(requestBody)
             .build()
 
@@ -606,7 +609,7 @@ class DeviceListFragment : Fragment() {
 
 
     fun checkDeviceStatus(device: DeviceModel, callback: (Boolean) -> Unit) {
-        val url = "http://${device.ipAddress}/status" // Sesuaikan dengan endpoint di Arduino
+        val url = "https://${device.ipAddress}/status" // Sesuaikan dengan endpoint di Arduino
 
         val request = okhttp3.Request.Builder()
             .url(url)
@@ -646,6 +649,10 @@ class DeviceListFragment : Fragment() {
         if (deviceList.isEmpty()) {
             tvNoDevices.visibility = View.VISIBLE
             recyclerView.visibility = View.GONE
+            deviceList.forEach { device ->
+                Log.d("PublishCheck", "Publishing to ID: ${deviceId}")
+                deviceAdapter.publish("sending_order_${deviceId}",deviceId , "refresh")
+            }
         } else {
             tvNoDevices.visibility = View.GONE
             recyclerView.visibility = View.VISIBLE
