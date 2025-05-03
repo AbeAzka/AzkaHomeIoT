@@ -73,6 +73,16 @@ class DeviceListFragment : Fragment() {
         } else {
             Log.d("SharedPrefs", "No device_id found")
         }
+
+        val defaultDevice = deviceViewModel.getDeviceList().value?.firstOrNull()
+        if (defaultDevice != null) {
+            deviceId = defaultDevice.id
+            ipAddress = defaultDevice.ipAddress
+            Log.d("Fallback", "Pakai default deviceId dari ViewModel: $deviceId")
+        } else {
+            Log.d("Fallback", "Tidak ada device yang bisa dijadikan default.")
+        }
+
         //val sharedPreferences = requireContext().getSharedPreferences("DevicePrefs2", Context.MODE_PRIVATE)
         //ipAddress = sharedPreferences.getString("device_ip", "0.0.0.0").toString()
         Log.d("MQTT", deviceId)
@@ -147,59 +157,49 @@ class DeviceListFragment : Fragment() {
     }
 
     private fun loadData(onFinished: (() -> Unit)? = null) {
-        // Mulai shimmer effect
         shimmerLayout.visibility = View.VISIBLE
         shimmerLayout.startShimmer()
         recyclerView.visibility = View.GONE
         tvNoDevices.visibility = View.GONE
 
-        // Simulasi delay untuk loading
         Handler(Looper.getMainLooper()).postDelayed({
-
-            // Ambil data perangkat dari ViewModel
             val userEmail = email
 
+            // Fetch owned devices dulu
             fetchDevices(userEmail) {
+                // Lanjut ke fetch shared devices setelah selesai
                 fetchSharedDevices(userEmail)
-                //loadDeviceList()
             }
 
-            // Mengupdate data perangkat dari ViewModel
+            // Observasi perubahan data dari ViewModel
             deviceViewModel.getDeviceList().observe(viewLifecycleOwner) { devices ->
-                // Hentikan shimmer dan tampilkan RecyclerView
+
+                // Hentikan shimmer
                 shimmerLayout.stopShimmer()
                 shimmerLayout.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE
 
-                // Set layout manager dan adapter jika belum
+                // Set layout manager dan adapter hanya sekali
                 if (recyclerView.adapter == null) {
                     recyclerView.layoutManager = LinearLayoutManager(requireContext())
                     recyclerView.adapter = deviceAdapter
                 }
 
-                // Perbarui data di deviceList
-                deviceList.clear()
-                deviceList.addAll(devices)
+                // ⛔️ Jangan manipulasi deviceList langsung!
+                // ✅ Langsung update ke adapter
+                deviceAdapter.updateData(devices)
 
-                // Update adapter setelah data berubah
-                deviceAdapter.notifyDataSetChanged()
+                // Refresh MQTT publish satu per satu berdasarkan ID
+                devices.forEach { device ->
+                    deviceAdapter.publish("sending_order_${device.id}", device.id, "refresh")
+                }
 
-                // Publish hanya jika ada data
-//                if (deviceList.isNotEmpty()) {
-//                    deviceAdapter.publish("sending_order_$deviceId", deviceId, "refresh")
-//                }
-
-
-
-                // Update UI jika diperlukan
                 updateUI()
-
-                // Callback selesai
                 onFinished?.invoke()
             }
-
         }, 2000)
     }
+
 
 
 
@@ -250,8 +250,9 @@ class DeviceListFragment : Fragment() {
 
                     requireActivity().runOnUiThread {
                         val uniqueDevices = (sharedDevices + deviceList).distinctBy { it.id  }
-                        deviceList.clear()
-                        deviceList.addAll(uniqueDevices)
+//                        deviceList.clear()
+//                        deviceList.addAll(uniqueDevices)
+//                        deviceViewModel.updateDeviceList(uniqueDevices)
                         deviceViewModel.updateDeviceList(uniqueDevices)
                         updateUI()
                     }
@@ -297,8 +298,9 @@ class DeviceListFragment : Fragment() {
                             val normalDevices = deviceList.map { it.copy(isShared = false) }
 
                             val uniqueDevices = (normalDevices + ownedDevices).distinctBy {it.id + it.isShared.toString() }
-                            deviceList.clear()
-                            deviceList.addAll(uniqueDevices)
+//                            deviceList.clear()
+//                            deviceList.addAll(uniqueDevices)
+//                            deviceViewModel.updateDeviceList(uniqueDevices)
                             deviceViewModel.updateDeviceList(uniqueDevices)
                             updateUI()
                         }
@@ -596,9 +598,14 @@ class DeviceListFragment : Fragment() {
         })
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
 
+        val sharedPreferences = requireContext().getSharedPreferences("Bagogo", Context.MODE_PRIVATE)
+        sharedPreferences.edit().remove("device_id").apply()
+        sharedPreferences.edit().remove("device_ip").apply()
+
+        Log.d("SharedPrefs", "device_id & device_ip dihapus saat keluar fragment")
         deviceAdapter.disconnectAllMqttClients() // Memutus semua koneksi MQTT
     }
 
@@ -646,16 +653,19 @@ class DeviceListFragment : Fragment() {
 
 
     private fun updateUI() {
-        if (deviceList.isEmpty()) {
+        if (deviceAdapter.itemCount == 0) {
             tvNoDevices.visibility = View.VISIBLE
             recyclerView.visibility = View.GONE
-            deviceList.forEach { device ->
-                Log.d("PublishCheck", "Publishing to ID: ${deviceId}")
-                deviceAdapter.publish("sending_order_${deviceId}",deviceId , "refresh")
-            }
         } else {
             tvNoDevices.visibility = View.GONE
             recyclerView.visibility = View.VISIBLE
+
+            // 🔄 Publish refresh ke masing-masing device ID (BUKAN deviceId global)
+            deviceViewModel.getDeviceList().value?.forEach { device ->
+                Log.d("MQTT", "🔁 Refresh untuk ${device.id}")
+                deviceAdapter.publish("sending_order_${device.id}", device.id, "refresh")
+            }
         }
     }
+
 }

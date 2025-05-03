@@ -62,17 +62,22 @@ class DeviceAdapter(
         holder.bind(device, listener, position)
 
         val sharedPreferences = holder.itemView.context.getSharedPreferences("Bagogo", Context.MODE_PRIVATE)
-        sharedPreferences.edit().putString("device_id", device.id).apply()
-        sharedPreferences.edit().putString("device_ip", device.ipAddress).apply()
+        val editor = sharedPreferences.edit()
+
+        // Save device details only once
+        editor.putString("device_id", device.id)
+        editor.putString("device_ip", device.ipAddress)
+        editor.apply()
+
         holder.itemView.setOnClickListener {
             val deviceIdd = device.id
             val deviceNam = device.name
             Toast.makeText(holder.itemView.context, "Device ID: $deviceIdd", Toast.LENGTH_SHORT).show()
-            val sharedPreferences = holder.itemView.context.getSharedPreferences("Bagogo", Context.MODE_PRIVATE)
-            sharedPreferences.edit().putString("device_id", device.id).apply()
-            sharedPreferences.edit().putString("device_ip", device.ipAddress).apply()
 
+            // Again, no need to save shared prefs twice, it's already done earlier
             DeviceSharingService.getDeviceStatus(deviceIdd)
+
+            // Check if status is available
             if (!DeviceSharingService.deviceStatus.value.isNullOrEmpty()) {
                 val status = DeviceSharingService.deviceStatus.value
                 val status2 = DeviceSharingService.deviceStatus2.value
@@ -83,20 +88,21 @@ class DeviceAdapter(
             val currentStatus = DeviceSharingService.deviceStatus.value
             val currentStatus2 = DeviceSharingService.deviceStatus2.value
 
+            // Save status to shared preferences
             val shd = holder.itemView.context.getSharedPreferences("STAT", Context.MODE_PRIVATE)
-            val editor = shd.edit()
-            editor.putString("STATUS1_$deviceIdd", currentStatus)
-            editor.putString("STATUS2_$deviceIdd", currentStatus2)
-            editor.apply()
-            // Atau kirim ke Activity lain:
+            val editorStat = shd.edit()
+            editorStat.putString("STATUS1_$deviceIdd", currentStatus)
+            editorStat.putString("STATUS2_$deviceIdd", currentStatus2)
+            editorStat.apply()
+
+            // Start the DeviceControlActivity with device details
             val intent = Intent(holder.itemView.context, DeviceControlActivity::class.java)
             intent.putExtra("device_id", deviceIdd)
             intent.putExtra("deviceName", deviceNam)
             holder.itemView.context.startActivity(intent)
         }
 
-
-        holder.itemView.setOnLongClickListener{
+        holder.itemView.setOnLongClickListener {
             if (device.isShared) {
                 Toast.makeText(holder.itemView.context, "You don't have permission to modify this device", Toast.LENGTH_SHORT).show()
                 return@setOnLongClickListener true
@@ -105,6 +111,7 @@ class DeviceAdapter(
             true
         }
     }
+
 
     override fun getItemCount(): Int = deviceList.size
 
@@ -183,22 +190,19 @@ class DeviceAdapter(
             publishMessage("sending_order_${deviceId}", deviceId, "refresh")
         }*/
         fun bind(device: DeviceModel, listener: DeviceActionListener, position: Int) {
-            val sharedPreferences = itemView.context.getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
-            //deviceId = sharedPreferences.getString("device_id", null).toString()
-            //setupMqttClient()
-            val sharedPreferences2 = itemView.context.getSharedPreferences("Bagogo", Context.MODE_PRIVATE)
-            Log.d("MQTT", "IPUT ${device.id}")
-            //deviceId = sharedPreferences2.getString("device_id", null).toString()
-            setupMqttClient(device)
-            //listener.onPublish(device.id)
-            publishMessage("sending_order_${device.id}", device.id, "refresh")
+            // 🔄 Reset tampilan agar tidak mewarisi status lama
+            deviceStatus.text = "Checking..."
+            deviceStatus.setTextColor(Color.DKGRAY)
+            ip.text = device.ipAddress.ifEmpty { "0.0.0.0" }
+
+            // Set nama dan ID
             tvDeviceName.text = "${device.name} - ID: ${device.id}"
 
-            //deviceId = sharedPreferences.getString("device_id", null).toString()
+            // Setup MQTT dan refresh status
+            setupMqttClient(device)
+            publishMessage("sending_order_${device.id}", device.id, "refresh")
 
-            //sharedPreferences.edit().putString("device_id", device.id).apply()
-            /*sharedPreferences.edit().putString("device_ip", deviceIp).apply()*/
-
+            // Tombol
             btnRename.setOnClickListener { listener.onRenameDevice(device, position) }
             btnDelete.setOnClickListener {
                 if (!device.isShared) {
@@ -206,28 +210,16 @@ class DeviceAdapter(
                 }
             }
             btnRefresh.setOnClickListener {
-                Log.d("MQTT", "🔄 Refresh ditekan untuk device: ${device.id}")
+                Log.d("MQTT", "🔄 Manual Refresh untuk ${device.id}")
                 publishMessage("sending_order_${device.id}", device.id, "refresh")
-                /*if (::mqttClient.isInitialized && mqttClient.isConnected) {
-
-                }*/ /*else {
-                    Log.e("MQTT", "❌ MQTT Client tidak terhubung saat mencoba refresh")
-                    Toast.makeText(itemView.context, "MQTT tidak terhubung!", Toast.LENGTH_SHORT).show()
-                    setupMqttClient(device) // Coba reconnect MQTT
-                }*/
             }
 
+            // Shared status
+            tvShared.visibility = if (device.isShared) View.VISIBLE else View.GONE
             btnDelete.visibility = if (device.isShared) View.GONE else View.VISIBLE
             btnRename.visibility = if (device.isShared) View.GONE else View.VISIBLE
-            // 🔹 Tampilkan label "Shared" jika perangkat adalah hasil sharing
-            if (device.isShared) {
-                tvShared.visibility = View.VISIBLE
-            } else {
-                tvShared.visibility = View.GONE
-            }
-
-            //publishMqttTopic("set_mqtt_topic", topic1, topic2)
         }
+
 
         fun setupMqttClient(device: DeviceModel) {
             val brokerUrl = "tcp://taryem.my.id:1883"
@@ -252,33 +244,30 @@ class DeviceAdapter(
                     override fun messageArrived(topic: String?, message: MqttMessage?) {
                         itemView.post {
                             val payload = message?.payload?.toString(Charsets.UTF_8) ?: ""
-                            Log.d("MQTT","📩 Pesan Diterima dari $topic: $payload")
-
-
+                            Log.d("MQTT", "📩 Pesan Diterima dari $topic: $payload")
 
                             try {
-                                // Parsing JSON
-
                                 val json = JSONObject(payload)
-                                val deviceIp = json.getString("ip")
-                                //deviceId = deviceId2
-                                Log.d("MQTT","✅ Device ID: ${device.id}, IP: $deviceIp")
+                                val deviceIp = json.optString("ip", "")
+                                val incomingDeviceId = json.optString("device_id", "")
+                                Log.d("MQTT", "📩 $topic - Received: $payload - CurrentHolder: ${device.id}")
 
-                                // **Simpan device_id ke SharedPreferences**
-                                val sharedPreferences = itemView.context.getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
-                                //sharedPreferences.edit().putString("device_id", deviceId2).apply()
+                                // ✅ Validasi: hanya update UI jika ID cocok
+                                if (incomingDeviceId == device.id) {
+                                    val sharedPreferences = itemView.context.getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
+                                    sharedPreferences.edit().putString("device_ip", deviceIp).apply()
 
-                                sharedPreferences.edit().putString("device_ip", deviceIp).apply()
+                                    deviceStatus.text = "Online"
+                                    deviceStatus.setTextColor(Color.GREEN)
+                                    ip.text = deviceIp
 
-                                // Tampilkan ke UI
-                                deviceStatus.text = "Online"
-                                deviceStatus.setTextColor(Color.GREEN)
-                                ip.text = deviceIp
-
+                                    Log.d("MQTT", "✅ Status Online untuk device ID: ${device.id}")
+                                } else {
+                                    Log.d("MQTT", "❌ ID tidak cocok. Diabaikan. (expected: ${device.id}, got: $incomingDeviceId)")
+                                }
                             } catch (e: Exception) {
                                 println("❌ Gagal parsing JSON: ${e.message}")
                             }
-
                         }
                     }
 
@@ -342,7 +331,7 @@ class DeviceAdapter(
                         "Command $command sent",
                         Toast.LENGTH_SHORT
                     ).show()
-                    Log.d("MQTT", topic)
+                   // Log.d("MQTT", topic)
                     println("✅ Pesan dikirim: $message ke topik $topic")
 
                 } else {

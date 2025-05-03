@@ -10,7 +10,7 @@ import com.indodevstudio.azka_home_iot.Logger
 
 class DeviceViewModel(application: Application) : AndroidViewModel(application) {
 
-    val deviceList = MutableLiveData<MutableList<DeviceModel>>()
+    private val deviceList = MutableLiveData<MutableList<DeviceModel>>()
     private val sharedPreferences = application.getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
 
     init {
