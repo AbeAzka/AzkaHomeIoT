@@ -148,37 +148,37 @@ class HomeFragment : Fragment() {
 
         val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
-        val sharedPreferences_tutorial = requireContext().getSharedPreferences("AppPrefs",
-            Context.MODE_PRIVATE
-        )
-        val isFirstTime = sharedPreferences_tutorial.getBoolean("isFirstTimes3", true)
-
-        if (isFirstTime) {
-            TapTargetSequence(requireActivity())
-                .targets(
-                    TapTarget.forView(view.findViewById(R.id.humidity_txt), "Humidity", "Informasi tingkat kelembapan.")
-                        .cancelable(false)
-                        .transparentTarget(true),
-                    TapTarget.forView(view.findViewById(R.id.temperature_txt), "Temperature", "Informasi suhu.")
-                        .cancelable(false)
-                        .transparentTarget(true),
-                    TapTarget.forView(view.findViewById(R.id.rv_data), "Latest Inbox", "Menampilkan pesan Inbox terbaru.")
-                        .cancelable(false)
-                        .transparentTarget(true),
-                    TapTarget.forView(view.findViewById(R.id.imageGrafikSampleTest), "Graph", "Menampilkan grafik.")
-                        .cancelable(true)
-                        .transparentTarget(true),
-                    )
-                .listener(object : TapTargetSequence.Listener {
-                    override fun onSequenceFinish() {
-                        // Tandai bahwa user sudah pernah lihat tutorial
-                        sharedPreferences_tutorial.edit().putBoolean("isFirstTimes3", false).apply()
-                    }
-
-                    override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
-                    override fun onSequenceCanceled(lastTarget: TapTarget) {}
-                }).start()
-        }
+//        val sharedPreferences_tutorial = requireContext().getSharedPreferences("AppPrefs",
+//            Context.MODE_PRIVATE
+//        )
+//        val isFirstTime = sharedPreferences_tutorial.getBoolean("isFirstTimes3", true)
+//
+//        if (isFirstTime) {
+//            TapTargetSequence(requireActivity())
+//                .targets(
+//                    TapTarget.forView(view.findViewById(R.id.humidity_txt), "Humidity", "Informasi tingkat kelembapan.")
+//                        .cancelable(false)
+//                        .transparentTarget(true),
+//                    TapTarget.forView(view.findViewById(R.id.temperature_txt), "Temperature", "Informasi suhu.")
+//                        .cancelable(false)
+//                        .transparentTarget(true),
+//                    TapTarget.forView(view.findViewById(R.id.rv_data), "Latest Inbox", "Menampilkan pesan Inbox terbaru.")
+//                        .cancelable(false)
+//                        .transparentTarget(true),
+//                    TapTarget.forView(view.findViewById(R.id.imageGrafikSampleTest), "Graph", "Menampilkan grafik.")
+//                        .cancelable(true)
+//                        .transparentTarget(true),
+//                    )
+//                .listener(object : TapTargetSequence.Listener {
+//                    override fun onSequenceFinish() {
+//                        // Tandai bahwa user sudah pernah lihat tutorial
+//                        sharedPreferences_tutorial.edit().putBoolean("isFirstTimes3", false).apply()
+//                    }
+//
+//                    override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
+//                    override fun onSequenceCanceled(lastTarget: TapTarget) {}
+//                }).start()
+//        }
 
 
         startDateInput.setOnClickListener {

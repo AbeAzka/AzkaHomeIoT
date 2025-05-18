@@ -69,29 +69,29 @@ class DeviceListFragment : Fragment() {
         tvNoDevices = view.findViewById(R.id.tvNoDevices)
         tvListDvc = view.findViewById(R.id.tvTotalDevice)
 
-        val sharedPreferences_tutorial = requireContext().getSharedPreferences("AppPrefs",
-            Context.MODE_PRIVATE
-        )
-        val isFirstTime = sharedPreferences_tutorial.getBoolean("isFirstTimes", true)
-
-        if (isFirstTime) {
-            TapTargetSequence(requireActivity())
-                .targets(
-                    TapTarget.forView(view.findViewById(R.id.fabAddDevice), "Add Device", "Klik tombol ini untuk menambahkan perangkat Arduino.")
-                        .cancelable(false)
-                        .transparentTarget(true),
-
-                )
-                .listener(object : TapTargetSequence.Listener {
-                    override fun onSequenceFinish() {
-                        // Tandai bahwa user sudah pernah lihat tutorial
-                        sharedPreferences_tutorial.edit().putBoolean("isFirstTimes", false).apply()
-                    }
-
-                    override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
-                    override fun onSequenceCanceled(lastTarget: TapTarget) {}
-                }).start()
-        }
+//        val sharedPreferences_tutorial = requireContext().getSharedPreferences("AppPrefs",
+//            Context.MODE_PRIVATE
+//        )
+//        val isFirstTime = sharedPreferences_tutorial.getBoolean("isFirstTimes", true)
+//
+//        if (isFirstTime) {
+//            TapTargetSequence(requireActivity())
+//                .targets(
+//                    TapTarget.forView(view.findViewById(R.id.fabAddDevice), "Add Device", "Klik tombol ini untuk menambahkan perangkat Arduino.")
+//                        .cancelable(false)
+//                        .transparentTarget(true),
+//
+//                )
+//                .listener(object : TapTargetSequence.Listener {
+//                    override fun onSequenceFinish() {
+//                        // Tandai bahwa user sudah pernah lihat tutorial
+//                        sharedPreferences_tutorial.edit().putBoolean("isFirstTimes", false).apply()
+//                    }
+//
+//                    override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
+//                    override fun onSequenceCanceled(lastTarget: TapTarget) {}
+//                }).start()
+//        }
 
         val sharedPreferences2 = context?.getSharedPreferences("Bagogo", Context.MODE_PRIVATE)
         val deviceIdd = sharedPreferences2?.getString("device_id", null)
@@ -153,7 +153,7 @@ class DeviceListFragment : Fragment() {
 
             override fun onDeleteDevice(device: DeviceModel, position: Int) {
                 deleteDevice(device, position)
-                deleteDevice(device.id, email)
+                deleteDevices(device.id, email)
             }
 
             override fun onResetWiFi(device: DeviceModel) {
@@ -511,7 +511,7 @@ class DeviceListFragment : Fragment() {
             .setPositiveButton("Yes") { _, _ ->
                 deviceViewModel.deleteDevice(device)
                 //resetDeviceWiFi(device) // 🔹 Reset WiFi setelah delete
-                email?.let { deleteDevice(device.id, it) }
+                email?.let { deleteDevices(device.id, it) }
                 deviceAdapter.publish("sending_order_$deviceId", deviceId, "delete")
                 Toast.makeText(requireContext(), "Device deleted", Toast.LENGTH_SHORT).show()
             }
@@ -521,11 +521,23 @@ class DeviceListFragment : Fragment() {
             .show()
     }
 
-    private fun deleteDevice(deviceId: String, ownerEmail: String) {
-        val requestBody = FormBody.Builder()
-            .add("device_id", deviceId)
-            .add("owner_email", ownerEmail)
-            .build()
+    private fun deleteDevices(deviceId: String, ownerEmail: String) {
+//        val requestBody = FormBody.Builder()
+//            .add("device_id", deviceId)
+//            .add("owner_email", ownerEmail)
+//            .build()
+
+        val json = """
+        {
+            "device_id": "$deviceId",
+            "owner_email": "$ownerEmail"
+        }
+    """.trimIndent()
+
+        // Buat RequestBody dengan tipe JSON
+        val requestBody = json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+
+
 
         val request = Request.Builder()
             .url("https://ahi.abeazka.my.id/api/arduino/delete_device.php")
