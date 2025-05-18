@@ -17,6 +17,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.indodevstudio.azka_home_iot.API.DeviceSharingService
 import com.indodevstudio.azka_home_iot.DeviceControlActivity
 import com.indodevstudio.azka_home_iot.InviteActivity
@@ -124,23 +125,21 @@ class DeviceAdapter(
             Toast.makeText(context, "You don't have permission to modify this device", Toast.LENGTH_SHORT).show()
             return
         }
-        val builder = AlertDialog.Builder(context)
-        builder.setTitle("Undang Pengguna")
-        builder.setMessage("Ingin mengundang pengguna lain untuk melihat perangkat ini?")
 
-        builder.setPositiveButton("Undang") { _, _ ->
-            // Pindah ke Fragment/Activity undangan
-            val intent = Intent(context, InviteActivity::class.java) // Ganti dengan activity yang sesuai
-            intent.putExtra("device_id", device.id) // Kirim ID perangkat ke activity
-            intent.putExtra("device_nama", device.name) // Kirim ID perangkat ke activity
-            context.startActivity(intent)
-        }
-
-        builder.setNegativeButton("Batal") { dialog, _ ->
-            dialog.dismiss()
-        }
-
-        builder.show()
+        MaterialAlertDialogBuilder(context)
+            .setTitle("Invite user")
+            .setMessage("Want to invite other users to view this device?")
+            .setPositiveButton("Invite") { _, _ ->
+                // Pindah ke Fragment/Activity undangan
+                val intent = Intent(context, InviteActivity::class.java) // Ganti dengan activity yang sesuai
+                intent.putExtra("device_id", device.id) // Kirim ID perangkat ke activity
+                intent.putExtra("device_nama", device.name) // Kirim ID perangkat ke activity
+                context.startActivity(intent)
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
 

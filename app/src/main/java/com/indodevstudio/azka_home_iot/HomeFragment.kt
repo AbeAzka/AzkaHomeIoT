@@ -1,6 +1,7 @@
 package com.indodevstudio.azka_home_iot
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -33,6 +34,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.getkeepsafe.taptargetview.TapTarget
+import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.components.Legend
@@ -144,6 +147,39 @@ class HomeFragment : Fragment() {
         textTemo = view.findViewById(R.id.temperature_txt)
 
         val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+        val sharedPreferences_tutorial = requireContext().getSharedPreferences("AppPrefs",
+            Context.MODE_PRIVATE
+        )
+        val isFirstTime = sharedPreferences_tutorial.getBoolean("isFirstTimes3", true)
+
+        if (isFirstTime) {
+            TapTargetSequence(requireActivity())
+                .targets(
+                    TapTarget.forView(view.findViewById(R.id.humidity_txt), "Humidity", "Informasi tingkat kelembapan.")
+                        .cancelable(false)
+                        .transparentTarget(true),
+                    TapTarget.forView(view.findViewById(R.id.temperature_txt), "Temperature", "Informasi suhu.")
+                        .cancelable(false)
+                        .transparentTarget(true),
+                    TapTarget.forView(view.findViewById(R.id.rv_data), "Latest Inbox", "Menampilkan pesan Inbox terbaru.")
+                        .cancelable(false)
+                        .transparentTarget(true),
+                    TapTarget.forView(view.findViewById(R.id.imageGrafikSampleTest), "Graph", "Menampilkan grafik.")
+                        .cancelable(true)
+                        .transparentTarget(true),
+                    )
+                .listener(object : TapTargetSequence.Listener {
+                    override fun onSequenceFinish() {
+                        // Tandai bahwa user sudah pernah lihat tutorial
+                        sharedPreferences_tutorial.edit().putBoolean("isFirstTimes3", false).apply()
+                    }
+
+                    override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
+                    override fun onSequenceCanceled(lastTarget: TapTarget) {}
+                }).start()
+        }
+
 
         startDateInput.setOnClickListener {
             showDatePicker { date ->

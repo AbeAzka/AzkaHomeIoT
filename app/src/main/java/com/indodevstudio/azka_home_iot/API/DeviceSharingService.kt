@@ -65,6 +65,8 @@ object DeviceSharingService {
         })
     }
 
+
+
     fun getStatus(deviceId: String) {
         val retrofit = Retrofit.Builder()
             .baseUrl("https://ahi.abeazka.my.id/api/arduino/") // Ganti dengan URL server kamu

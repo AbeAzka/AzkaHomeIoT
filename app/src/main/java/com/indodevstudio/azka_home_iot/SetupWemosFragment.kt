@@ -2,6 +2,7 @@ package com.indodevstudio.azka_home_iot
 
 import android.Manifest
 import android.content.*
+import android.content.Context.MODE_PRIVATE
 import android.content.pm.PackageManager
 import android.net.wifi.ScanResult
 import android.net.wifi.WifiConfiguration
@@ -21,6 +22,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.getkeepsafe.taptargetview.TapTarget
+import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.google.firebase.auth.FirebaseAuth
 import com.indodevstudio.azka_home_iot.API.DeviceSharingService
 import com.indodevstudio.azka_home_iot.Model.DeviceModel
@@ -47,6 +50,8 @@ class SetupWemosFragment : Fragment() {
     private val wemosSSID = "Wemos_Setup"
     private val wemosPassword = ""
     private var email: String? = null
+
+
 
     private val wifiReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -84,6 +89,33 @@ class SetupWemosFragment : Fragment() {
         buttonSubmitWiFi = view.findViewById(R.id.buttonSubmitWiFi)
         editTextDeviceName = view.findViewById(R.id.editTextDeviceName)
         buttonSubmitDevice = view.findViewById(R.id.buttonSubmitDevice)
+
+        val sharedPreferences_tutorial = requireContext().getSharedPreferences("AppPrefs", MODE_PRIVATE)
+        val isFirstTime = sharedPreferences_tutorial.getBoolean("isFirstTime", true)
+
+        if (isFirstTime) {
+            TapTargetSequence(requireActivity())
+                .targets(
+                    TapTarget.forView(view.findViewById(R.id.buttonConnect), "Connect to Wemos", "Klik tombol ini untuk mulai koneksi ke perangkat.")
+                        .cancelable(false)
+                        .transparentTarget(true),
+                    TapTarget.forView(view.findViewById(R.id.editTextSSID), "Masukkan SSID", "Isikan nama WiFi yang akan digunakan perangkat."),
+                    TapTarget.forView(view.findViewById(R.id.buttonSubmitWiFi), "Submit WiFi", "Kirim info WiFi ke perangkat."),
+                    TapTarget.forView(view.findViewById(R.id.editTextDeviceName), "Nama Perangkat", "Beri nama unik untuk perangkat ini."),
+                    TapTarget.forView(view.findViewById(R.id.buttonSubmitDevice), "Simpan Perangkat", "Klik ini untuk menyimpan.")
+                )
+                .listener(object : TapTargetSequence.Listener {
+                    override fun onSequenceFinish() {
+                        // Tandai bahwa user sudah pernah lihat tutorial
+                        sharedPreferences_tutorial.edit().putBoolean("isFirstTime", false).apply()
+                    }
+
+                    override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
+                    override fun onSequenceCanceled(lastTarget: TapTarget) {}
+                }).start()
+        }
+
+
 
         val firebaseUser = FirebaseAuth.getInstance().currentUser
         if(firebaseUser != null){

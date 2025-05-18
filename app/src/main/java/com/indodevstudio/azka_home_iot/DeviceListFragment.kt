@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.getkeepsafe.taptargetview.TapTarget
+import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
@@ -66,6 +68,30 @@ class DeviceListFragment : Fragment() {
         recyclerView = view.findViewById(R.id.recyclerView)
         tvNoDevices = view.findViewById(R.id.tvNoDevices)
         tvListDvc = view.findViewById(R.id.tvTotalDevice)
+
+        val sharedPreferences_tutorial = requireContext().getSharedPreferences("AppPrefs",
+            Context.MODE_PRIVATE
+        )
+        val isFirstTime = sharedPreferences_tutorial.getBoolean("isFirstTimes", true)
+
+        if (isFirstTime) {
+            TapTargetSequence(requireActivity())
+                .targets(
+                    TapTarget.forView(view.findViewById(R.id.fabAddDevice), "Add Device", "Klik tombol ini untuk menambahkan perangkat Arduino.")
+                        .cancelable(false)
+                        .transparentTarget(true),
+
+                )
+                .listener(object : TapTargetSequence.Listener {
+                    override fun onSequenceFinish() {
+                        // Tandai bahwa user sudah pernah lihat tutorial
+                        sharedPreferences_tutorial.edit().putBoolean("isFirstTimes", false).apply()
+                    }
+
+                    override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
+                    override fun onSequenceCanceled(lastTarget: TapTarget) {}
+                }).start()
+        }
 
         val sharedPreferences2 = context?.getSharedPreferences("Bagogo", Context.MODE_PRIVATE)
         val deviceIdd = sharedPreferences2?.getString("device_id", null)
@@ -127,6 +153,7 @@ class DeviceListFragment : Fragment() {
 
             override fun onDeleteDevice(device: DeviceModel, position: Int) {
                 deleteDevice(device, position)
+                deleteDevice(device.id, email)
             }
 
             override fun onResetWiFi(device: DeviceModel) {
