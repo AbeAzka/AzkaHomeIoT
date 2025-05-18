@@ -30,6 +30,7 @@ import com.indodevstudio.azka_home_iot.Model.DeviceViewModel
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.FormBody
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -43,6 +44,8 @@ class DeviceListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var deviceAdapter: DeviceAdapter
     private lateinit var tvNoDevices: TextView
+    private lateinit var tvListDvc: TextView
+
     private val deviceList = mutableListOf<DeviceModel>()
     private val deviceViewModel: DeviceViewModel by activityViewModels()
     private var email = ""
@@ -62,6 +65,8 @@ class DeviceListFragment : Fragment() {
         swipeRefresh = view.findViewById(R.id.swipeRefreshLayout)
         recyclerView = view.findViewById(R.id.recyclerView)
         tvNoDevices = view.findViewById(R.id.tvNoDevices)
+        tvListDvc = view.findViewById(R.id.tvTotalDevice)
+
         val sharedPreferences2 = context?.getSharedPreferences("Bagogo", Context.MODE_PRIVATE)
         val deviceIdd = sharedPreferences2?.getString("device_id", null)
         val deviceIpp = sharedPreferences2?.getString("device_ip", null)
@@ -111,6 +116,7 @@ class DeviceListFragment : Fragment() {
 
         loadData{
             updateUI()
+
         }
 
 
@@ -130,7 +136,7 @@ class DeviceListFragment : Fragment() {
             override fun onPublish(device: String) {
                 deviceAdapter.publish("sending_order_$deviceId", deviceId, "refresh")
             }
-        })
+        }, viewLifecycleOwner)
 
 
         with (swipeRefresh) {
@@ -452,7 +458,7 @@ class DeviceListFragment : Fragment() {
                     // 🔹 Simpan perubahan ke SharedPreferences/server
                     saveDeviceName(requireContext(), newName, device.id)
                     saveDeviceInfo(device.id, newName, getCurrentIpAddress())
-                    updateDev(device.id, newName, device.ipAddress)
+                    updateDev(deviceId, newName, ipAddress)
 
                     Toast.makeText(requireContext(), "Device renamed to $newName", Toast.LENGTH_SHORT).show()
                 } else {
@@ -471,20 +477,21 @@ class DeviceListFragment : Fragment() {
 
     // Delete device
     private fun deleteDevice(device: DeviceModel, position: Int) {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Delete Device")
-        builder.setMessage("Are you sure you want to remove ${device.name}?")
 
-        builder.setPositiveButton("Delete") { _, _ ->
-            deviceViewModel.deleteDevice(device)
-            //resetDeviceWiFi(device) // 🔹 Reset WiFi setelah delete
-            email?.let { deleteDevice(device.id, it) }
-            deviceAdapter.publish("sending_order_$deviceId", deviceId, "delete")
-            Toast.makeText(requireContext(), "Device deleted", Toast.LENGTH_SHORT).show()
-        }
-
-        builder.setNegativeButton("Cancel", null)
-        builder.show()
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Delete device")
+            .setMessage("Are you sure you want to remove ${device.name}?")
+            .setPositiveButton("Yes") { _, _ ->
+                deviceViewModel.deleteDevice(device)
+                //resetDeviceWiFi(device) // 🔹 Reset WiFi setelah delete
+                email?.let { deleteDevice(device.id, it) }
+                deviceAdapter.publish("sending_order_$deviceId", deviceId, "delete")
+                Toast.makeText(requireContext(), "Device deleted", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
     private fun deleteDevice(deviceId: String, ownerEmail: String) {
@@ -495,7 +502,7 @@ class DeviceListFragment : Fragment() {
 
         val request = Request.Builder()
             .url("https://ahi.abeazka.my.id/api/arduino/delete_device.php")
-            .post(requestBody)
+            .delete(requestBody)
             .build()
 
         OkHttpClient().newCall(request).enqueue(object : Callback {
@@ -521,16 +528,29 @@ class DeviceListFragment : Fragment() {
     private fun updateDev(deviceId: String, deviceName: String, deviceIP: String) {
         val userEmail = email// 🔹 Ambil email pengguna saat ini
 
-        val requestBody = FormBody.Builder()
-            .add("device_id", deviceId)
-            .add("device_name", deviceName)
-            .add("device_ip", deviceIP)
-            .build()
+//        val requestBody = FormBody.Builder()
+//            .add("device_id", deviceId)
+//            .add("device_name", deviceName)
+//            .add("device_ip", deviceIP)
+//            .build()
+
+        // Buat JSON string payload
+        val json = """
+        {
+            "device_id": "$deviceId",
+            "device_name": "$deviceName",
+            "device_ip": "$deviceIP",
+            "owner_email": "$userEmail"
+        }
+    """.trimIndent()
+
+        // Buat RequestBody dengan tipe JSON
+        val requestBody = json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
 
         val request = Request.Builder()
             .url("https://ahi.abeazka.my.id/api/arduino/update_devices.php")
-            .post(requestBody)
+            .put(requestBody)
             .build()
 
 
@@ -656,9 +676,12 @@ class DeviceListFragment : Fragment() {
         if (deviceAdapter.itemCount == 0) {
             tvNoDevices.visibility = View.VISIBLE
             recyclerView.visibility = View.GONE
+            tvListDvc.text = "Total Devices: 0"
+
         } else {
             tvNoDevices.visibility = View.GONE
             recyclerView.visibility = View.VISIBLE
+            tvListDvc.text = "Total Devices: ${deviceList.size}"
 
             // 🔄 Publish refresh ke masing-masing device ID (BUKAN deviceId global)
             deviceViewModel.getDeviceList().value?.forEach { device ->

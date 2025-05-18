@@ -11,9 +11,16 @@ data class DeviceStatusResponse(
     val success: Boolean,
 )
 
+data class StatusResponse(
+    val status: String
+)
+
 interface ArduinoService {
     @GET("get_status.php")
     fun getDeviceStatus(
         @Query("device_id") deviceId: String
     ): Call<DeviceStatusResponse>
+
+    @GET("status_devices.php") // sesuaikan dengan nama file PHP kamu
+    fun getStatus(@Query("device_id") deviceId: String): Call<StatusResponse>
 }

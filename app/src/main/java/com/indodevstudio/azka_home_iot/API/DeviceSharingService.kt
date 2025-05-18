@@ -6,6 +6,8 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.indodevstudio.azka_home_iot.Logger
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Retrofit
 
 import retrofit2.converter.gson.GsonConverterFactory
@@ -15,6 +17,8 @@ object DeviceSharingService {
     private val client = OkHttpClient()
     val deviceStatus = MutableLiveData<String?>()
     val deviceStatus2 = MutableLiveData<String?>()
+    val status = MutableLiveData<String?>()
+
     private var pollingHandler: Handler? = null
     private var pollingRunnable: Runnable? = null
 
@@ -61,6 +65,38 @@ object DeviceSharingService {
         })
     }
 
+    fun getStatus(deviceId: String) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://ahi.abeazka.my.id/api/arduino/") // Ganti dengan URL server kamu
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val apiService = retrofit.create(ArduinoService::class.java)
+
+        apiService.getStatus(deviceId).enqueue(object : retrofit2.Callback<StatusResponse> {
+            override fun onResponse(
+                call: retrofit2.Call<StatusResponse>,
+                response: retrofit2.Response<StatusResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val statuss = response.body()?.status
+                    status.value = response.body()?.status
+
+                    Log.d("tesr","$deviceId = Status device: $statuss")
+                    // kamu bisa pakai status ini untuk update UI atau logika lainnya
+                } else {
+                    status.value = "Unknown"
+
+                    println("Gagal mendapatkan response. Kode: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: retrofit2.Call<StatusResponse>, t: Throwable) {
+                status.value = "Error"
+            }
+        })
+    }
+
 
     // Fungsi untuk mengirim undangan berbagi perangkat
     fun sendInvite(ownerEmail: String, sharedEmail: String, deviceID: String, deviceName: String, callback: (Boolean, String) -> Unit) {
@@ -88,12 +124,24 @@ object DeviceSharingService {
     }
 
     fun sendDevice(ownerEmail: String, deviceName: String, deviceID: String, deviceIP: String) {
-        val requestBody = FormBody.Builder()
-            .add("owner_email", ownerEmail)
-            .add("device_name", deviceName)
-            .add("device_id", deviceID)
-            .add("device_ip", deviceIP)
-            .build()
+//        val requestBody = FormBody.Builder()
+//            .add("owner_email", ownerEmail)
+//            .add("device_name", deviceName)
+//            .add("device_id", deviceID)
+//            .add("device_ip", deviceIP)
+//            .build()
+        val json = """
+        {
+            "owner_email": "$ownerEmail",
+            "device_name": "$deviceName",
+            "device_id": "$deviceID",
+            "device_ip": "$deviceIP"
+        }
+    """.trimIndent()
+
+        // Buat RequestBody dengan tipe JSON
+        val requestBody = json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+
 
         val request = Request.Builder()
             .url("http://ahi.abeazka.my.id/api/arduino/add_device")

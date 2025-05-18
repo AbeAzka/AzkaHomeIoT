@@ -76,24 +76,24 @@ class DeviceControlActivity : AppCompatActivity() {
         buttonOff = findViewById(R.id.buttonOff)
         buttonOn2 = findViewById(R.id.buttonOn2)
         buttonOff2 = findViewById(R.id.buttonOff2)*/
-        deviceAdapter = DeviceAdapter(deviceList, object : DeviceAdapter.DeviceActionListener {
-            override fun onRenameDevice(device: DeviceModel, position: Int) {
-
-            }
-
-            override fun onDeleteDevice(device: DeviceModel, position: Int) {
-
-            }
-
-            override fun onResetWiFi(device: DeviceModel) {
-
-            }
-
-            override fun onPublish(device: String) {
-                //deviceAdapter.publish("sending_order_$deviceId", deviceId, "refresh")
-            }
-
-        })
+//        deviceAdapter = DeviceAdapter(deviceList, object : DeviceAdapter.DeviceActionListener {
+//            override fun onRenameDevice(device: DeviceModel, position: Int) {
+//
+//            }
+//
+//            override fun onDeleteDevice(device: DeviceModel, position: Int) {
+//
+//            }
+//
+//            override fun onResetWiFi(device: DeviceModel) {
+//
+//            }
+//
+//            override fun onPublish(device: String) {
+//                //deviceAdapter.publish("sending_order_$deviceId", deviceId, "refresh")
+//            }
+//
+//        })
 
 
         switch1Layout = findViewById(R.id.switch1Layout)

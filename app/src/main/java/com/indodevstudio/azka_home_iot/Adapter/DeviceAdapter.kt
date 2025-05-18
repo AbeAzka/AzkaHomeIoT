@@ -13,6 +13,9 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.indodevstudio.azka_home_iot.API.DeviceSharingService
 import com.indodevstudio.azka_home_iot.DeviceControlActivity
@@ -35,6 +38,7 @@ import java.io.IOException
 class DeviceAdapter(
     private val deviceList: MutableList<DeviceModel>,
     private val listener: DeviceActionListener,
+    private val lifecycleOwner: LifecycleOwner // tambahkan ini
 
 ) : RecyclerView.Adapter<DeviceAdapter.DeviceViewHolder>() {
 
@@ -59,7 +63,7 @@ class DeviceAdapter(
 
     override fun onBindViewHolder(holder: DeviceViewHolder, position: Int) {
         val device = deviceList[position]
-        holder.bind(device, listener, position)
+        holder.bind(device, listener, position, lifecycleOwner)
 
         val sharedPreferences = holder.itemView.context.getSharedPreferences("Bagogo", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
@@ -189,11 +193,35 @@ class DeviceAdapter(
             setupMqttClient()
             publishMessage("sending_order_${deviceId}", deviceId, "refresh")
         }*/
-        fun bind(device: DeviceModel, listener: DeviceActionListener, position: Int) {
+
+        fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: (T) -> Unit) {
+            val wrapper = object : Observer<T> {
+                override fun onChanged(t: T) {
+                    observer(t)
+                    removeObserver(this)
+                }
+            }
+            observe(lifecycleOwner, wrapper)
+        }
+
+        fun bind(device: DeviceModel, listener: DeviceActionListener, position: Int, lifecycleOwner: LifecycleOwner) {
             // 🔄 Reset tampilan agar tidak mewarisi status lama
-            deviceStatus.text = "Checking..."
+            deviceStatus.text = "Checking... Please press refresh button"
             deviceStatus.setTextColor(Color.DKGRAY)
             ip.text = device.ipAddress.ifEmpty { "0.0.0.0" }
+
+//            DeviceSharingService.getStatus(device.id)
+//
+//            DeviceSharingService.status.observeOnce(lifecycleOwner) { status ->
+//                if (!status.isNullOrEmpty()) {
+//                    deviceStatus.text = status
+//                    when (status.lowercase()) {
+//                        "online" -> deviceStatus.setTextColor(Color.parseColor("#4CAF50")) // hijau
+//                        "offline" -> deviceStatus.setTextColor(Color.parseColor("#F44336")) // merah
+//                        else -> deviceStatus.setTextColor(Color.DKGRAY)
+//                    }
+//                }
+//            }
 
             // Set nama dan ID
             tvDeviceName.text = "${device.name} - ID: ${device.id}"
@@ -209,12 +237,43 @@ class DeviceAdapter(
                     listener.onDeleteDevice(device, position)
                 }
             }
-            btnRefresh.setOnClickListener {
-                Log.d("MQTT", "🔄 Manual Refresh untuk ${device.id}")
-                publishMessage("sending_order_${device.id}", device.id, "refresh")
-            }
+//            btnRefresh.setOnClickListener {
+//                DeviceSharingService.getStatus(device.id)
+////                Log.d("MQTT", "🔄 Manual Refresh untuk ${device.id}")
+////                publishMessage("sending_order_${device.id}", device.id, "refresh")
+//            }
+//
+//            // Check if status is available
+//            if (!DeviceSharingService.status.value.isNullOrEmpty()) {
+//                val status = DeviceSharingService.status.value
+//                Log.d("CheckStatus", "Status2 sekarang: $status")
+//                val currentStatus = DeviceSharingService.status.value
+//                deviceStatus.text = currentStatus
+//            }
 
-            // Shared status
+    btnRefresh.setOnClickListener {
+        DeviceSharingService.getStatus(device.id)
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            val status = DeviceSharingService.status.value
+            if (!status.isNullOrEmpty()) {
+                Log.d("CheckStatus", "Status2 sekarang: $status")
+                deviceStatus.text = status
+
+                // Atur warna berdasarkan status
+                when (status.lowercase()) {
+                    "online" -> deviceStatus.setTextColor(Color.parseColor("#4CAF50")) // hijau
+                    "offline" -> deviceStatus.setTextColor(Color.parseColor("#F44336")) // merah
+                    else -> deviceStatus.setTextColor(Color.DKGRAY) // warna default
+                }
+            }
+        }, 1000) // Delay 1 detik untuk memastikan status sempat diperbarui
+    }
+
+
+
+
+    // Shared status
             tvShared.visibility = if (device.isShared) View.VISIBLE else View.GONE
             btnDelete.visibility = if (device.isShared) View.GONE else View.VISIBLE
             btnRename.visibility = if (device.isShared) View.GONE else View.VISIBLE
@@ -223,9 +282,9 @@ class DeviceAdapter(
 
         fun setupMqttClient(device: DeviceModel) {
             val brokerUrl = "tcp://taryem.my.id:1883"
-            val clientId = "kotlin123"
+            val clientId = "client_${device.id}"
             val persistence = MemoryPersistence()
-
+            val device_id = device.id
             try {
                 mqttClient = MqttClient(brokerUrl, clientId, persistence)
                 val options = MqttConnectOptions()
@@ -238,6 +297,8 @@ class DeviceAdapter(
 
                 Log.d("MQTT", "Connecting......")
                 Logger.log("MQTT", "Connecting....")
+                Log.d("MQTT", "✅ Connected client $clientId for device $device_id")
+                Logger.log("MQTT", "✅ Connected client $clientId for device $device_id")
                 mqttClient.setCallback(object : MqttCallback {
                     override fun connectionLost(cause: Throwable?) {}
 
@@ -250,7 +311,7 @@ class DeviceAdapter(
                                 val json = JSONObject(payload)
                                 val deviceIp = json.optString("ip", "")
                                 val incomingDeviceId = json.optString("device_id", "")
-                                Log.d("MQTT", "📩 $topic - Received: $payload - CurrentHolder: ${device.id}")
+                                Log.d("MQTT", "📩 $topic - Received: $payload - CurrentHolder: ${device_id}")
 
                                 // ✅ Validasi: hanya update UI jika ID cocok
                                 if (incomingDeviceId == device.id) {
@@ -274,9 +335,9 @@ class DeviceAdapter(
                     override fun deliveryComplete(token: IMqttDeliveryToken?) {}
                 })
 
-                mqttClient.subscribe("${device.id}/switch1/status")
-                mqttClient.subscribe("${device.id}/switch2/status")
-                mqttClient.subscribe("sending_telemetri_${device.id}")
+                mqttClient.subscribe("${device_id}/switch1/status")
+                mqttClient.subscribe("${device_id}/switch2/status")
+                mqttClient.subscribe("sending_telemetri_${device_id}")
 
 
             } catch (e: MqttException) {

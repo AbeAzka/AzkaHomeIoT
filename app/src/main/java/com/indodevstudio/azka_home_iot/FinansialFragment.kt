@@ -48,6 +48,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
@@ -66,6 +67,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.work.await
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.indodevstudio.azka_home_iot.Adapter.HistoryAdapter
 import kotlinx.coroutines.Dispatchers
@@ -282,8 +284,22 @@ class FinansialFragment : Fragment() {
         harianTxt = view.findViewById(R.id.harian_Txt)
         monthlyTxt = view.findViewById(R.id.bulanan_Txt)
         expendTxt = view.findViewById(R.id.titleDaily)
+        val firebaseUser = FirebaseAuth.getInstance().currentUser
+        val prefs = requireContext().getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
+        val authToken = prefs.getString("auth_token", null)
+        val userData = getUserData()
 
-        email = FirebaseAuth.getInstance().currentUser?.email.toString()
+        if(firebaseUser != null){
+            email = FirebaseAuth.getInstance().currentUser?.email.toString()
+
+        }
+
+        if(authToken != null) {
+            email = userData["email"].toString()
+
+        }
+
+
 
         context?.let { createNotificationChannel(it) }
         var inflater = LayoutInflater.from(getActivity())
@@ -825,6 +841,17 @@ class FinansialFragment : Fragment() {
 //        startActivity(sendIntent)
 //    }
 
+    private fun getUserData(): Map<String, String?> {
+        val prefs = requireContext().getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
+        return mapOf(
+            "token" to prefs.getString("auth_token", null),
+            "username" to prefs.getString("username", null),
+            "email" to prefs.getString("email", null),
+            "avatar" to prefs.getString("avatar", null),
+            "isVerified" to prefs.getString("isVerified", null)
+        )
+    }
+
 
 
     private fun dispatchTakePictureIntent() {
@@ -891,9 +918,9 @@ class FinansialFragment : Fragment() {
         }
     }
 
-    private suspend fun <T> ListenableFuture<T>.await(): T = suspendCancellableCoroutine { cont ->
-        addListener({ cont.resume(get()) }, Executors.newSingleThreadExecutor())
-    }
+//    private suspend fun <T> ListenableFuture<T>.await(): T = suspendCancellableCoroutine { cont ->
+//        addListener({ cont.resume(get()) }, Executors.newSingleThreadExecutor())
+//    }
 
     fun saveToDownloads(context: Context, fileName: String, inputStream: InputStream, urlKang: String) {
         val resolver = context.contentResolver
@@ -1672,16 +1699,17 @@ class FinansialFragment : Fragment() {
         // Enable the button at the start
         deleteButton.isEnabled = false
     }
+
+
     private fun showConfirmationDialog() {
         // Build the AlertDialog
         val isNightMode = resources.configuration.uiMode and
                 Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
-        val dialogStyle = if (isNightMode) R.style.CustomAlertDialogStyle_Night else R.style.CustomAlertDialogStyle
-        val dialog = AlertDialog.Builder(requireContext())
-            .setTitle("Delete Data")
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Logout")
             .setMessage("Are you sure you want to delete all data?")
-            .setPositiveButton("Yes") { dialog, which ->
+            .setPositiveButton("Yes") { _, _ ->
                 // Proceed with the action (e.g., delete the data)
                 deleteData()
                 val bensinx = userTokens["bensin_x"].toString()
@@ -1697,14 +1725,10 @@ class FinansialFragment : Fragment() {
                 fetchCreditData5(ss)
                 fetchCreditData6(cadangan)
             }
-            .setNegativeButton("No") { dialog, which ->
-                // Dismiss the dialog, no action needed
+            .setNegativeButton("No") { dialog, _ ->
                 dialog.dismiss()
             }
-            .create()
-
-        // Show the dialog
-        dialog.show()
+            .show()
     }
 
     override fun onDestroyView() {

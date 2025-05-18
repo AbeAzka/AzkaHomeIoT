@@ -214,17 +214,17 @@ class CameraFragment: Fragment() {
             0 -> {
                 imageCapture?.flashMode = ImageCapture.FLASH_MODE_OFF
                 flashButton.setImageResource(R.drawable.flash_off_black)
-                Toast.makeText(requireContext(), "Flash OFF", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(requireContext(), "Flash OFF", Toast.LENGTH_SHORT).show()
             }
             1 -> {
                 imageCapture?.flashMode = ImageCapture.FLASH_MODE_ON
                 flashButton.setImageResource(R.drawable.flash_on_black)
-                Toast.makeText(requireContext(), "Flash ON", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(requireContext(), "Flash ON", Toast.LENGTH_SHORT).show()
             }
             2 -> {
                 imageCapture?.flashMode = ImageCapture.FLASH_MODE_AUTO
                 flashButton.setImageResource(R.drawable.flash_auto_black) // Ganti dengan ikon flash auto
-                Toast.makeText(requireContext(), "Flash AUTO", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(requireContext(), "Flash AUTO", Toast.LENGTH_SHORT).show()
             }
         }
     }

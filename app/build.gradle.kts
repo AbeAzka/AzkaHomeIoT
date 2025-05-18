@@ -49,6 +49,7 @@ android {
 dependencies {
 // Untuk Executor bawaan Android (pengganti ListenableFuture)
     implementation ("com.google.android.material:material:1.11.0")
+    implementation ("com.getkeepsafe.taptargetview:taptargetview:1.13.3")
 
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation ("com.airbnb.android:lottie:5.2.0")
