@@ -23,7 +23,7 @@
             android:title="Manual Book"/>
         <item
             android:id="@+id/nav_log"
-            android:icon="@drawable/ic_info_blck"
+            android:icon="@drawable/ic_updates"
             android:title="Update Log"/>
 
         <item

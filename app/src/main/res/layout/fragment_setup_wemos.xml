@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:text="Jika tidak otomatis connect, ikuti langkah ini:\n\n- Nyalakan WiFi\n- Pilih WiFi bernama 'Wemos_Setup'\n- Kembali ke aplikasi dan klik 'Connect to Wemos' lagi"
                 android:textSize="14sp"
-                android:textColor="@color/gray"
+                android:textColor="@color/black"
                 android:padding="12dp"
                 android:background="@drawable/bg_card"
                 android:layout_marginBottom="16dp" />
@@ -126,6 +126,16 @@
                 android:background="@drawable/bg_input"
                 android:layout_marginBottom="12dp"
                 android:visibility="gone" />
+
+            <Spinner
+                android:id="@+id/spinnerCategory"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:spinnerMode="dropdown"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"
+                android:tooltipText="Select category"/>
+
 
             <!-- Tombol Submit Device -->
             <Button

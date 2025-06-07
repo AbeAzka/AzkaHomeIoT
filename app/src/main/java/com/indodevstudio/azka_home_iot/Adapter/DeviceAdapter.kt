@@ -104,17 +104,18 @@ class DeviceAdapter(
             val intent = Intent(holder.itemView.context, DeviceControlActivity::class.java)
             intent.putExtra("device_id", deviceIdd)
             intent.putExtra("deviceName", deviceNam)
+            intent.putExtra("category", device.category)
             holder.itemView.context.startActivity(intent)
         }
 
-        holder.itemView.setOnLongClickListener {
-            if (device.isShared) {
-                Toast.makeText(holder.itemView.context, "You don't have permission to modify this device", Toast.LENGTH_SHORT).show()
-                return@setOnLongClickListener true
-            }
-            showInviteDialog(holder.itemView.context, device)
-            true
-        }
+//        holder.itemView.setOnLongClickListener {
+//            if (device.isShared) {
+//                Toast.makeText(holder.itemView.context, "You don't have permission to modify this device", Toast.LENGTH_SHORT).show()
+//                return@setOnLongClickListener true
+//            }
+//            showInviteDialog(holder.itemView.context, device)
+//            true
+//        }
     }
 
 
@@ -184,6 +185,8 @@ class DeviceAdapter(
         private val btnRefresh: ImageButton = itemView.findViewById(R.id.btnRefresh)
         val deviceStatus: TextView = itemView.findViewById(R.id.textStatus)
         private val tvShared: TextView = itemView.findViewById(R.id.tvShared)
+        private val tvCategory: TextView = itemView.findViewById(R.id.tvCategory)
+        private val btnInvite: ImageButton = itemView.findViewById(R.id.btnInvite)
         val ip: TextView = itemView.findViewById(R.id.textIP)
         lateinit var mqttClient: MqttClient
 
@@ -224,11 +227,19 @@ class DeviceAdapter(
 
             // Set nama dan ID
             tvDeviceName.text = "${device.name} - ID: ${device.id}"
-
+            tvCategory.visibility = View.VISIBLE
+            tvCategory.text = device.category.toString()
             // Setup MQTT dan refresh status
             setupMqttClient(device)
             publishMessage("sending_order_${device.id}", device.id, "refresh")
-
+            btnInvite.setOnClickListener{
+                if (device.isShared) {
+                    Toast.makeText(itemView.context, "You don't have permission to modify this device", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                showInviteDialog(itemView.context, device)
+                true
+            }
             // Tombol
             btnRename.setOnClickListener { listener.onRenameDevice(device, position) }
             btnDelete.setOnClickListener {
@@ -236,6 +247,8 @@ class DeviceAdapter(
                     listener.onDeleteDevice(device, position)
                 }
             }
+
+
 //            btnRefresh.setOnClickListener {
 //                DeviceSharingService.getStatus(device.id)
 ////                Log.d("MQTT", "🔄 Manual Refresh untuk ${device.id}")
@@ -276,6 +289,28 @@ class DeviceAdapter(
             tvShared.visibility = if (device.isShared) View.VISIBLE else View.GONE
             btnDelete.visibility = if (device.isShared) View.GONE else View.VISIBLE
             btnRename.visibility = if (device.isShared) View.GONE else View.VISIBLE
+        }
+
+        private fun showInviteDialog(context: Context, device: DeviceModel) {
+            if (device.isShared) {
+                Toast.makeText(context, "You don't have permission to modify this device", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            MaterialAlertDialogBuilder(context)
+                .setTitle("Invite user")
+                .setMessage("Want to invite other users to view this device?")
+                .setPositiveButton("Invite") { _, _ ->
+                    // Pindah ke Fragment/Activity undangan
+                    val intent = Intent(context, InviteActivity::class.java) // Ganti dengan activity yang sesuai
+                    intent.putExtra("device_id", device.id) // Kirim ID perangkat ke activity
+                    intent.putExtra("device_nama", device.name) // Kirim ID perangkat ke activity
+                    context.startActivity(intent)
+                }
+                .setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
         }
 
 

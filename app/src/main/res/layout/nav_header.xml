@@ -1,91 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="250dp"
-
-    android:gravity="left|center"
-    android:padding="16dp"
-    android:id="@+id/nav_head"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark"
     android:background="@color/lavender2"
-
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    android:padding="16dp"
     tools:context=".MainActivity">
 
-
+    <!-- Konten utama -->
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_marginTop="30dp"
+        android:id="@+id/nav_head"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="start|center_vertical">
 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
-
-        android:gravity="center_vertical|center_horizontal">
-        <androidx.cardview.widget.CardView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:elevation="12dp"
-            android:id="@+id/view2"
-            app:cardCornerRadius="40dp"
-            android:layout_marginRight="10dp"
-            app:cardBackgroundColor="@color/gray_transparant"
-            android:layout_centerHorizontal="true">
-
-            <ImageView
-                android:id="@+id/logo_p"
-                android:contentDescription="Profile Picture"
-                android:clickable="true"
-
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-
-                android:scaleType="centerCrop"
-                android:visibility="visible" />
-        </androidx.cardview.widget.CardView>
-
-        <ImageView
-            android:id="@+id/status22"
+        <!-- Foto profil dan status -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginTop="30dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="visible"
-            android:layout_gravity="bottom"
-            app:srcCompat="@drawable/unverified" />
+            android:gravity="center_vertical">
 
+            <androidx.cardview.widget.CardView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:elevation="12dp"
+                android:id="@+id/view2"
+                app:cardCornerRadius="40dp"
+                android:layout_marginEnd="10dp"
+                app:cardBackgroundColor="@color/gray_transparant">
+
+                <ImageView
+                    android:id="@+id/logo_p"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="Profile Picture"
+                    android:clickable="true"
+                    android:visibility="visible" />
+            </androidx.cardview.widget.CardView>
+
+            <ImageView
+                android:id="@+id/status22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/unverified"
+                android:visibility="visible" />
+        </LinearLayout>
+
+        <!-- Nama & Email -->
+        <TextView
+            android:id="@+id/namas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nama Pengguna"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/emailGet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="email@example.com"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/ipAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="IP: 192.168.0.1"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:layout_marginBottom="12dp" />
 
 
     </LinearLayout>
-
-
-    <TextView
-        android:id="@+id/namas"
+    <!-- Tombol Switch Akun -->
+<!--    <TextView-->
+<!--        android:id="@+id/switchAccountBtn"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Switch Account"-->
+<!--        android:layout_gravity="top|end"-->
+<!--        android:layout_marginTop="70dp"-->
+<!--        android:textStyle="bold"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textSize="14sp"-->
+<!--        android:drawableStart="@drawable/ic_switch_account"-->
+<!--        android:drawablePadding="8dp"-->
+<!--        android:paddingTop="6dp"-->
+<!--        android:paddingBottom="6dp"-->
+<!--        android:clickable="true"-->
+<!--        android:focusable="true" />-->
+    <!-- Tombol pengaturan akun (pojok kanan atas) -->
+    <ImageView
+        android:id="@+id/more_options"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Menu"
-        android:textSize="20dp"
-        android:textColor="@color/white"
-        android:textStyle="bold"/>
+        android:layout_height="50dp"
+        android:layout_marginEnd="-10dp"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="top|end"
+        app:srcCompat="@drawable/settings"
+        android:contentDescription="More Options"
+        android:padding="8dp"
+        android:tooltipText="Pengaturan Akun (Indodev Studio)"
+        android:clickable="true"
+        android:focusable="true" />
 
-    <TextView
-        android:id="@+id/emailGet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="null"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        android:layout_marginBottom="5dp"/>
-
-    <TextView
-        android:id="@+id/ipAddress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="null"
-        android:textColor="@color/white"
-        android:textSize="11sp"
-        android:layout_marginBottom="20dp"/>
-
-
-
-</LinearLayout>
+</FrameLayout>

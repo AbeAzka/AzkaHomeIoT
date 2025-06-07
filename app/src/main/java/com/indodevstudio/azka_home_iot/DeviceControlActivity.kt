@@ -1,15 +1,25 @@
 package com.indodevstudio.azka_home_iot
 
+import android.content.ClipData
+import android.content.ClipDescription
 import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
+import android.view.DragEvent
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.ScrollView
+import android.widget.SeekBar
+import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -66,34 +76,23 @@ class DeviceControlActivity : AppCompatActivity() {
 
     var sharedPreferences: SharedPreferences? = null
 
+    private lateinit var category: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_device_control)
         setupMqttClient() //START MQTTTT
 
         textViewStatus = findViewById(R.id.textViewStatus)
-/*        buttonOn = findViewById(R.id.buttonOn)
-        buttonOff = findViewById(R.id.buttonOff)
-        buttonOn2 = findViewById(R.id.buttonOn2)
-        buttonOff2 = findViewById(R.id.buttonOff2)*/
-//        deviceAdapter = DeviceAdapter(deviceList, object : DeviceAdapter.DeviceActionListener {
-//            override fun onRenameDevice(device: DeviceModel, position: Int) {
-//
-//            }
-//
-//            override fun onDeleteDevice(device: DeviceModel, position: Int) {
-//
-//            }
-//
-//            override fun onResetWiFi(device: DeviceModel) {
-//
-//            }
-//
-//            override fun onPublish(device: String) {
-//                //deviceAdapter.publish("sending_order_$deviceId", deviceId, "refresh")
-//            }
-//
-//        })
+        val sharedPrefs = this.getSharedPreferences("device_category", AppCompatActivity.MODE_PRIVATE)
+
+        category = intent.getStringExtra("category") ?: "Unknown"
+        when (category) {
+            "Lamp" -> showLampUI()
+            "Sensor" -> showSensorUI()
+            "Custom" -> showCustomUI()
+            else -> showDefaultUI()
+        }
 
 
         switch1Layout = findViewById(R.id.switch1Layout)
@@ -131,19 +130,6 @@ class DeviceControlActivity : AppCompatActivity() {
         getSupportActionBar()?.setDisplayShowHomeEnabled(true);
         supportActionBar?.title = "Control $deviceName"
 
-//        switch1Layout.setOnClickListener {
-//            isSwitch1On = !isSwitch1On
-//
-//            if (isSwitch1On) {
-//                switch1Layout.setBackgroundResource(R.drawable.bg_switch_on)
-//                indicator1.setBackgroundResource(R.drawable.indicator_on)
-//                sendCommand("off", device_id, "switch1")
-//            } else {
-//                switch1Layout.setBackgroundResource(R.drawable.bg_switch_off)
-//                indicator1.setBackgroundResource(R.drawable.indicator_off)
-//                sendCommand("on", device_id, "switch1")
-//            }
-//        }
 
         switch1Layout.setOnClickListener {
             isSwitch1On = !isSwitch1On
@@ -153,18 +139,7 @@ class DeviceControlActivity : AppCompatActivity() {
             updateSwitchUI(switch1Layout, indicator1, isSwitch1On)
         }
 
-        /*switch2Layout.setOnClickListener {
-            isSwitch2On = !isSwitch2On
-            if (isSwitch2On) {
-                switch2Layout.setBackgroundResource(R.drawable.bg_switch_on)
-                indicator2.setBackgroundResource(R.drawable.indicator_on)
-                sendCommand("off2", device_id,  "switch2")
-            } else {
-                switch2Layout.setBackgroundResource(R.drawable.bg_switch_off)
-                indicator2.setBackgroundResource(R.drawable.indicator_off)
-                sendCommand("on2", device_id,  "switch2")
-            }
-        }*/
+
         switch2Layout.setOnClickListener {
             isSwitch2On = !isSwitch2On
             val command = if (isSwitch2On) "ON" else "OFF"
@@ -173,13 +148,6 @@ class DeviceControlActivity : AppCompatActivity() {
             updateSwitchUI(switch2Layout, indicator2, isSwitch2On)
 
         }
-
-
-        /*        buttonOn.setOnClickListener { sendCommand("on", device_id) }
-                buttonOff.setOnClickListener { sendCommand("off", device_id) }
-
-                buttonOn2.setOnClickListener { sendCommand("on2", device_id) }
-                buttonOff2.setOnClickListener { sendCommand("off2", device_id) }*/
 
         toolbar.setNavigationOnClickListener(View.OnClickListener {
             //What to do on back clicked
@@ -213,31 +181,6 @@ class DeviceControlActivity : AppCompatActivity() {
 
 
 
-        /*if (currentStatus.equals("ON", ignoreCase = true)) {
-            // Status ON
-            isSwitch1On = true
-            updateSwitchUI(switch1Layout, indicator1, isSwitch1On)
-
-        } else if (currentStatus.equals("OFF", ignoreCase = true)) {
-            // Status OFF
-            isSwitch1On = false
-            updateSwitchUI(switch1Layout, indicator1, isSwitch1On)
-
-        }
-
-
-        if (currentStatus2.equals("ON", ignoreCase = true)) {
-            // Status ON
-            isSwitch2On = true
-            updateSwitchUI(switch2Layout, indicator2, isSwitch2On)
-
-        } else if (currentStatus2.equals("OFF", ignoreCase = true)) {
-            // Status OFF
-            isSwitch2On = false
-            updateSwitchUI(switch2Layout, indicator2, isSwitch2On)
-
-        }*/
-
     }
 
     override fun onResume() {
@@ -251,6 +194,157 @@ class DeviceControlActivity : AppCompatActivity() {
         DeviceSharingService.stopPolling()
 
     }
+
+    private fun showLampUI() {
+        Toast.makeText(this, "Menampilkan UI Lampu", Toast.LENGTH_SHORT).show()
+        val customBuilderLayout = findViewById<LinearLayout>(R.id.customBuilderLayout)
+        customBuilderLayout.visibility = View.GONE
+        val switchScrollView = findViewById<ScrollView>(R.id.switchScrollView)
+        switchScrollView.visibility = View.VISIBLE
+    }
+
+    private fun showSensorUI() {
+        Toast.makeText(this, "Menampilkan UI Sensor", Toast.LENGTH_SHORT).show()
+        val customBuilderLayout = findViewById<LinearLayout>(R.id.customBuilderLayout)
+        customBuilderLayout.visibility = View.GONE
+        val switchScrollView = findViewById<ScrollView>(R.id.switchScrollView)
+        switchScrollView.visibility = View.VISIBLE
+    }
+
+
+    private fun showCustomUI() {
+        val switchScrollView = findViewById<ScrollView>(R.id.switchScrollView)
+        switchScrollView.visibility = View.GONE
+        Toast.makeText(this, "Menampilkan UI Custom", Toast.LENGTH_SHORT).show()
+        val customBuilderLayout = findViewById<LinearLayout>(R.id.customBuilderLayout)
+        customBuilderLayout.visibility = View.VISIBLE
+        setupPalette()
+        setupDropArea()
+    }
+
+    private fun showDefaultUI() {
+        Toast.makeText(this, "Kategori tidak dikenali", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun setupPalette() {
+        val komponen = listOf("Switch", "Slider", "Button")
+        val palette = findViewById<LinearLayout>(R.id.componentPanel) // ID diperbaiki
+
+        komponen.forEach { nama ->
+            val btn = Button(this) // Gunakan requireContext() jika dalam Fragment
+            btn.text = nama
+            btn.setPadding(16, 8, 16, 8)
+            btn.setOnLongClickListener {
+                val data = ClipData.newPlainText("komponen", nama)
+                val shadow = View.DragShadowBuilder(it)
+                it.startDragAndDrop(data, shadow, null, 0)
+                true
+            }
+            palette.addView(btn)
+        }
+    }
+
+    private fun setupDropArea() {
+        val dropArea = findViewById<FrameLayout>(R.id.customArea) // ID diperbaiki
+        dropArea.setOnDragListener { v, event ->
+            when (event.action) {
+                DragEvent.ACTION_DROP -> {
+                    if (event.clipData.itemCount > 0) {
+                        val jenis = event.clipData.getItemAt(0).text.toString()
+                        val newView = when (jenis) {
+                            "Switch" -> {
+                                val inflater = LayoutInflater.from(this)
+                                val switchView = inflater.inflate(R.layout.item_switcth, null)
+                                val params = LinearLayout.LayoutParams(
+                                    TypedValue.applyDimension(
+                                        TypedValue.COMPLEX_UNIT_DIP,
+                                        200f, // ganti ke ukuran lebar yang kamu mau
+                                        resources.displayMetrics
+                                    ).toInt(),
+                                    LinearLayout.LayoutParams.WRAP_CONTENT
+                                )
+                                switchView.layoutParams = params
+                                val layout = switchView.findViewById<LinearLayout>(R.id.switchLayout)
+                                val indicator = switchView.findViewById<View>(R.id.indicator)
+                                val text = switchView.findViewById<TextView>(R.id.textSwitch)
+
+                                // Toggle logika ON/OFF saat diklik
+                                var isOn = false
+                                layout.setOnClickListener {
+                                    isOn = !isOn
+                                    if (isOn) {
+                                        layout.setBackgroundResource(R.drawable.bg_switch_on)
+                                        indicator.setBackgroundResource(R.drawable.indicator_on)
+                                        publishCommand("custom_switch", "ON")
+                                    } else {
+                                        layout.setBackgroundResource(R.drawable.bg_switch_off)
+                                        indicator.setBackgroundResource(R.drawable.indicator_off)
+                                        publishCommand("custom_switch", "OFF")
+                                    }
+                                }
+                                switchView
+                            }
+                            "Slider" -> SeekBar(this).apply {
+                                max = 100
+                                setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                                    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                                        publishCommand("custom_slider", progress.toString())
+                                    }
+
+                                    override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+                                    override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+                                })
+                            }
+                            "Button" -> Button(this).apply {
+                                text = "Custom Button"
+                                setOnClickListener {
+                                    publishCommand("custom_button", "PRESSED")
+                                    Toast.makeText(this@DeviceControlActivity, "Button pressed", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            else -> null
+                        }
+
+                        newView?.let {
+                            val params = FrameLayout.LayoutParams(
+                                FrameLayout.LayoutParams.WRAP_CONTENT,
+                                FrameLayout.LayoutParams.WRAP_CONTENT
+                            )
+                            params.leftMargin = event.x.toInt()
+                            params.topMargin = event.y.toInt()
+                            (v as FrameLayout).addView(it, params)
+                            makeViewDraggable(it)
+                        }
+                    }
+                }
+            }
+            true
+        }
+    }
+
+    private fun makeViewDraggable(view: View) {
+        var dX = 0f
+        var dY = 0f
+        view.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    dX = v.x - event.rawX
+                    dY = v.y - event.rawY
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    v.animate()
+                        .x(event.rawX + dX)
+                        .y(event.rawY + dY)
+                        .setDuration(0)
+                        .start()
+                }
+            }
+            true
+        }
+    }
+
+
+
 
 
     private fun showEditDialog(textView: TextView, key: String) {

@@ -182,11 +182,13 @@ class SignInActivity : AppCompatActivity() {
 //    }
 
     private fun checkAutoLogin() {
+        val skip = intent.getBooleanExtra("skipAutoLogin", false)
+        if (skip) return
+
         val prefs = getSharedPreferences("my_prefs", MODE_PRIVATE)
         val token = prefs.getString("auth_token", null)
 
         if (token != null) {
-            // Token ada, langsung masuk ke HomeActivity
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
@@ -226,6 +228,28 @@ class SignInActivity : AppCompatActivity() {
             if (it.isSuccessful){
                 val intent = Intent(this , MainActivity::class.java)
                 val bundle = Bundle()
+                val user = FirebaseAuth.getInstance().currentUser
+                val token = FirebaseAuth.getInstance().currentUser?.getIdToken(false)?.result?.token // atau customToken kamu
+
+
+
+//                val accounts = token?.let { it1 ->
+//                    AccountData(
+//                        email = user?.email ?: "",
+//                        token = it1,
+//                        provider = AuthProvider.CUSTOM, // atau AuthProvider.FIREBASE
+//                        avatarUrl = user?.photoUrl.toString(),
+//                        username = user?.displayName,
+//                        isVerified = true
+//                    )
+//                }
+//
+//                if (accounts != null) {
+//                    AccountManager.saveAccount(this, accounts)
+//                }
+//                AccountManager.setCurrentAccount(this, user?.email ?: "")
+
+
                 bundle.putString("name", account.displayName)
                 intent.putExtra("email" , account.email)
                 intent.putExtra("name" , account.displayName)
@@ -256,6 +280,8 @@ class SignInActivity : AppCompatActivity() {
     }
     override fun onStart() {
         super.onStart()
+        val skip = intent.getBooleanExtra("skipAutoLogin", false)
+        if (skip) return
         if(firebaseAuth.currentUser != null) {
             val user = FirebaseAuth.getInstance().currentUser
             if (GoogleSignIn.getLastSignedInAccount(this) != null) {

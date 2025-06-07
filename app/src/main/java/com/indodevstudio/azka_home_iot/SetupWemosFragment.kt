@@ -42,6 +42,7 @@ class SetupWemosFragment : Fragment() {
     private lateinit var buttonSubmitWiFi: Button
     private lateinit var editTextDeviceName: EditText
     private lateinit var buttonSubmitDevice: Button
+    private lateinit var spinnerCategory: Spinner
     private lateinit var textInfo :TextView
     var IPA = ""
     var DVCID = ""
@@ -89,31 +90,46 @@ class SetupWemosFragment : Fragment() {
         buttonSubmitWiFi = view.findViewById(R.id.buttonSubmitWiFi)
         editTextDeviceName = view.findViewById(R.id.editTextDeviceName)
         buttonSubmitDevice = view.findViewById(R.id.buttonSubmitDevice)
+        spinnerCategory = view.findViewById(R.id.spinnerCategory)
 
-        val sharedPreferences_tutorial = requireContext().getSharedPreferences("AppPrefs", MODE_PRIVATE)
-        val isFirstTime = sharedPreferences_tutorial.getBoolean("isFirstTime", true)
+        val categories = listOf("Lamp", "Sensor", "Custom")
 
-        if (isFirstTime) {
-            TapTargetSequence(requireActivity())
-                .targets(
-                    TapTarget.forView(view.findViewById(R.id.buttonConnect), "Connect to Wemos", "Klik tombol ini untuk mulai koneksi ke perangkat.")
-                        .cancelable(false)
-                        .transparentTarget(true),
-                    TapTarget.forView(view.findViewById(R.id.editTextSSID), "Masukkan SSID", "Isikan nama WiFi yang akan digunakan perangkat."),
-                    TapTarget.forView(view.findViewById(R.id.buttonSubmitWiFi), "Submit WiFi", "Kirim info WiFi ke perangkat."),
-                    TapTarget.forView(view.findViewById(R.id.editTextDeviceName), "Nama Perangkat", "Beri nama unik untuk perangkat ini."),
-                    TapTarget.forView(view.findViewById(R.id.buttonSubmitDevice), "Simpan Perangkat", "Klik ini untuk menyimpan.")
-                )
-                .listener(object : TapTargetSequence.Listener {
-                    override fun onSequenceFinish() {
-                        // Tandai bahwa user sudah pernah lihat tutorial
-                        sharedPreferences_tutorial.edit().putBoolean("isFirstTime", false).apply()
-                    }
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, categories)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerCategory.adapter = adapter
 
-                    override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
-                    override fun onSequenceCanceled(lastTarget: TapTarget) {}
-                }).start()
-        }
+        val selectedCategory = spinnerCategory.selectedItem.toString()
+        val sharedPrefs = requireContext().getSharedPreferences("device_category", AppCompatActivity.MODE_PRIVATE)
+
+        val editor = sharedPrefs.edit()
+        editor.putString("device_selected_category", selectedCategory)
+        editor.apply()
+
+
+//        val sharedPreferences_tutorial = requireContext().getSharedPreferences("AppPrefs", MODE_PRIVATE)
+//        val isFirstTime = sharedPreferences_tutorial.getBoolean("isFirstTime", true)
+//
+//        if (isFirstTime) {
+//            TapTargetSequence(requireActivity())
+//                .targets(
+//                    TapTarget.forView(view.findViewById(R.id.buttonConnect), "Connect to Wemos", "Klik tombol ini untuk mulai koneksi ke perangkat.")
+//                        .cancelable(false)
+//                        .transparentTarget(true),
+//                    TapTarget.forView(view.findViewById(R.id.editTextSSID), "Masukkan SSID", "Isikan nama WiFi yang akan digunakan perangkat."),
+//                    TapTarget.forView(view.findViewById(R.id.buttonSubmitWiFi), "Submit WiFi", "Kirim info WiFi ke perangkat."),
+//                    TapTarget.forView(view.findViewById(R.id.editTextDeviceName), "Nama Perangkat", "Beri nama unik untuk perangkat ini."),
+//                    TapTarget.forView(view.findViewById(R.id.buttonSubmitDevice), "Simpan Perangkat", "Klik ini untuk menyimpan.")
+//                )
+//                .listener(object : TapTargetSequence.Listener {
+//                    override fun onSequenceFinish() {
+//                        // Tandai bahwa user sudah pernah lihat tutorial
+//                        sharedPreferences_tutorial.edit().putBoolean("isFirstTime", false).apply()
+//                    }
+//
+//                    override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
+//                    override fun onSequenceCanceled(lastTarget: TapTarget) {}
+//                }).start()
+//        }
 
 
 
@@ -150,10 +166,10 @@ class SetupWemosFragment : Fragment() {
             saveDeviceName(requireContext(), deviceName)
             saveDeviceIP(requireContext(), deviceIp)
             if (deviceName.isNotEmpty() && deviceIp.isNotEmpty()) {
-                val newDevice = DeviceModel(deviceId,deviceName, deviceIp) // Simpan dengan IP
+                val newDevice = DeviceModel(deviceId,deviceName, deviceIp, selectedCategory) // Simpan dengan IP
                 deviceViewModel.addDevice(newDevice)
                 if (ownerEmail != null) {
-                    DeviceSharingService.sendDevice(ownerEmail , deviceName, deviceId, getCurrentIpAddress())
+                    DeviceSharingService.sendDevice(ownerEmail , deviceName, deviceId, getCurrentIpAddress(), selectedCategory)
                 }
 
                 parentFragmentManager.beginTransaction()
@@ -435,6 +451,7 @@ class SetupWemosFragment : Fragment() {
                             buttonSubmitWiFi.visibility = View.GONE
                             editTextDeviceName.visibility = View.VISIBLE
                             buttonSubmitDevice.visibility = View.VISIBLE
+                            spinnerCategory.visibility = View.VISIBLE
                         }
                     }
                 }

@@ -36,6 +36,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MainActivity"
         android:usesCleartextTraffic="true"
+
         tools:targetApi="34">
         <activity
             android:name=".InviteActivity"
@@ -160,13 +161,13 @@
             </intent-filter>
         </service>
 
-        <receiver
-            android:name=".MQTT_Receiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
+<!--        <receiver-->
+<!--            android:name=".MQTT_Receiver"-->
+<!--            android:exported="false">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.BOOT_COMPLETED" />-->
+<!--            </intent-filter>-->
+<!--        </receiver>-->
 
         <service
             android:name=".MQTT_Service"

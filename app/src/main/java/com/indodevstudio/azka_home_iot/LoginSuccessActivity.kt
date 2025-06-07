@@ -48,6 +48,26 @@ class LoginSuccessActivity : AppCompatActivity() {
             .putString("isFirebase", "false")
             .putString("isVerified", "true")
             .apply()
+
+//        val account = email?.let {
+//            AccountData(
+//                email = it,
+//                token = token,
+//                provider = AuthProvider.CUSTOM, // atau AuthProvider.FIREBASE
+//                avatarUrl = avatar,
+//                username = username,
+//                isVerified = true
+//            )
+//        }
+//
+//        if (account != null) {
+//            AccountManager.saveAccount(this, account)
+//        }
+//        if (email != null) {
+//            AccountManager.setCurrentAccount(this, email)
+//        }
+
+
     }
 }
 

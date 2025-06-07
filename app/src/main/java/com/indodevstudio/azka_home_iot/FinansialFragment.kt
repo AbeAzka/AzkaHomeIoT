@@ -994,7 +994,7 @@ class FinansialFragment : Fragment() {
     }
 
     fun downloadPdf(token: String, name: String ){
-        val URL : String ="https://abeazka.my.id/json/finansial/generate_pdf.php"
+        val URL : String ="https://www.indodevstudio.my.id/api/json/finansial/generate_pdf.php"
 
         //myWebView.loadUrl("http://taryem.my.id/Lab01/labx.php?type=on")
         //myWebView.loadUrl("http://taryem.my.id/Lab01/labx.php?type=on")
@@ -1027,7 +1027,7 @@ class FinansialFragment : Fragment() {
                         Log.i("retro", "Sukses generate pdf")
 
 
-                            val URL2 = URL("https://abeazka.my.id/json/finansial/pdf_file/$name.pdf")
+                            val URL2 = URL("https://www.indodevstudio.my.id/api/json/finansial/pdf_file/$name.pdf")
 
                         if (URL2.toString().isNotEmpty()) {
                             val http = OkHttpClient()

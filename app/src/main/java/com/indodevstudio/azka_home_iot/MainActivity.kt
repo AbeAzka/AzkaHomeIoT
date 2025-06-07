@@ -2,6 +2,7 @@ package com.indodevstudio.azka_home_iot
 
 
 import android.Manifest
+import android.app.Activity
 import com.jakewharton.threetenabp.AndroidThreeTen
 import android.app.AlertDialog
 import android.app.Dialog
@@ -131,6 +132,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
     private lateinit var nama : TextView
     private lateinit var em : TextView
     private lateinit var profilepc : ImageView
+    private lateinit var accSete : ImageView
     private var isFirebase = false
 
 
@@ -141,6 +143,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
         auth = FirebaseAuth.getInstance()
         val mFirebaseUser = FirebaseAuth.getInstance().currentUser
         mFirebaseUser?.let { user ->
@@ -232,11 +235,23 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         nama = headerView.findViewById<TextView>(R.id.namas)
         val ipAddress = headerView.findViewById<TextView>(R.id.ipAddress)
         profilepc = headerView.findViewById<ImageView>(R.id.logo_p)
+        accSete = headerView.findViewById<ImageView>(R.id.more_options)
+//        val switchAccountBtn = headerView.findViewById<TextView>(R.id.switchAccountBtn)
+//        switchAccountBtn.setOnClickListener {
+//            // Arahkan ke halaman login, dialog ganti akun, atau hapus token
+//            showSwitchAccountDialog(this)
+//        }
+        em = headerView.findViewById<TextView>(R.id.emailGet)
+
+//        val current = AccountManager.getCurrentAccount(this)
+//        nama.text = current?.username ?: "Guest"
+//        em.text = current?.email ?: "-"
+//        Glide.with(this).load(current?.avatarUrl).into(profilepc)
+//
 
         val localIpAddresses = getLocalUnicastIpAddresses()
         ipAddress.text = "$localIpAddresses"
 
-        em = headerView.findViewById<TextView>(R.id.emailGet)
         val status = headerView.findViewById<ImageView>(R.id.status22)
 
         val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav)
@@ -276,6 +291,10 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         val firebaseUser = FirebaseAuth.getInstance().currentUser
 
         if(firebaseUser != null){
+            accSete.tooltipText="Account Settings (Only For IndodevStudio Account)"
+            accSete.setOnClickListener{
+                Toast.makeText(this, "You need to using IndodevStudio Account to access this feature!", Toast.LENGTH_SHORT).show()
+            }
             Toast.makeText(this, "User login dengan akun Google", Toast.LENGTH_SHORT).show()
             email = intent.getStringExtra("email").toString()
             val displayName = intent.getStringExtra("name")
@@ -447,6 +466,27 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         }
 
         if(authToken != null) {
+            accSete.tooltipText="Account Settings"
+            accSete.setOnClickListener{
+                //val redirectUrl = "myapp://link_success"  // Deep link kembali ke aplikasi
+                //val loginUrl = "https://games.abeazka.my.id/u/login?redirect=$redirectUrl"
+                email = userData["email"].toString()
+                val encrypted = AESUtil.encrypt(email)
+                val loginUrl = "https://www.indodevstudio.my.id/u/profile?redirect=$encrypted"
+
+                val builder = CustomTabsIntent.Builder()
+                val customTabsIntent = builder.build()
+                customTabsIntent.launchUrl(this, Uri.parse(loginUrl))
+
+
+
+//                val intent2 = Intent(this , MainActivity::class.java)
+//                val sharedPref = this.getSharedPreferences("USER_DATA", Context.MODE_PRIVATE)
+//                val editor = sharedPref.edit()
+//                editor.putString("isFirebase", false.toString())
+//                intent2.putExtra("isFirebase", false)
+            }
+
             Toast.makeText(this, "User login dengan akun IndodevStudio", Toast.LENGTH_SHORT).show()
             nama.text = userData["username"]
             val obfuscatedEmail = userData["email"]?.let { obfuscateEmail(it) }
@@ -513,6 +553,50 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         }
         return true
     }
+
+
+        fun showSwitchAccountDialog(context: Context) {
+            val accounts = AccountManager.getAllAccounts(context)
+            val names = accounts.map { "${it.username ?: it.email} (${it.provider})" }.toMutableList()
+
+            // Tambahkan opsi "Tambahkan akun"
+            names.add("➕ Tambahkan akun")
+
+            AlertDialog.Builder(this)
+                .setTitle("Pilih Akun")
+                .setItems(names.toTypedArray()) { _, which ->
+                    if (which == accounts.size) {
+                        // Tambah akun baru
+                        val intent = Intent(this, SignInActivity::class.java)
+                        intent.putExtra("skipAutoLogin", true)
+                        startActivity(intent)
+                    } else {
+                        val selected = accounts[which]
+                        AccountManager.setCurrentAccount(context, selected.email)
+
+
+                        // Restart aktivitas agar UI pakai akun baru
+                        val intent = Intent(this, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                        startActivity(intent)
+                        finish()
+
+                        if (selected.provider == AuthProvider.FIREBASE) {
+                            FirebaseAuth.getInstance().signInWithCustomToken(selected.token)
+                                .addOnSuccessListener {
+                                    (context as Activity).recreate()
+                                }
+                        } else {
+                            (context as Activity).recreate()
+                        }
+                    }
+                }
+                .show()
+        }
+
+
+
+
 
 
 
@@ -659,6 +743,18 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
     override fun onResume() {
         Options()
         super.onResume()
+
+//        val currentAccount = AccountManager.getCurrentAccount(this)
+//        if (currentAccount != null) {
+//            nama.text = currentAccount.username
+//        }
+//        if (currentAccount != null) {
+//            em.text = currentAccount.email
+//        }
+//        if (currentAccount != null) {
+//            Glide.with(this).load(currentAccount.avatarUrl).into(profilepc)
+//        }
+
     }
 
 

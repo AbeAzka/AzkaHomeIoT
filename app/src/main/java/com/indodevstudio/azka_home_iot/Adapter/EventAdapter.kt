@@ -60,7 +60,7 @@ class EventAdapter(
 
         // **🔹 Ubah warna CardView berdasarkan status event**
         val backgroundColor = if (isCompleted) {
-            ContextCompat.getColor(context, R.color.green)  // Hijau jika selesai
+            ContextCompat.getColor(context, R.color.color_on_primary_light)  // Hijau jika selesai
         } else {
             val typedValue = TypedValue()
             context.theme.resolveAttribute(R.attr.drawerItemBackground, typedValue, true)

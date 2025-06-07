@@ -12,6 +12,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/lay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         <!-- Label Shared di pojok kiri atas -->
         <TextView
@@ -30,13 +34,32 @@
 
             />
 
+            <TextView
+                android:id="@+id/tvCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Category"
+                android:textColor="@color/white"
+                android:background="@drawable/bg_layout_category_item"
+                android:padding="8dp"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+
+                />
+        </LinearLayout>
+
+
         <LinearLayout
             android:id="@+id/mainContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:orientation="vertical"
-            android:layout_below="@id/tvShared"
+            android:layout_below="@id/lay"
+
             >
 
             <TextView
@@ -86,6 +109,7 @@
                     android:textColor="@android:color/holo_blue_dark" />
             </LinearLayout>
 
+
             <!-- LinearLayout untuk tombol aksi -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -117,6 +141,19 @@
                     android:tooltipText="Hapus Perangkat"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:padding="8dp" />
+
+                <ImageButton
+                    android:id="@+id/btnInvite"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:src="@drawable/add_person_black"
+                    app:tint="@color/black"
+                    android:tooltipText="Invite User"
+                    android:contentDescription="Invite User"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="8dp"
+                    android:visibility="visible"/>
 
                 <ImageButton
                     android:id="@+id/btnRefresh"

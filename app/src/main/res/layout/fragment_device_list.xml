@@ -34,6 +34,18 @@
             android:textSize="14sp"
             android:layout_marginTop="4dp" />
 
+        <Spinner
+            android:id="@+id/categorySpinner"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="16dp"
+            android:spinnerMode="dropdown"
+            android:popupBackground="#888888"
+            android:layout_marginBottom="12dp"
+            android:visibility="visible"
+            android:tooltipText="Select category" />
+
+
     </LinearLayout>
 
     <!-- Shimmer Layout -->
@@ -43,6 +55,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/headerLayout"
         android:visibility="gone"
+        android:layout_marginTop="60dp"
         app:shimmer_auto_start="true"
         app:shimmer_duration="1500">
 
@@ -90,6 +103,7 @@
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+
         android:layout_below="@id/headerLayout">
 
         <FrameLayout
@@ -108,6 +122,18 @@
                 android:textStyle="bold"
                 android:layout_gravity="center"
                 android:visibility="visible" />
+            <TextView
+                android:id="@+id/emptyTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tidak ada perangkat yang ditemukan"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:textSize="20sp"
+                android:textColor="@android:color/darker_gray"
+                android:layout_marginTop="16dp"
+                />
 
             <!-- RecyclerView -->
             <androidx.recyclerview.widget.RecyclerView
@@ -116,6 +142,9 @@
                 android:layout_height="match_parent"
                 android:padding="16dp"
                 android:visibility="gone" />
+
+
+
         </FrameLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
