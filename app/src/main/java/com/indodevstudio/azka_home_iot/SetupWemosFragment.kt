@@ -94,16 +94,23 @@ class SetupWemosFragment : Fragment() {
 
         val categories = listOf("Lamp", "Sensor", "Custom")
 
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, categories)
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, categories)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerCategory.adapter = adapter
 
-        val selectedCategory = spinnerCategory.selectedItem.toString()
-        val sharedPrefs = requireContext().getSharedPreferences("device_category", AppCompatActivity.MODE_PRIVATE)
+        var selectedCategory = ""//spinnerCategory.selectedItem.toString()
 
-        val editor = sharedPrefs.edit()
-        editor.putString("device_selected_category", selectedCategory)
-        editor.apply()
+        spinnerCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                selectedCategory = parent.getItemAtPosition(position).toString()
+
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+
+
+
 
 
 //        val sharedPreferences_tutorial = requireContext().getSharedPreferences("AppPrefs", MODE_PRIVATE)
@@ -131,18 +138,23 @@ class SetupWemosFragment : Fragment() {
 //                }).start()
 //        }
 
-
-
         val firebaseUser = FirebaseAuth.getInstance().currentUser
-        if(firebaseUser != null){
-            email = firebaseUser.email
-        }
-        val userData = getUserData()
+        email = firebaseUser?.email
         val prefs = requireContext().getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
         val authToken = prefs.getString("auth_token", null)
-        if(authToken != null) {
+        if (email.isNullOrEmpty() && authToken != null) {
+            val userData = getUserData()
             email = userData["email"]
         }
+
+
+
+//        val userData = getUserData()
+//        val prefs = requireContext().getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
+//        val authToken = prefs.getString("auth_token", null)
+//        if(authToken != null) {
+//            email = userData["email"]
+//        }
 
         wifiManager = requireContext().applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
@@ -157,20 +169,31 @@ class SetupWemosFragment : Fragment() {
         val deviceViewModel: DeviceViewModel by activityViewModels()
 
         buttonSubmitDevice.setOnClickListener {
-//            getLatestDeviceIp()
-            val ownerEmail = email // Ambil dari session/login
-            val deviceName = editTextDeviceName.text.toString()
-            val deviceIp = getCurrentIpAddress() // Ambil IP Wemos
+            val ownerEmail = email
+            val deviceName = editTextDeviceName.text.toString().trim()
+            if (deviceName.isEmpty()) {
+                Toast.makeText(requireContext(), "Device name is required", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val deviceIp = getCurrentIpAddress()
             val sharedPreferences = requireContext().getSharedPreferences("DevicePrefs2", Context.MODE_PRIVATE)
             val deviceId = sharedPreferences.getString("dvc", "UNKNOWN_ID") ?: "UNKNOWN_ID"
+
+            // Save selected category at time of click
+            val category = spinnerCategory.selectedItem.toString()
+            val sharedPrefs = requireContext().getSharedPreferences("device_category", AppCompatActivity.MODE_PRIVATE)
+            sharedPrefs.edit().putString("device_selected_category", category).apply()
+
+            Logger.log("Debug", "DeviceName: $deviceName, OwnerEmail: $ownerEmail, DeviceID: $deviceId, Category: $category")
+
             saveDeviceName(requireContext(), deviceName)
             saveDeviceIP(requireContext(), deviceIp)
-            if (deviceName.isNotEmpty() && deviceIp.isNotEmpty()) {
-                val newDevice = DeviceModel(deviceId,deviceName, deviceIp, selectedCategory) // Simpan dengan IP
+
+            if (ownerEmail != null) {
+                val newDevice = DeviceModel(deviceId, deviceName, deviceIp, category)
                 deviceViewModel.addDevice(newDevice)
-                if (ownerEmail != null) {
-                    DeviceSharingService.sendDevice(ownerEmail , deviceName, deviceId, getCurrentIpAddress(), selectedCategory)
-                }
+                DeviceSharingService.sendDevice(ownerEmail, deviceName, deviceId, deviceIp, category)
 
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, DeviceListFragment())
@@ -178,9 +201,10 @@ class SetupWemosFragment : Fragment() {
 
                 Logger.log("SetupWemosFragment", "Device Disimpan: Name = $deviceName, IP = $deviceIp")
             } else {
-                Toast.makeText(requireContext(), "Enter device name & ensure connection", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Email not found. Please login again.", Toast.LENGTH_SHORT).show()
             }
         }
+
 
 
         (activity as? AppCompatActivity)?.supportActionBar?.hide()
@@ -220,12 +244,15 @@ class SetupWemosFragment : Fragment() {
         editor.apply()
     }
 
-    private fun saveDeviceIP(context: Context, deviceName: String) {
+    // Sebelumnya kamu menyimpan deviceName ke key DEVICE_IP
+// Ini salah, harus simpan IP
+    private fun saveDeviceIP(context: Context, deviceIp: String) {
         val sharedPreferences = context.getSharedPreferences("DevicePrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.putString("DEVICE_IP", deviceName)
+        editor.putString("DEVICE_IP", deviceIp)
         editor.apply()
     }
+
 
 
 

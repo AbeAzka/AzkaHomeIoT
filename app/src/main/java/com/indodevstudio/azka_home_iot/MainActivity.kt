@@ -12,11 +12,14 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+
+
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Icon
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.net.Uri
@@ -144,6 +147,17 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         val view = binding.root
         setContentView(view)
 
+        // Cek jika dipanggil dari shortcut
+//        val fragmentName = intent?.getStringExtra("open_fragment")
+//
+//        if (fragmentName == "financial") {
+//            supportFragmentManager.beginTransaction()
+//                .replace(R.id.fragment_container, FinansialFragment())
+//                .commit()
+//        } else {
+//            // Tampilkan fragment default
+//        }
+
         auth = FirebaseAuth.getInstance()
         val mFirebaseUser = FirebaseAuth.getInstance().currentUser
         mFirebaseUser?.let { user ->
@@ -206,7 +220,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
         // Cek jika Activity dibuka dari notifikasi
         if (intent.hasExtra("openFragment") && intent.getStringExtra("openFragment") == "EventFragment") {
-            openFragment(EventFragment())
+            openFragment(EventFragment(), R.id.events_)
         }
 
         // Inisialisasi Logger
@@ -326,7 +340,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         AndroidThreeTen.init(this) // Inisialisasi ThreeTenABP
         // Cek apakah notifikasi membawa data untuk membuka EventFragment
         if (intent?.getStringExtra("FRAGMENT") == "EventFragment") {
-            openFragment(EventFragment())
+            openFragment(EventFragment(), R.id.events_)
         }
         val userData = getUserData()
 
@@ -520,8 +534,23 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
         }
 
+        val shortcutManager = ShortcutsManager(this)
+        shortcutManager.createShortcuts()
+
+        when (intent.getStringExtra("fragment_to_open")) {
+            "finansial" -> openFragment(FinansialFragment(), R.id.finansial_plan )
+            "event" -> openFragment(EventFragment(), R.id.events_)
+            "arduino" -> openFragment(DeviceListFragment(), R.id.nav_device)
+
+            else -> openFragment(HomeFragment(), R.id.nav_home)
+        }
+
 
     }
+
+    
+
+
 
     fun openWebLogin(context: Context) {
         val redirectUrl = "myapp://link_success"  // Deep link kembali ke aplikasi
@@ -677,11 +706,15 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
 
 
-    private fun openFragment(fragment: Fragment) {
+    private fun openFragment(fragment: Fragment, menuItemId: Int) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
             .commit()
+
+        val navigationView = findViewById<NavigationView>(R.id.nav_view)
+        navigationView.setCheckedItem(menuItemId)
     }
+
 
 
 

@@ -3,7 +3,7 @@
     "project_number": "507008627074",
     "firebase_url": "https://azka-home-iot-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "azka-home-iot",
-    "storage_bucket": "azka-home-iot.appspot.com"
+    "storage_bucket": "azka-home-iot.firebasestorage.app"
   },
   "client": [
     {
@@ -16,7 +16,6 @@
       "oauth_client": [
         {
           "client_id": "507008627074-8b8vd2luohupkp0vk7vnfeq6bvt1rkqi.apps.googleusercontent.com",
-
           "client_type": 1,
           "android_info": {
             "package_name": "com.indodevstudio.azka_home_iot",

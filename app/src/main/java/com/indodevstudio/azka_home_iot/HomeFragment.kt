@@ -66,23 +66,12 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class HomeFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     lateinit var listLaundry: List<DataModel>
-
+    var textColor: Int? = null
 
     lateinit var imageGrafik : TouchImageView
     lateinit var inputStream : InputStream
@@ -115,13 +104,6 @@ class HomeFragment : Fragment() {
     lateinit var text_card : TextView
 //    var pbData_BG: ConstraintLayout? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
 
 
@@ -397,9 +379,15 @@ class HomeFragment : Fragment() {
             override fun onResponse(call: retrofit2.Call<ArrayList<TandonData>>, response: retrofit2.Response<ArrayList<TandonData>>) {
                 if (response.isSuccessful) {
                     val chartData = response.body()
-                    if (chartData != null) {
+                    if (!chartData.isNullOrEmpty()) {
                         showLineChart(chartData)
+                    } else {
+                        lineChart.clear()
+                        lineChart.setNoDataText("Tidak ada data tersedia")
+                        textColor?.let { lineChart.setNoDataTextColor(it) }
+                        lineChart.invalidate()
                     }
+
                     val handler = Handler(Looper.getMainLooper())
                     handler.post{
                         shimmerLayout.stopShimmer()
@@ -427,9 +415,15 @@ class HomeFragment : Fragment() {
                 if (response.isSuccessful) {
                     val chartData = response.body()
 
-                    if (chartData != null) {
+                    if (!chartData.isNullOrEmpty()) {
                         showLineChart(chartData)
+                    } else {
+                        lineChart.clear()
+                        lineChart.setNoDataText("Tidak ada data tersedia")
+                        textColor?.let { lineChart.setNoDataTextColor(it) }
+                        lineChart.invalidate()
                     }
+
                     val handler = Handler(Looper.getMainLooper())
                     handler.post{
                         shimmerLayout.stopShimmer()
@@ -449,82 +443,90 @@ class HomeFragment : Fragment() {
     }
 
     private fun showLineChart(data: ArrayList<TandonData>) {
-        var textColor: Int? = null
-        context?.theme?.let { theme ->
-            val typedValue = TypedValue()
-            theme.resolveAttribute(R.attr.textContent, typedValue, true)
-            textColor = typedValue.data
-            // pakai textColor selanjutnya...
-        }
-
-
-        if (data.isEmpty()) {
-            lineChart.clear()
-            lineChart.setNoDataText("Tidak ada data tandon tersedia")
-            lineChart.setNoDataTextColor(Color.RED)
-            lineChart.invalidate()
-            lineChart.setNoDataText("Tidak ada data tersedia")
-            textColor?.let { lineChart.setNoDataTextColor(it) }
-            lineChart.setNoDataTextTypeface(Typeface.DEFAULT_BOLD)
-
-            return
-        }
-
-        val entries = data.mapIndexed { index, item ->
-            Entry(index.toFloat(), item.tandon)
-        }
-        val labelTanggal = data.map { it.date } // ["2025-04-01", "2025-04-02", "2025-04-03"]
-
-
-        val dataSet = LineDataSet(entries, "Tinggi Air (cm)").apply {
-            context?.let {
-                color = ContextCompat.getColor(it, R.color.very_blue)
-
-                valueTextColor = ContextCompat.getColor(it, R.color.yellow)
-                //fillColor = ContextCompat.getColor(it, R.color.light_blue)
+        try {
+            context?.theme?.let { theme ->
+                val typedValue = TypedValue()
+                theme.resolveAttribute(R.attr.textContent, typedValue, true)
+                textColor = typedValue.data
+                // pakai textColor selanjutnya...
             }
 
-            valueTextSize = 12f
-            setDrawValues(false)
-            lineWidth = 2f
-            setDrawCircles(true)
-            setDrawFilled(false)
-            fillAlpha = 100
-            mode = LineDataSet.Mode.CUBIC_BEZIER
+
+            if (data.isEmpty()) {
+                lineChart.clear()
+                lineChart.setNoDataText("Tidak ada data tandon tersedia")
+                lineChart.setNoDataTextColor(Color.RED)
+                lineChart.invalidate()
+                lineChart.setNoDataText("Tidak ada data tersedia")
+                textColor?.let { lineChart.setNoDataTextColor(it) }
+                lineChart.setNoDataTextTypeface(Typeface.DEFAULT_BOLD)
+
+                return
+            }
+
+            val entries = data.mapIndexedNotNull { index, item ->
+                item.tandon?.let { Entry(index.toFloat(), it) }
+            }
+
+            val labelTanggal = data.map { it.date } // ["2025-04-01", "2025-04-02", "2025-04-03"]
+
+
+            val dataSet = LineDataSet(entries, "Tinggi Air (cm)").apply {
+                context?.let {
+                    color = ContextCompat.getColor(it, R.color.very_blue)
+
+                    valueTextColor = ContextCompat.getColor(it, R.color.yellow)
+                    //fillColor = ContextCompat.getColor(it, R.color.light_blue)
+                }
+
+                valueTextSize = 12f
+                setDrawValues(false)
+                lineWidth = 2f
+                setDrawCircles(true)
+                setDrawFilled(false)
+                fillAlpha = 100
+                mode = LineDataSet.Mode.CUBIC_BEZIER
+            }
+            val legend = lineChart.legend
+            legend.textColor = textColor!!
+            legend.textSize = 12f
+            legend.form = Legend.LegendForm.LINE
+
+            lineChart.axisLeft.textColor = textColor!!
+            lineChart.axisLeft.gridColor = textColor as Int
+
+            lineChart.axisRight.textColor = textColor as Int
+            lineChart.axisRight.gridColor = textColor as Int
+            lineChart.axisRight.isEnabled = false
+            lineChart.axisLeft.setDrawGridLines(true)
+            lineChart.axisLeft.gridColor = Color.LTGRAY
+
+            val lineData = LineData(dataSet)
+            lineChart.data = lineData
+
+            lineChart.setTouchEnabled(true)
+            lineChart.setPinchZoom(true)
+
+
+            val desc = Description()
+            desc.text = "Grafik Tandon Air"
+            lineChart.description = desc
+            lineChart.xAxis.valueFormatter = IndexAxisValueFormatter(labelTanggal)
+            lineChart.xAxis.granularity = 1f // penting agar label tidak tumpang tindih
+            lineChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
+            lineChart.xAxis.textColor = textColor as Int
+            lineChart.xAxis.labelRotationAngle = -45f // miringkan label biar muat
+            lineChart.xAxis.setDrawGridLines(false)
+
+
+            lineChart.invalidate()
+        }catch (e: Exception) {
+            Log.e("ChartError", "Gagal menampilkan chart: ${e.message}")
+            lineChart.clear()
+            lineChart.setNoDataText("Kesalahan saat memuat grafik")
+            textColor?.let { lineChart.setNoDataTextColor(it) }
+            lineChart.invalidate()
         }
-        val legend = lineChart.legend
-        legend.textColor = textColor!!
-        legend.textSize = 12f
-        legend.form = Legend.LegendForm.LINE
-
-        lineChart.axisLeft.textColor = textColor!!
-        lineChart.axisLeft.gridColor = textColor as Int
-
-        lineChart.axisRight.textColor = textColor as Int
-        lineChart.axisRight.gridColor = textColor as Int
-        lineChart.axisRight.isEnabled = false
-        lineChart.axisLeft.setDrawGridLines(true)
-        lineChart.axisLeft.gridColor = Color.LTGRAY
-
-        val lineData = LineData(dataSet)
-        lineChart.data = lineData
-
-        lineChart.setTouchEnabled(true)
-        lineChart.setPinchZoom(true)
-
-
-        val desc = Description()
-        desc.text = "Grafik Tandon Air"
-        lineChart.description = desc
-        lineChart.xAxis.valueFormatter = IndexAxisValueFormatter(labelTanggal)
-        lineChart.xAxis.granularity = 1f // penting agar label tidak tumpang tindih
-        lineChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
-        lineChart.xAxis.textColor = textColor as Int
-        lineChart.xAxis.labelRotationAngle = -45f // miringkan label biar muat
-        lineChart.xAxis.setDrawGridLines(false)
-
-
-        lineChart.invalidate()
     }
 
 
@@ -700,6 +702,17 @@ class HomeFragment : Fragment() {
         )
     }
 
+    fun hitungPeluangHujan(kelembapan: Double, suhu: Double): Double {
+        var peluang = 0.6 * kelembapan - 0.3 * suhu
+        // Batasi peluang antara 0 - 100%
+        if (peluang < 0) peluang = 0.0
+        if (peluang > 100) peluang = 100.0
+        return peluang
+    }
+
+
+
+
 
 
     fun retrieveTemp(){
@@ -730,9 +743,16 @@ class HomeFragment : Fragment() {
                         chanceRain = "Diperkirakan tidak hujan!"
                     }
 
+                    // Contoh penggunaan
+                    val kelembapan = listLaundry[r.lastIndex].kelembapan.toDouble()
+                    val suhu = listLaundry[r.lastIndex].suhu.toDouble()
+                    val peluangHujan = hitungPeluangHujan(kelembapan, suhu)
+
+                    println("Peluang hujan: %.1f%%".format(peluangHujan))
+
                     textHum.text = listLaundry[r.lastIndex].kelembapan.toString() + "%"
                     textTemo.text = listLaundry[r.lastIndex].suhu.toString() + "\u2103"
-                    textTime.text = "Last update: "+ listLaundry[r.lastIndex].date.toString() + "\n $chanceRain"
+                    textTime.text = "Last update: "+ listLaundry[r.lastIndex].date.toString() + "\n $chanceRain\n" + "Peluang hujan: %.1f%%".format(peluangHujan)
                 }
                 //else{
 //                    text.visibility = View.GONE
@@ -770,23 +790,4 @@ class HomeFragment : Fragment() {
         })
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }

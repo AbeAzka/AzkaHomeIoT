@@ -24,7 +24,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <application
         android:name=".MyApp"
         android:allowBackup="true"
@@ -36,7 +36,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MainActivity"
         android:usesCleartextTraffic="true"
-
+        android:extractNativeLibs="true"
         tools:targetApi="34">
         <activity
             android:name=".InviteActivity"
@@ -45,6 +45,10 @@
             android:name=".DeviceControlActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
+
+<!--        <meta-data-->
+<!--            android:name="android.app.shortcuts"-->
+<!--            android:resource="@xml/shortcuts" />-->
         <activity
             android:name=".LoginSuccessActivity"
             android:exported="true">
@@ -96,17 +100,11 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MainActivity" />
-        <!--
-     Set custom default icon. This is used when no icon is set for incoming notification messages.
-     See README(https://goo.gl/l4GJaQ) for more.
-        -->
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/azkahomeiot" />
-        <!--
- Set color used with incoming notification messages. This is used when no color is set for the incoming
-             notification message. See README(https://goo.gl/6BKBk7) for more.
-        -->
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
@@ -125,30 +123,21 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MainActivity">
 
-            <!-- android:theme="@style/Theme.MainActivity" -->
-
         </activity>
         <activity
             android:name=".TamanActivity"
-            android:exported="false"
+            android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MainActivity" />
         <activity
             android:name=".MainActivity"
-            android:exported="false"
+            android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MainActivity">
             <intent-filter>
-                <action android:name=".MainActivity" />
-                <!-- <action android:name="android.intent.action.MAIN" /> -->
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -171,6 +160,7 @@
 
         <service
             android:name=".MQTT_Service"
+            android:exported="false"
             android:foregroundServiceType="dataSync" />
     </application>
 

@@ -25,6 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+
             android:padding="16dp">
 
             <!-- Tutorial untuk pengguna baru -->
@@ -32,12 +33,12 @@
                 android:id="@+id/textTutorial"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="👋 Selamat datang! Yuk, ikuti langkah-langkah berikut:\n\n1. Klik 'Connect to Wemos'\n2. Masukkan nama WiFi dan password\n3. Simpan nama perangkatmu\n4. Selesai! 🚀"
+                android:text="👋 Welcome! Let's follow these steps:\n\n1. Click 'Connect to Wemos'\n2. Enter the WiFi name and password\n3. Save your device name\n4. Done! 🚀"
                 android:textSize="16sp"
                 android:textStyle="normal"
                 android:padding="12dp"
                 android:background="@drawable/bg_card"
-                android:textColor="@color/black"
+                android:textColor="?attr/textContent"
                 android:layout_marginBottom="16dp" />
 
             <!-- Status -->
@@ -49,7 +50,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:textColor="@color/black"
+                android:textColor="?attr/textContent"
                 android:padding="12dp"
                 android:background="@drawable/bg_card"
                 android:layout_marginBottom="16dp" />
@@ -72,9 +73,9 @@
                 android:id="@+id/textInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Jika tidak otomatis connect, ikuti langkah ini:\n\n- Nyalakan WiFi\n- Pilih WiFi bernama 'Wemos_Setup'\n- Kembali ke aplikasi dan klik 'Connect to Wemos' lagi"
+                android:text="If it doesn't connect automatically, follow these steps:\n\n- Turn on WiFi\n- Select the WiFi named 'Wemos_Setup'\n- Go back to the app and click 'Connect to Wemos' again"
                 android:textSize="14sp"
-                android:textColor="@color/black"
+                android:textColor="?attr/textContent"
                 android:padding="12dp"
                 android:background="@drawable/bg_card"
                 android:layout_marginBottom="16dp" />
@@ -84,9 +85,10 @@
                 android:id="@+id/editTextSSID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="📶 Nama WiFi (SSID)"
+                android:hint="SSID WiFi"
                 android:inputType="text"
                 android:padding="12dp"
+                android:textColor="?attr/textContent"
                 android:background="@drawable/bg_input"
                 android:layout_marginBottom="12dp"
                 android:visibility="gone" />
@@ -96,8 +98,9 @@
                 android:id="@+id/editTextPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="🔑 Password WiFi"
+                android:hint="WiFi Password"
                 android:inputType="textPassword"
+                android:textColor="?attr/textContent"
                 android:padding="12dp"
                 android:background="@drawable/bg_input"
                 android:layout_marginBottom="12dp"
@@ -108,10 +111,11 @@
                 android:id="@+id/buttonSubmitWiFi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="📤 Kirim Data WiFi"
+                android:text="Send Credentials to Wemos"
                 android:padding="12dp"
-                android:backgroundTint="@color/green"
                 android:textColor="@android:color/white"
+                android:backgroundTint="@color/green"
+
                 android:layout_marginBottom="16dp"
                 android:visibility="gone" />
 
@@ -120,9 +124,10 @@
                 android:id="@+id/editTextDeviceName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="📱 Nama Perangkat"
+                android:hint="Device Name"
                 android:inputType="text"
                 android:padding="12dp"
+                android:textColor="?attr/textContent"
                 android:background="@drawable/bg_input"
                 android:layout_marginBottom="12dp"
                 android:visibility="gone" />
@@ -132,7 +137,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:spinnerMode="dropdown"
-                android:layout_marginBottom="12dp"
+                android:layout_margin="5dp"
+                android:background="?attr/cardBG"
+                android:popupBackground="?attr/cardBG"
+
+                android:padding="5dp"
                 android:visibility="gone"
                 android:tooltipText="Select category"/>
 
@@ -142,7 +151,7 @@
                 android:id="@+id/buttonSubmitDevice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="💾 Simpan Perangkat"
+                android:text="Save Device"
                 android:padding="12dp"
                 android:backgroundTint="@color/red"
                 android:textColor="@android:color/white"

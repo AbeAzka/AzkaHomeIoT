@@ -38,10 +38,12 @@
             android:id="@+id/categorySpinner"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_margin="16dp"
+            android:layout_margin="8dp"
             android:spinnerMode="dropdown"
-            android:popupBackground="#888888"
-            android:layout_marginBottom="12dp"
+            android:background="?attr/cardBG"
+            android:popupBackground="?attr/cardBG"
+
+            android:padding="10dp"
             android:visibility="visible"
             android:tooltipText="Select category" />
 

@@ -106,11 +106,11 @@ object DeviceSharingService {
             .add("owner_email", ownerEmail)
             .add("shared_email", sharedEmail)
             .add("device_id", deviceID)
-            .add("device_name", deviceName)
+//            .add("device_name", deviceName)
             .build()
 
         val request = Request.Builder()
-            .url("http://www.indodevstudio.my.id/api/arduino/invite")
+            .url("https://www.indodevstudio.my.id/api/arduino/invite")
             .post(requestBody)
             .build()
 
@@ -147,7 +147,8 @@ object DeviceSharingService {
 
 
         val request = Request.Builder()
-            .url("http://www.indodevstudio.my.id/api/arduino/add_device")
+            .addHeader("Content-Type", "application/json")
+            .url("https://www.indodevstudio.my.id/api/arduino/add_device")
             .post(requestBody)
             .build()
 

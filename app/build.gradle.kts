@@ -16,7 +16,7 @@ android {
         minSdk = 30
         targetSdk = 34
         versionCode = 1
-        versionName = "2.7.2"//Last 2.4
+        versionName = "2.7.3"//Last 2.4
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -48,9 +48,10 @@ android {
 
 dependencies {
 // Untuk Executor bawaan Android (pengganti ListenableFuture)
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation ("com.google.android.material:material:1.11.0")
     implementation ("com.getkeepsafe.taptargetview:taptargetview:1.13.3")
-
+    implementation("androidx.core:core-google-shortcuts:1.1.0")
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation ("com.airbnb.android:lottie:5.2.0")
     implementation ("com.github.prolificinteractive:material-calendarview:2.0.1")

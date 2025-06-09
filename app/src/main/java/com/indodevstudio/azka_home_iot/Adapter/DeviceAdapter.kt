@@ -17,6 +17,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.indodevstudio.azka_home_iot.API.DeviceSharingService
 import com.indodevstudio.azka_home_iot.DeviceControlActivity
@@ -57,7 +58,7 @@ class DeviceAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_device, parent, false)
-        val holder = DeviceViewHolder(view)
+        val holder = DeviceViewHolder(view, parent)
         viewHolders.add(holder) // Simpan ViewHolder agar bisa di-disconnect nanti
         return holder
     }
@@ -177,7 +178,7 @@ class DeviceAdapter(
 
 
 
-    class DeviceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class DeviceViewHolder(itemView: View, parent: ViewGroup) : RecyclerView.ViewHolder(itemView) {
 
         private val tvDeviceName: TextView = itemView.findViewById(R.id.textViewDeviceName)
         private val btnRename: ImageButton = itemView.findViewById(R.id.btnRename)
@@ -187,6 +188,12 @@ class DeviceAdapter(
         private val tvShared: TextView = itemView.findViewById(R.id.tvShared)
         private val tvCategory: TextView = itemView.findViewById(R.id.tvCategory)
         private val btnInvite: ImageButton = itemView.findViewById(R.id.btnInvite)
+
+
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.bottom_sheet_dialog_device_control, null)
+//        private val btnInvite: MaterialButton = view.findViewById(R.id.inviteBtn)
+//        private val btnRename: MaterialButton = view.findViewById(R.id.editBtn)
+
         val ip: TextView = itemView.findViewById(R.id.textIP)
         lateinit var mqttClient: MqttClient
 
@@ -209,7 +216,7 @@ class DeviceAdapter(
         fun bind(device: DeviceModel, listener: DeviceActionListener, position: Int, lifecycleOwner: LifecycleOwner) {
             // 🔄 Reset tampilan agar tidak mewarisi status lama
             deviceStatus.text = "Checking... Please press refresh button"
-            deviceStatus.setTextColor(Color.DKGRAY)
+            deviceStatus.setTextColor(Color.GRAY)
             ip.text = device.ipAddress.ifEmpty { "0.0.0.0" }
 
 //            DeviceSharingService.getStatus(device.id)
@@ -232,7 +239,7 @@ class DeviceAdapter(
             // Setup MQTT dan refresh status
             setupMqttClient(device)
             publishMessage("sending_order_${device.id}", device.id, "refresh")
-            btnInvite.setOnClickListener{
+            btnInvite.setOnClickListener {
                 if (device.isShared) {
                     Toast.makeText(itemView.context, "You don't have permission to modify this device", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
@@ -276,7 +283,7 @@ class DeviceAdapter(
                 when (status.lowercase()) {
                     "online" -> deviceStatus.setTextColor(Color.parseColor("#4CAF50")) // hijau
                     "offline" -> deviceStatus.setTextColor(Color.parseColor("#F44336")) // merah
-                    else -> deviceStatus.setTextColor(Color.DKGRAY) // warna default
+                    else -> deviceStatus.setTextColor(Color.GRAY) // warna default
                 }
             }
         }, 1000) // Delay 1 detik untuk memastikan status sempat diperbarui

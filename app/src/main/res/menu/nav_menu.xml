@@ -43,7 +43,7 @@
                 >
                 <item
                     android:id="@+id/finansial_plan"
-                    android:icon="@drawable/ic_money"
+                    android:icon="@drawable/ic_financial_new_blue"
                     android:title="Finansial Planning [BETA]"/>
 
             </group>
@@ -79,7 +79,7 @@
                 >
                 <item
                     android:id="@+id/events_"
-                    android:icon="@drawable/ic_agenda"
+                    android:icon="@drawable/ic_event_blue"
                     android:title="Events Schedule"/>
 
             </group>
@@ -95,7 +95,7 @@
                 >
                 <item
                     android:id="@+id/nav_device"
-                    android:icon="@drawable/ic_device"
+                    android:icon="@drawable/ic_arduino_blue"
                     android:title="Arduino Management [BETA]"/>
                 <item
                     android:id="@+id/nav_taman"

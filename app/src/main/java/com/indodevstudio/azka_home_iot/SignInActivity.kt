@@ -182,8 +182,7 @@ class SignInActivity : AppCompatActivity() {
 //    }
 
     private fun checkAutoLogin() {
-        val skip = intent.getBooleanExtra("skipAutoLogin", false)
-        if (skip) return
+
 
         val prefs = getSharedPreferences("my_prefs", MODE_PRIVATE)
         val token = prefs.getString("auth_token", null)
@@ -203,17 +202,20 @@ class SignInActivity : AppCompatActivity() {
 
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             handleResults(task)
+        }else{
+            Toast.makeText(this, result.toString() , Toast.LENGTH_SHORT).show()
+            Log.d("GOOGLE", result.toString())
         }
     }
 
     private fun handleResults(task: Task<GoogleSignInAccount>) {
         if (task.isSuccessful){
             val account : GoogleSignInAccount? = task.result
-            /*Toast.makeText(
+            Toast.makeText(
                 applicationContext,
                 "Welcome",
                 Toast.LENGTH_SHORT
-            ).show()*/
+            ).show()
             if (account != null){
                 updateUI(account)
             }
@@ -280,8 +282,7 @@ class SignInActivity : AppCompatActivity() {
     }
     override fun onStart() {
         super.onStart()
-        val skip = intent.getBooleanExtra("skipAutoLogin", false)
-        if (skip) return
+
         if(firebaseAuth.currentUser != null) {
             val user = FirebaseAuth.getInstance().currentUser
             if (GoogleSignIn.getLastSignedInAccount(this) != null) {

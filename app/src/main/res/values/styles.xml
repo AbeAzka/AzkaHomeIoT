@@ -23,9 +23,11 @@
     </style>
 
     <style name="SpinnerDropDownStyle" parent="Widget.AppCompat.Spinner.DropDown">
-        <item name="android:popupBackground">?attr/cardBG</item>
-        <item name="android:divider">@android:color/darker_gray</item>
-        <item name="android:padding">8dp</item>
+        <!-- Untuk teks utama spinner -->
+        <item name="spinnerTextColor">@color/white</item>
+
+        <!-- Untuk teks di dropdown list -->
+        <item name="spinnerDropdownTextColor">@color/white</item>
     </style>
 
     <style name="WhatsAppDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">

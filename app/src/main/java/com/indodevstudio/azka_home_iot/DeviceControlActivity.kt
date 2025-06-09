@@ -1,15 +1,19 @@
 package com.indodevstudio.azka_home_iot
 
+import android.bluetooth.BluetoothClass.Device
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
 import android.view.DragEvent
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -22,20 +26,30 @@ import android.widget.SeekBar
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.auth.FirebaseAuth
 import com.indodevstudio.azka_home_iot.API.DeviceSharingService
 import com.indodevstudio.azka_home_iot.Adapter.DeviceAdapter
 import com.indodevstudio.azka_home_iot.Model.DeviceModel
+import com.indodevstudio.azka_home_iot.Model.DeviceViewModel
 import okhttp3.Call
 import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
 import org.eclipse.paho.client.mqttv3.MqttCallback
@@ -50,11 +64,13 @@ import java.io.IOException
 class DeviceControlActivity : AppCompatActivity() {
 
     private lateinit var textViewStatus: TextView
+    private var ipAddress = ""
 /*    private lateinit var buttonOn: Button
     private lateinit var buttonOff: Button
     private lateinit var buttonOn2: Button
     private lateinit var buttonOff2: Button*/
-    private val deviceList = mutableListOf<DeviceModel>()
+
+
     private lateinit var textSwitch1: TextView
     private lateinit var textSwitch2: TextView
 
@@ -62,9 +78,18 @@ class DeviceControlActivity : AppCompatActivity() {
     private lateinit var switch2Layout: LinearLayout
     private lateinit var indicator1: View
     private lateinit var indicator2: View
-    lateinit var deviceAdapter : DeviceAdapter
+
+    private lateinit var deleteBtn: MaterialButton
+    private lateinit var editBtn: MaterialButton
+    private lateinit var inviteBtn: MaterialButton
+
+//    lateinit var adapter: DeviceAdapter
+//    private val deviceList = mutableListOf<DeviceModel>()
+
     var isSwitch1On = false
     var isSwitch2On = false
+
+    private var email = ""
 
 
     private val client = OkHttpClient()
@@ -73,6 +98,7 @@ class DeviceControlActivity : AppCompatActivity() {
     lateinit var mqttClient: MqttClient
 
     var device_id = ""
+    var deviceName = ""
 
     var sharedPreferences: SharedPreferences? = null
 
@@ -82,6 +108,30 @@ class DeviceControlActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_device_control)
         setupMqttClient() //START MQTTTT
+        val firebaseUser = FirebaseAuth.getInstance().currentUser
+        if (firebaseUser != null) {
+            email = firebaseUser.email.toString()
+        }
+        val sharedPreferences3 = this.getSharedPreferences("Bagogo", Context.MODE_PRIVATE)
+
+        val deviceIpp = sharedPreferences3?.getString("device_ip", null)
+        if (deviceIpp != null) {
+
+            ipAddress = deviceIpp
+
+            // Lanjut pakai deviceId sesuai kebutuhan
+        } else {
+            Log.d("SharedPrefs", "No device_id found")
+        }
+        val userData = getUserData()
+        val prefs = this.getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
+        val authToken = prefs.getString("auth_token", null)
+        if (authToken != null) {
+            email = userData["email"].toString()
+        }
+
+        device_id = intent.getStringExtra("device_id") ?: "Unknown" //sharedPreferences2?.getString("device_id", null).toString()
+
 
         textViewStatus = findViewById(R.id.textViewStatus)
         val sharedPrefs = this.getSharedPreferences("device_category", AppCompatActivity.MODE_PRIVATE)
@@ -105,7 +155,7 @@ class DeviceControlActivity : AppCompatActivity() {
         textSwitch1 = findViewById(R.id.textSwitch1)
 
         val sharedPreferences2 = getSharedPreferences("Bagogo", Context.MODE_PRIVATE)
-        device_id = sharedPreferences2?.getString("device_id", null).toString()
+
         sharedPreferences = getSharedPreferences("MyPrefs_$device_id", 0)
 
         // 🔹 Set teks yang tersimpan
@@ -122,7 +172,7 @@ class DeviceControlActivity : AppCompatActivity() {
             )
         }
 
-        val deviceName = intent.getStringExtra("deviceName") ?: "Unknown Device"
+         deviceName = intent.getStringExtra("deviceName") ?: "Unknown Device"
         baseUrl = "http://taryem.my.id/Lab01/ahi.php"
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -181,6 +231,116 @@ class DeviceControlActivity : AppCompatActivity() {
 
 
 
+    }
+
+//    fun onInvite(deviceId: String) {
+//        // Contoh: Kirim request share ke server
+//        Toast.makeText(this, "Invite $deviceId", Toast.LENGTH_SHORT).show()
+//    }
+//
+//    fun onDelete(deviceId: String) {
+//        // Contoh: Hapus device dari database/server
+//        Toast.makeText(this, "Delete $deviceId", Toast.LENGTH_SHORT).show()
+//    }
+//
+//    fun onEdit(deviceId: String) {
+//
+//
+//        // Contoh: Tampilkan dialog rename
+//        showRenameDialog(deviceId)
+//    }
+
+    private fun getUserData(): Map<String, String?> {
+        val prefs = this.getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
+        return mapOf(
+            "token" to prefs.getString("auth_token", null),
+            "username" to prefs.getString("username", null),
+            "email" to prefs.getString("email", null),
+            "avatar" to prefs.getString("avatar", null),
+            "isVerified" to prefs.getString("isVerified", null)
+        )
+    }
+
+    private fun showInviteDialog(context: Context) {
+//        if (device.isShared) {
+//            Toast.makeText(context, "You don't have permission to modify this device", Toast.LENGTH_SHORT).show()
+//            return
+//        }
+
+        MaterialAlertDialogBuilder(context)
+            .setTitle("Invite user")
+            .setMessage("Want to invite other users to view this device?")
+            .setPositiveButton("Invite") { _, _ ->
+                // Pindah ke Fragment/Activity undangan
+                val intent = Intent(context, InviteActivity::class.java) // Ganti dengan activity yang sesuai
+                intent.putExtra("device_id", device_id) // Kirim ID perangkat ke activity
+                intent.putExtra("device_nama", deviceName) // Kirim ID perangkat ke activity
+                context.startActivity(intent)
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.device_control_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_more -> {
+                val dialog = BottomSheetDialog(this)
+                val view = layoutInflater.inflate(R.layout.bottom_sheet_dialog_device_control, null)
+                val deviceIdText = view.findViewById<TextView>(R.id.deviceIdText)
+                val deviceNameText = view.findViewById<TextView>(R.id.deviceNameText)
+                val deviceCategoryText = view.findViewById<TextView>(R.id.deviceCategoryText)
+                val textTitle = view.findViewById<TextView>(R.id.titles)
+                val deviceName = intent.getStringExtra("deviceName") ?: "Unknown Device"
+                textTitle.text = "Information about $deviceName"
+                deviceIdText.text = "ID: $device_id"
+                deviceNameText.text = "Name: $deviceName"
+                deviceCategoryText.text = "Category: $category"
+
+//                inviteBtn.setOnClickListener {
+//                    showInviteDialog(this)
+//                }
+//
+//                deleteBtn.setOnClickListener {
+//
+//                }
+//
+//                editBtn.setOnClickListener {
+//                    val currentDevice = DeviceModel(
+//                        id = device_id,
+//                        name = deviceName,
+//                        ipAddress = ipAddress,
+//                        isShared = false,
+//                        category = category
+//                    )
+//                    renameDevice(currentDevice, 0) // posisi bisa 0 karena tidak dipakai dalam logika  update saat ini
+//                }
+
+                dialog.setCancelable(true)
+                // set content view to our view.
+                dialog.setContentView(view)
+                // call a show method to display a dialog
+                dialog.show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+    private fun openFragment(fragment: Fragment, menuItemId: Int) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
+
+        val navigationView = findViewById<NavigationView>(R.id.nav_view)
+        navigationView.setCheckedItem(menuItemId)
     }
 
     override fun onResume() {
