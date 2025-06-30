@@ -3,6 +3,7 @@ package com.indodevstudio.azka_home_iot.Adapter
 import ApiService2
 import Event2
 import Server2
+import android.animation.Animator
 import android.graphics.Color
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -85,6 +86,32 @@ class EventAdapter(
         holder.btnCheck.setOnClickListener {
             val newStatus = if (isCompleted) 0 else 1
             updateEventStatus(event.id, newStatus, position, holder)
+
+//            val animationView = holder.animationCompleted
+//            animationView.visibility = View.VISIBLE
+//            animationView.playAnimation()
+//
+//            // Sembunyikan animasi setelah selesai (opsional)
+//            animationView.addAnimatorListener(object : Animator.AnimatorListener {
+//
+//
+//
+//                override fun onAnimationStart(animation: Animator) {
+//                    TODO("Not yet implemented")
+//                }
+//
+//                override fun onAnimationEnd(animation: Animator) {
+//                    animationView.visibility = View.GONE
+//                }
+//
+//                override fun onAnimationCancel(animation: Animator) {
+//                    TODO("Not yet implemented")
+//                }
+//
+//                override fun onAnimationRepeat(animation: Animator) {
+//                    TODO("Not yet implemented")
+//                }
+//            })
         }
     }
 

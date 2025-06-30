@@ -201,16 +201,12 @@ class DeviceListFragment : Fragment() {
 
 
         // Jika ada email, baru cek shared devices (opsional)
-
+        shimmerLayout.visibility = View.VISIBLE
+        shimmerLayout.startShimmer()
         loadData{
             updateUI()
 
         }
-
-
-
-
-
         with (swipeRefresh) {
             swipeRefresh?.setOnRefreshListener {
                 setRefreshing(true)
@@ -268,8 +264,7 @@ class DeviceListFragment : Fragment() {
     }
 
     private fun loadData(onFinished: (() -> Unit)? = null) {
-        shimmerLayout.visibility = View.VISIBLE
-        shimmerLayout.startShimmer()
+
         recyclerView.visibility = View.GONE
         tvNoDevices.visibility = View.GONE
 

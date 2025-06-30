@@ -92,7 +92,7 @@ class SetupWemosFragment : Fragment() {
         buttonSubmitDevice = view.findViewById(R.id.buttonSubmitDevice)
         spinnerCategory = view.findViewById(R.id.spinnerCategory)
 
-        val categories = listOf("Lamp", "Sensor", "Custom")
+        val categories = listOf("Lamp", "Sensor")
 
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, categories)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

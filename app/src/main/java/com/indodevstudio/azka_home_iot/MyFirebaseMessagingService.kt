@@ -37,8 +37,29 @@ import retrofit2.Response
 const val channelId = "notification_channel"
 const val channelName = "com.indodevstudio.azka_home_iot"
 class MyFirebaseMessagingService : FirebaseMessagingService(){
-    override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        remoteMessage.notification?.let {
+//    override fun onMessageReceived(remoteMessage: RemoteMessage) {
+//        remoteMessage.notification?.let {
+//            val ringtoneUriString = PreferenceManager
+//                .getDefaultSharedPreferences(this)
+//                .getString("notification_ringtone", null)
+//
+//            val ringtoneUri = if (ringtoneUriString.isNullOrEmpty()) {
+//                RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+//            } else {
+//                Uri.parse(ringtoneUriString)
+//            }
+//            sendNotification(it.title, it.body, ringtoneUri)
+//        }
+//    }
+        override fun onMessageReceived(remoteMessage: RemoteMessage) {
+            val title = remoteMessage.notification?.title ?: "Notifikasi Baru"
+            val body = remoteMessage.notification?.body ?: "Tekan untuk melihat detail event."
+
+            val data = remoteMessage.data
+            val actionType = data["action_type"] ?: ""
+            val eventDate = data["event_date"]
+            val eventList = data["event_list"]
+
             val ringtoneUriString = PreferenceManager
                 .getDefaultSharedPreferences(this)
                 .getString("notification_ringtone", null)
@@ -48,48 +69,72 @@ class MyFirebaseMessagingService : FirebaseMessagingService(){
             } else {
                 Uri.parse(ringtoneUriString)
             }
-            sendNotification(it.title, it.body, ringtoneUri)
-        }
-    }
 
-    private fun sendNotification(title: String?, messageBody: String?, ringtone: Uri) {
-
-        val channelId = "event_reminder"
-        val notificationId = System.currentTimeMillis().toInt()
-
-        // Intent untuk membuka MainActivity dengan Fragment Event
-        val intent = Intent(this, MainActivity::class.java).apply {
-            putExtra("openFragment", "EventFragment")
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            sendNotification(title, body, ringtoneUri, actionType, eventDate, eventList)
         }
 
-        val pendingIntent = PendingIntent.getActivity(
-            this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
 
-        val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSound(ringtone)
-            .setSmallIcon(R.drawable.ic_event) // Ganti dengan icon yang sesuai
-            .setContentTitle(title ?: "Notifikasi Baru")
-            .setContentText(messageBody ?: "Tekan untuk melihat detail event.")
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setAutoCancel(true)
+    private fun sendNotification(
+            title: String,
+            messageBody: String,
+            ringtone: Uri,
+            actionType: String,
+            eventDate: String?,
+            eventList: String?
+        ) {
+            val channelId = "event_reminder"
+            val notificationId = System.currentTimeMillis().toInt()
 
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        // Buat channel jika Android >= Oreo
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId,
-                "Reminder Acara",
-                NotificationManager.IMPORTANCE_HIGH
-            ).apply {
-                description = "Channel untuk mengingatkan event"
+            val intent = Intent(this, MainActivity::class.java).apply {
+                putExtra("openFragment", "EventFragment")
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             }
-            notificationManager.createNotificationChannel(channel)
+
+            val pendingIntent = PendingIntent.getActivity(
+                this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            val builder = NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.ic_event)
+                .setContentTitle(title)
+                .setContentText(messageBody)
+                .setSound(ringtone)
+                .setContentIntent(pendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+
+            // Tambahkan aksi jika action_type adalah MARK_COMPLETE
+            if (actionType == "MARK_COMPLETE" && eventDate != null && eventList != null) {
+                val markIntent = Intent(this, NotificationActionReceiver::class.java).apply {
+                    action = "MARK_COMPLETE"
+                    putExtra("event_date", eventDate)
+                    putExtra("event_list", eventList)
+                }
+
+                val markPendingIntent = PendingIntent.getBroadcast(
+                    this, 1, markIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+
+                builder.addAction(
+                    R.drawable.ic_check_circle, // icon
+                    "Mark As Finished", // label tombol
+                    markPendingIntent
+                )
+            }
+
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val channel = NotificationChannel(
+                    channelId,
+                    "Event Reminder",
+                    NotificationManager.IMPORTANCE_HIGH
+                ).apply {
+                    description = "Channel for event reminder."
+                }
+                notificationManager.createNotificationChannel(channel)
+            }
+
+            notificationManager.notify(notificationId, builder.build())
         }
 
-        notificationManager.notify(notificationId, notificationBuilder.build())
     }
-}

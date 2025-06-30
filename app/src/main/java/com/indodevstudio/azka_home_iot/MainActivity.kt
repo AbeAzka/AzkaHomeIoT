@@ -310,11 +310,12 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                 Toast.makeText(this, "You need to using IndodevStudio Account to access this feature!", Toast.LENGTH_SHORT).show()
             }
             Toast.makeText(this, "User login dengan akun Google", Toast.LENGTH_SHORT).show()
-            email = intent.getStringExtra("email").toString()
-            val displayName = intent.getStringExtra("name")
-            val photo = intent.getStringExtra("photop")
             sendFCMTokenToServer(applicationContext, email)
-            val picture3 = mFirebaseUser?.photoUrl?.toString() ?: ""
+
+            val displayName = firebaseUser.displayName
+            email = firebaseUser.email.toString()
+            val picture3 = firebaseUser.photoUrl?.toString()
+
             profilepc.tooltipText = email
             if (picture3 == null && firebaseUser != null) {
                 profilepc.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.azkahomeiot))
@@ -326,8 +327,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             }
             nama.text = displayName;
 
-            val obfuscatedEmail = email?.let { obfuscateEmail(it) }
-            em.text = obfuscatedEmail;
+            em.text = email.let { obfuscateEmail(it) } ?: "Unknown"
         }
 
         if (savedInstanceState == null) {
@@ -678,7 +678,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
     }
 
     fun sendTokenToServer(context: Context, email: String, token: String) {
-        val url = "https://ahi.abeazka.my.id/api/events/save_fcm_token.php"
+        val url = "https://www.indodevstudio.my.id/api/events/save_fcm_token.php"
         val jsonBody = JSONObject().apply {
             put("email", email)
             put("fcm_token", token)
