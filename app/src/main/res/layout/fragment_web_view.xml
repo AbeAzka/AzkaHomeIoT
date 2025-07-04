@@ -1,0 +1,82 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Toolbar di atas -->
+    <LinearLayout
+        android:id="@+id/toolbarOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:gravity="center_vertical"
+        android:background="?attr/cardBG"
+        android:elevation="8dp">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Back"
+            android:tooltipText="Sebelumnya"
+            app:tint="?attr/colorControlNormal" />
+
+        <ImageButton
+            android:id="@+id/btnForward"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_forward"
+            android:contentDescription="Forward"
+            android:tooltipText="Berikutnya"
+            app:tint="?attr/colorControlNormal" />
+
+        <ImageButton
+            android:id="@+id/btnReload"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_reload"
+            android:contentDescription="Forward"
+            android:tooltipText="Reload halaman"
+            app:tint="?attr/colorControlNormal" />
+
+        <!-- Title Web -->
+        <TextView
+            android:id="@+id/webTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Judul"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="?attr/colorOnBackground"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:gravity="center_vertical" />
+
+        <ImageButton
+            android:id="@+id/btnFullscreen"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_enter_fullscreen_white"
+            android:contentDescription="Toggle Fullscreen"
+            android:tooltipText="Fullscreen"
+            app:tint="?attr/colorControlNormal" />
+    </LinearLayout>
+
+
+    <!-- WebView di bawah toolbar -->
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+</LinearLayout>

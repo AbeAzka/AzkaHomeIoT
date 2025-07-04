@@ -1141,8 +1141,15 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                 navigationView.setNavigationItemSelectedListener(this)
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, UpdateLogFragment()).commit()
-                navigationView.setCheckedItem(R.id.nav_book)
+                navigationView.setCheckedItem(R.id.nav_log)
             }
+//            R.id.cbt_icon -> {
+////                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+////                navigationView.setNavigationItemSelectedListener(this)
+////                supportFragmentManager.beginTransaction()
+////                    .replace(R.id.fragment_container, WebViewFragment()).commit()
+////                navigationView.setCheckedItem(R.id.cbt_icon)
+//            }
 
             //R.id.nav_update -> supportFragmentManager.beginTransaction()
              //   .replace(R.id.fragment_container, UpdateLogFragment()).commit()

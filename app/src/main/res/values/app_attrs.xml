@@ -17,4 +17,5 @@
     <attr name="shared" format="color"/>
     <attr name="color_btn_dvc" format="color"/>
     <attr name="color_btn_dva" format="color"/>
+    <attr name="colorControlNormal" format="color"/>
 </resources>

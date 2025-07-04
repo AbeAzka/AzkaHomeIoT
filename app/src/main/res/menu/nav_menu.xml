@@ -49,6 +49,23 @@
             </group>
         </menu>
     </item>
+    <!--<item
+        android:title="CBT"
+        android:id="@+id/cbt"
+
+        >
+        <menu>
+            <group
+                android:checkableBehavior="single"
+                >
+                <item
+                    android:id="@+id/cbt_icon"
+                    android:icon="@drawable/ic_school_white"
+                    android:title="Online CBT (EXAM)"/>
+
+            </group>
+        </menu>
+    </item>-->
 
     <item
         android:title="IBADAH"
