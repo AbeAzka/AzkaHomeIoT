@@ -310,12 +310,12 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                 Toast.makeText(this, "You need to using IndodevStudio Account to access this feature!", Toast.LENGTH_SHORT).show()
             }
             Toast.makeText(this, "User login dengan akun Google", Toast.LENGTH_SHORT).show()
-            sendFCMTokenToServer(applicationContext, email)
+
 
             val displayName = firebaseUser.displayName
             email = firebaseUser.email.toString()
             val picture3 = firebaseUser.photoUrl?.toString()
-
+            sendFCMTokenToServer(applicationContext, email)
             profilepc.tooltipText = email
             if (picture3 == null && firebaseUser != null) {
                 profilepc.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.azkahomeiot))
