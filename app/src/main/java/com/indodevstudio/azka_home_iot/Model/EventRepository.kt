@@ -1,15 +1,11 @@
 package com.indodevstudio.azka_home_iot.Model
 
-import ApiService
-import ApiService2
-import Event
 import Event2
 import Event3
 import Server2
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.indodevstudio.azka_home_iot.Adapter.EventAdapter
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -113,5 +109,24 @@ class EventRepository {
                 callback(false)
             }
         })
+    }
+
+    fun updateEventStatus(eventId: Int, status: Int, callback: (Boolean) -> Unit) {
+        // Implementasi API call untuk update status event
+        Server2.instance.updateEventStatus(eventId, status).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                callback(response.isSuccessful)
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                callback(false)
+            }
+        })
+    }
+
+    fun getEventsByNamesAndDate(names: List<String>, date: String, email: String): List<Event2> {
+        // Ini adalah contoh implementasi sederhana
+        // Dalam implementasi nyata, Anda mungkin perlu melakukan API call
+        return emptyList() // Ganti dengan implementasi sebenarnya
     }
 }

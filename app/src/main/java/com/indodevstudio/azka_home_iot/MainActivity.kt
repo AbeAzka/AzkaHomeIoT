@@ -52,6 +52,7 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.MenuProvider
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.privacysandbox.tools.core.model.Method
 import com.android.volley.toolbox.JsonObjectRequest
@@ -95,6 +96,7 @@ import java.net.URL
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.indodevstudio.azka_home_iot.Model.EventViewModel
 
 import com.indodevstudio.azka_home_iot.utils.FirebaseUtils.firebaseUser
 
@@ -107,7 +109,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
     var image : Bitmap? = null
     lateinit var inputStream : InputStream
     private lateinit var auth : FirebaseAuth
-
+    private lateinit var viewModel: EventViewModel
     lateinit var mGoogleSignInClient: GoogleSignInClient
 
 
@@ -545,10 +547,39 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             else -> openFragment(HomeFragment(), R.id.nav_home)
         }
 
+        viewModel = ViewModelProvider(this)[EventViewModel::class.java]
+        handleIntent(intent)
+
 
     }
 
-    
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent?) {
+        if (intent?.getBooleanExtra("show_dialog", false) == true) {
+            val date = intent.getStringExtra("event_date") ?: ""
+            val eventNames = intent.getStringArrayListExtra("event_list") ?: emptyList()
+            showMarkCompleteDialog(eventNames, date)
+        }
+    }
+
+    private fun showMarkCompleteDialog(eventNames: List<String>, date: String) {
+        val email = getSharedPreferences("my_prefs", MODE_PRIVATE)
+            .getString("email", "") ?: ""
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Confirm Completion")
+            .setMessage("Mark ${eventNames.joinToString()} on $date as completed?")
+            .setPositiveButton("Yes") { _, _ ->
+                viewModel.markEventsAsComplete(eventNames, date, email)
+            }
+            .setNegativeButton("No", null)
+            .setCancelable(false)
+            .show()
+    }
 
 
 

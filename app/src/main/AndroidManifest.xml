@@ -150,6 +150,8 @@
             </intent-filter>
         </service>
 
+        <receiver android:name=".NotificationActionReceiver" />
+
 <!--        <receiver-->
 <!--            android:name=".MQTT_Receiver"-->
 <!--            android:exported="false">-->

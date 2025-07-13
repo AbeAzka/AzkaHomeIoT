@@ -218,6 +218,8 @@ class EventFragment : Fragment() {
         return view
     }
 
+
+
     private fun getUserData(): Map<String, String?> {
         val prefs = requireContext().getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
         return mapOf(
