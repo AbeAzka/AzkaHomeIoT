@@ -47,23 +47,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp"/>
 
-    <!-- Input Email atau Username -->
-    <EditText
-        android:id="@+id/etUserEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Masukkan email"
-        android:inputType="textEmailAddress"
-        android:backgroundTint="?attr/cardBG"
-        android:textColor="?attr/textContent"
-        app:layout_constraintTop_toBottomOf="@id/tvDeviceId"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:padding="12dp"
-        android:background="@android:drawable/edit_text"/>
+        <AutoCompleteTextView
+            android:id="@+id/etUserEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Masukkan email pengguna"
+            android:inputType="textEmailAddress"
+            android:backgroundTint="?attr/cardBG"
+            android:textColor="?attr/textContent"
+            app:layout_constraintTop_toBottomOf="@id/tvDeviceId"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            />
 
-    <!-- Tombol Kirim Undangan -->
+        <!-- Tombol Kirim Undangan -->
     <Button
         android:id="@+id/btnSendInvite"
         android:layout_width="wrap_content"

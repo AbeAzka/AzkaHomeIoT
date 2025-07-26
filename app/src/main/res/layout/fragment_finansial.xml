@@ -1203,6 +1203,8 @@
             android:text="Capture Bill"
             android:translationZ="4dp" />
 
+
+
         <!-- Delete All Data Button -->
         <Button
             android:id="@+id/deleteData"

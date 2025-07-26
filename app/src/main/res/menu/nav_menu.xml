@@ -49,23 +49,17 @@
             </group>
         </menu>
     </item>
-    <!--<item
-        android:title="CBT"
-        android:id="@+id/cbt"
-
+    <item
+        android:title="ARDUINO"
+        android:id="@+id/ard"
         >
         <menu>
-            <group
-                android:checkableBehavior="single"
-                >
-                <item
-                    android:id="@+id/cbt_icon"
-                    android:icon="@drawable/ic_school_white"
-                    android:title="Online CBT (EXAM)"/>
-
-            </group>
+        <item
+            android:id="@+id/nav_device"
+            android:icon="@drawable/ic_arduino_blue"
+            android:title="Arduino Management [BETA]"/>
         </menu>
-    </item>-->
+    </item>
 
     <item
         android:title="IBADAH"
@@ -110,10 +104,7 @@
             <group
                 android:checkableBehavior="single"
                 >
-                <item
-                    android:id="@+id/nav_device"
-                    android:icon="@drawable/ic_arduino_blue"
-                    android:title="Arduino Management [BETA]"/>
+
                 <item
                     android:id="@+id/nav_taman"
                     android:icon="@drawable/ic_nature_people"

@@ -201,8 +201,9 @@ class DeviceListFragment : Fragment() {
 
 
         // Jika ada email, baru cek shared devices (opsional)
-        shimmerLayout.visibility = View.VISIBLE
         shimmerLayout.startShimmer()
+        shimmerLayout.visibility = View.VISIBLE
+
         loadData{
             updateUI()
 
@@ -210,6 +211,9 @@ class DeviceListFragment : Fragment() {
         with (swipeRefresh) {
             swipeRefresh?.setOnRefreshListener {
                 setRefreshing(true)
+                shimmerLayout.startShimmer()
+                shimmerLayout.visibility = View.VISIBLE
+
                 loadData {
                     setRefreshing(false) // Hanya setelah data selesai dimuat
                     updateUI()
@@ -477,16 +481,9 @@ class DeviceListFragment : Fragment() {
     private fun filterDevicesByCategory(category: String) {
         val filtered = if (category == "All") {
             allDevices
+
         } else {
             allDevices.filter { it.category.equals(category, ignoreCase = true) }
-        }
-
-        if(filtered.isEmpty()){
-            //emptyTextView.visibility = View.VISIBLE
-
-        }else{
-            //emptyTextView.visibility = View.GONE
-
         }
 
         deviceViewModel.updateDeviceList(filtered)

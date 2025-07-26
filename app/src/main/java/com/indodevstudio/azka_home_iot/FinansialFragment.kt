@@ -11,7 +11,6 @@ import MonthlyGet
 import Server
 import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -50,29 +49,23 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.google.common.util.concurrent.ListenableFuture
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.work.await
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.indodevstudio.azka_home_iot.Adapter.HistoryAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
@@ -82,13 +75,12 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.BufferedInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
-import java.io.InputStream
 import java.net.URL
-import java.util.concurrent.Executors
-import kotlin.coroutines.resume
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -918,80 +910,133 @@ class FinansialFragment : Fragment() {
         }
     }
 
-//    private suspend fun <T> ListenableFuture<T>.await(): T = suspendCancellableCoroutine { cont ->
-//        addListener({ cont.resume(get()) }, Executors.newSingleThreadExecutor())
-//    }
+    fun saveToDownloads(context: Context, fileName: String, urlString: String) {
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val channelId = "download_channel"
+        val notificationId = 1001
 
-    fun saveToDownloads(context: Context, fileName: String, inputStream: InputStream, urlKang: String) {
-        val resolver = context.contentResolver
-        val uri: Uri?
-
-//        showDownloadingNotification(context, 100)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            // Scoped storage for Android 10+
-            val contentValues = ContentValues().apply {
-                put(MediaStore.Downloads.DISPLAY_NAME, fileName)
-                put(MediaStore.Downloads.MIME_TYPE, "application/pdf")
-                put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
-            }
-            uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
-
-        } else {
-            // Legacy storage for Android 9 and below
-            val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-            val file = File(downloadsDir, fileName)
-            uri = Uri.fromFile(file)
-
-//            downloadFileWithNotification(context, urlKang, file, "1")
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                channelId,
+                "File Download",
+                NotificationManager.IMPORTANCE_LOW
+            )
+            notificationManager.createNotificationChannel(channel)
         }
 
-        val notificationManager =
-            context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val builder = NotificationCompat.Builder(context, channelId)
+            .setSmallIcon(R.drawable.azkahomeiot__288_x_288_pixel_)
+            .setContentTitle("Mengunduh $fileName")
+            .setContentText("0%")
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setOnlyAlertOnce(true)
+            .setProgress(100, 0, false)
+
+        notificationManager.notify(notificationId, builder.build())
+
         Thread {
-            // Simulating a download process
-            for (progress in 1..100) {
-                Thread.sleep(100) // Simulate work (e.g., downloading)
+            try {
+                val url = URL(urlString)
+                val connection = url.openConnection()
+                connection.connect()
 
-                // Update progress notification
-//                builder.setProgress(maxProgress, progress, false)
-//                notificationManager.notify(NOTIFICATION_ID, builder.build())
-                val updatedNotification = buildProgressNotification(progress)
-                notificationManager.notify(NOTIFICATION_ID, updatedNotification)
-            }
-            notificationManager.cancel(NOTIFICATION_ID)
-            // After download finishes, show completed notification
-            val completedNotification = showDownloadingNotification()
-            notificationManager.notify(NOTIFICATION_ID2, completedNotification)
-            uri?.let {
-                resolver.openOutputStream(it)?.use { outputStream ->
-                    inputStream.copyTo(outputStream)
-                    getActivity()?.runOnUiThread {
-                        Toast.makeText(
-                            getActivity(),
-                            "File saved to Downloads folder: $it",
-                            Toast.LENGTH_LONG
-                        ).show();
+                val lengthOfFile = connection.contentLength
+                val input = BufferedInputStream(url.openStream())
+                val outputFile: File
+                val uri: Uri
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    val resolver = context.contentResolver
+                    val contentValues = ContentValues().apply {
+                        put(MediaStore.Downloads.DISPLAY_NAME, fileName)
+                        put(MediaStore.Downloads.MIME_TYPE, "application/pdf")
+                        put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+                        put(MediaStore.Downloads.IS_PENDING, 1)
                     }
-//                context?.let { showNotification(context, "File Successfully Saved", "File saved to Downloads folder: $it") }
-                    println("File saved to Downloads folder: $it")
-                }
-            } ?: run {
-                throw Exception("Failed to create file in Downloads folder")
-                getActivity()?.runOnUiThread {
-                    Toast.makeText(
-                        getActivity(),
-                        "Failed to create file in Downloads folder",
-                        Toast.LENGTH_LONG
-                    ).show();
 
+                    val newUri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
+                    uri = newUri!!
+                    resolver.openOutputStream(uri)!!.use { output ->
+                        val data = ByteArray(1024)
+                        var total: Long = 0
+                        var count: Int
+                        while (input.read(data).also { count = it } != -1) {
+                            total += count
+                            output.write(data, 0, count)
+                            val progress = ((total * 100) / lengthOfFile).toInt()
+                            builder.setProgress(100, progress, false)
+                                .setContentText("$progress%")
+                            notificationManager.notify(notificationId, builder.build())
+                        }
+                    }
+
+                    contentValues.clear()
+                    contentValues.put(MediaStore.Downloads.IS_PENDING, 0)
+                    resolver.update(uri, contentValues, null, null)
+
+                } else {
+                    val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                    outputFile = File(downloadsDir, fileName)
+                    val output = FileOutputStream(outputFile)
+                    val data = ByteArray(1024)
+                    var total: Long = 0
+                    var count: Int
+                    while (input.read(data).also { count = it } != -1) {
+                        total += count
+                        output.write(data, 0, count)
+                        val progress = ((total * 100) / lengthOfFile).toInt()
+                        builder.setProgress(100, progress, false)
+                            .setContentText("$progress%")
+                        notificationManager.notify(notificationId, builder.build())
+                    }
+                    output.flush()
+                    output.close()
+
+                    uri = FileProvider.getUriForFile(
+                        context,
+                        context.packageName + ".provider",
+                        outputFile
+                    )
                 }
+
+                input.close()
+
+                builder.setContentText("Download selesai")
+                    .setProgress(0, 0, false)
+                    .setAutoCancel(true)
+                notificationManager.notify(notificationId, builder.build())
+
+                val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                val uriFolder = FileProvider.getUriForFile(
+                    context,
+                    context.packageName + ".provider",
+                    downloadsDir
+                )
+
+                val openFolderIntent = Intent(Intent.ACTION_VIEW).apply {
+                    setDataAndType(uriFolder, "*/*")
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+
+                try {
+                    context.startActivity(openFolderIntent)
+                } catch (e: ActivityNotFoundException) {
+                    Toast.makeText(context, "File Manager tidak tersedia untuk membuka folder", Toast.LENGTH_LONG).show()
+                }
+
+
+
+
+            } catch (e: Exception) {
+                Log.e("DownloadError", "Error saat download: ${e.message}", e)
+                builder.setContentText("Download gagal: ${e.message}")
+                    .setProgress(0, 0, false)
+                notificationManager.notify(notificationId, builder.build())
             }
         }.start()
-
-
     }
+
 
     fun downloadPdf(token: String, name: String ){
         val URL : String ="https://www.indodevstudio.my.id/api/json/finansial/generate_pdf.php"
@@ -1003,8 +1048,6 @@ class FinansialFragment : Fragment() {
             val request = Request.Builder()
                 .url(URL)
                 .header("Authorization", "Bearer $token")
-
-
                 .build()
             //myWebView.loadUrl(URL)
 
@@ -1048,19 +1091,14 @@ class FinansialFragment : Fragment() {
                                         getActivity()?.runOnUiThread {
                                             Toast.makeText(
                                                 getActivity(),
-                                                "Succesfully download pdf",
+                                                "Download File....",
                                                 Toast.LENGTH_LONG
                                             ).show();
                                         }
 //                                        context?.let { showDownloadingNotification(it, 100) }
 
-                                        context?.let {
-                                            saveToDownloads(
-                                                it,
-                                                "$name.pdf",
-                                                inputStream, URL2.toString()
-                                            )
-                                        }
+                                        saveToDownloads(requireContext(), "$name.pdf", "https://www.indodevstudio.my.id/api/finansial/pdf_file/$name.pdf")
+
 
 
 

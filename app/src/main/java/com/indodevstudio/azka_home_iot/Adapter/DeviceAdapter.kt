@@ -215,7 +215,7 @@ class DeviceAdapter(
 
         fun bind(device: DeviceModel, listener: DeviceActionListener, position: Int, lifecycleOwner: LifecycleOwner) {
             // 🔄 Reset tampilan agar tidak mewarisi status lama
-            deviceStatus.text = "Checking... Please press refresh button"
+            deviceStatus.text = "Checking..."
             deviceStatus.setTextColor(Color.GRAY)
             ip.text = device.ipAddress.ifEmpty { "0.0.0.0" }
 

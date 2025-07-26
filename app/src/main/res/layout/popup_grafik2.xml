@@ -6,13 +6,14 @@
     android:layout_height="match_parent">
 
     <!-- Table Header -->
+
     <TextView
         android:id="@+id/idsss"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="Data History \n"
         android:textAlignment="center"
-        android:layout_marginTop="20dp"
         android:textColor="@color/white"
         android:textSize="20dp"
         app:layout_constraintBottom_toTopOf="@id/recyclerView2_table"
@@ -122,8 +123,9 @@
         android:id="@+id/close"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginStart="330dp"
-
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="320dp"
+        android:tooltipText="Close Popup"
         app:layout_constraintStart_toStartOf="parent"
 
         app:layout_constraintTop_toTopOf="parent"
