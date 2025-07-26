@@ -33,6 +33,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -41,11 +43,15 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.indodevstudio.azka_home_iot.API.DeviceSharingService
+import com.indodevstudio.azka_home_iot.API.FireService
 import com.indodevstudio.azka_home_iot.Adapter.DeviceAdapter
+import com.indodevstudio.azka_home_iot.Adapter.TimelineAdapter
 import com.indodevstudio.azka_home_iot.Model.DeviceModel
 import com.indodevstudio.azka_home_iot.Model.DeviceViewModel
+import com.indodevstudio.azka_home_iot.Model.TimelineEvent
 import okhttp3.Call
 import okhttp3.Callback
+import okhttp3.FormBody
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -58,6 +64,8 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import org.eclipse.paho.client.mqttv3.MqttException
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 
 
@@ -82,6 +90,7 @@ class DeviceControlActivity : AppCompatActivity() {
     private lateinit var deleteBtn: MaterialButton
     private lateinit var editBtn: MaterialButton
     private lateinit var inviteBtn: MaterialButton
+    private lateinit var sheetTimeline: Button
 
 //    lateinit var adapter: DeviceAdapter
 //    private val deviceList = mutableListOf<DeviceModel>()
@@ -132,7 +141,7 @@ class DeviceControlActivity : AppCompatActivity() {
 
         device_id = intent.getStringExtra("device_id") ?: "Unknown" //sharedPreferences2?.getString("device_id", null).toString()
 
-
+        sheetTimeline = findViewById(R.id.buttonShowTimeline)
         textViewStatus = findViewById(R.id.textViewStatus)
         val sharedPrefs = this.getSharedPreferences("device_category", AppCompatActivity.MODE_PRIVATE)
 
@@ -172,6 +181,28 @@ class DeviceControlActivity : AppCompatActivity() {
             )
         }
 
+        sheetTimeline.setOnClickListener {
+//            val dialog = BottomSheetDialog(this)
+//            val view = layoutInflater.inflate(R.layout.bottom_sheet_dialog_device_control, null)
+//            val deviceIdText = view.findViewById<TextView>(R.id.deviceIdText)
+//            val deviceNameText = view.findViewById<TextView>(R.id.deviceNameText)
+//            val deviceCategoryText = view.findViewById<TextView>(R.id.deviceCategoryText)
+//            val textTitle = view.findViewById<TextView>(R.id.titles)
+//            val deviceName = intent.getStringExtra("deviceName") ?: "Unknown Device"
+//
+//            textTitle.text = "Information about $deviceName"
+//            deviceIdText.text = "ID: $device_id"
+//            deviceNameText.text = "Name: $deviceName"
+//            deviceCategoryText.text = "Category: $category"
+//
+//            dialog.setCancelable(true)
+//            // set content view to our view.
+//            dialog.setContentView(view)
+//            // call a show method to display a dialog
+//            dialog.show()
+            showTimelineBottomSheet()
+        }
+
          deviceName = intent.getStringExtra("deviceName") ?: "Unknown Device"
         baseUrl = "http://taryem.my.id/Lab01/ahi.php"
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -187,6 +218,9 @@ class DeviceControlActivity : AppCompatActivity() {
             publishCommand("switch1", command)
             //sendCommand(command, device_id, "switch1")
             updateSwitchUI(switch1Layout, indicator1, isSwitch1On)
+
+            val desc = if (isSwitch1On) "Switch 1 dinyalakan" else "Switch 1 dimatikan"
+            addTimelineEvent(command, desc)
         }
 
 
@@ -196,6 +230,9 @@ class DeviceControlActivity : AppCompatActivity() {
             publishCommand("switch2", command)
             //sendCommand(command, device_id, "switch2")
             updateSwitchUI(switch2Layout, indicator2, isSwitch2On)
+
+            val desc = if (isSwitch2On) "Switch 2 dinyalakan" else "Switch 2 dimatikan"
+            addTimelineEvent(command, desc)
 
         }
 
@@ -233,22 +270,6 @@ class DeviceControlActivity : AppCompatActivity() {
 
     }
 
-//    fun onInvite(deviceId: String) {
-//        // Contoh: Kirim request share ke server
-//        Toast.makeText(this, "Invite $deviceId", Toast.LENGTH_SHORT).show()
-//    }
-//
-//    fun onDelete(deviceId: String) {
-//        // Contoh: Hapus device dari database/server
-//        Toast.makeText(this, "Delete $deviceId", Toast.LENGTH_SHORT).show()
-//    }
-//
-//    fun onEdit(deviceId: String) {
-//
-//
-//        // Contoh: Tampilkan dialog rename
-//        showRenameDialog(deviceId)
-//    }
 
     private fun getUserData(): Map<String, String?> {
         val prefs = this.getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
@@ -282,6 +303,103 @@ class DeviceControlActivity : AppCompatActivity() {
             }
             .show()
     }
+
+   /* private fun showTimelineBottomSheet() {
+        val dialog = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_timeline, null)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerViewTimeline)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        // Contoh data dummy, nanti ganti dengan API call fetch timeline berdasar device_id
+        val dummyTimeline = listOf(
+            TimelineEvent("2025-07-26 21:10", "ON", "Switch 1 nyala"),
+            TimelineEvent("2025-07-26 21:20", "OFF", "Switch 1 mati"),
+            TimelineEvent("2025-07-26 21:25", "ON", "Switch 2 nyala"),
+            TimelineEvent("2025-07-26 21:30", "OFF", "Switch 2 mati"),
+            TimelineEvent("2025-07-26 21:50", "OFF", "Switch 2 mati"),
+        )
+        recyclerView.adapter = TimelineAdapter(dummyTimeline)
+
+        dialog.setContentView(view)
+        dialog.show()
+
+        // Kamu bisa tambahkan fetch API asinkron di sini untuk realtime update
+    }*/
+
+    private fun showTimelineBottomSheet() {
+        val dialog = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_timeline, null)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerViewTimeline)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        val adapter = TimelineAdapter(emptyList())
+        recyclerView.adapter = adapter
+
+        dialog.setContentView(view)
+        dialog.show()
+
+        // Setup Retrofit
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://www.indodevstudio.my.id/api/arduino/") // Ganti sesuai URL API-mu
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val api = retrofit.create(FireService::class.java)
+
+        // Panggil API untuk ambil timeline
+        api.getDeviceTimeline(device_id).enqueue(object : retrofit2.Callback<List<TimelineEvent>> {
+            override fun onResponse(
+                call: retrofit2.Call<List<TimelineEvent>>,
+                response: retrofit2.Response<List<TimelineEvent>>
+            ) {
+                if (response.isSuccessful) {
+                    val timelineData = response.body() ?: emptyList()
+
+                    if (timelineData.isEmpty()) {
+                        // ❗ Timeline kosong, tampilkan teks info
+                        val emptyText = view.findViewById<TextView>(R.id.emptyTimelineText)
+                        emptyText.visibility = View.VISIBLE
+                        recyclerView.visibility = View.GONE
+                    } else {
+                        recyclerView.adapter = TimelineAdapter(timelineData)
+                        recyclerView.visibility = View.VISIBLE
+                    }
+                } else {
+                    Toast.makeText(this@DeviceControlActivity, "Gagal mengambil timeline", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: retrofit2.Call<List<TimelineEvent>>, t: Throwable) {
+                Toast.makeText(this@DeviceControlActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+    }
+
+    private fun addTimelineEvent(status: String, description: String) {
+        val url = "https://www.indodevstudio.my.id/api/arduino/add_timeline.php" // Ganti URL kamu
+        val formBody = FormBody.Builder()
+            .add("device_id", device_id)
+            .add("status", status)
+            .add("description", description)
+            .build()
+
+        val request = Request.Builder()
+            .url(url)
+            .post(formBody)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("TimelineAdd", "Gagal kirim timeline: ${e.message}")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                Log.d("TimelineAdd", "Timeline berhasil dikirim")
+            }
+        })
+    }
+
+
 
 
 

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- Bulatan di timeline -->
+    <View
+        android:id="@+id/viewCircle"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/circle_background" />
+
+    <!-- Garis vertikal timeline -->
+    <View
+        android:id="@+id/viewLine"
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:layout_toEndOf="@id/viewCircle"
+        android:layout_marginStart="7dp"
+        android:layout_alignTop="@id/viewCircle"
+        android:layout_alignBottom="@id/viewCircle"
+        android:background="#CCCCCC" />
+
+    <TextView
+        android:id="@+id/tvEventTitle"
+        android:layout_toEndOf="@id/viewLine"
+        android:layout_marginStart="16dp"
+        android:text="ON"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tvEventTime"
+        android:layout_below="@id/tvEventTitle"
+        android:layout_toEndOf="@id/viewLine"
+        android:layout_marginStart="16dp"
+        android:text="12:34"
+        android:textSize="14sp"
+        android:textColor="?attr/textContent"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tvEventDesc"
+        android:layout_below="@id/tvEventTime"
+        android:layout_toEndOf="@id/viewLine"
+        android:layout_marginStart="16dp"
+        android:text="Switch 1 nyala"
+        android:textSize="14sp"
+        android:textColor="#888888"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>
