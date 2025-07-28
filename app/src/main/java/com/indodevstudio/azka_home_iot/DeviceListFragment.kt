@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -83,6 +84,10 @@ class DeviceListFragment : Fragment() {
         categorySpinner = view.findViewById(R.id.categorySpinner)
         emptyTextView = view.findViewById(R.id.emptyTextView)
 
+        shimmerLayout.startShimmer()
+        shimmerLayout.visibility = View.VISIBLE
+        recyclerView.visibility = View.GONE
+        tvNoDevices.visibility = View.GONE
 
 
         val categories = listOf("All", "Lamp", "Sensor", "Custom")
@@ -99,35 +104,19 @@ class DeviceListFragment : Fragment() {
         categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedCategory = categories[position]
-                filterDevicesByCategory(selectedCategory)
+
+                // Tampilkan shimmer saat mulai filter
+                showShimmer()
+
+                // Gunakan handler untuk memberikan delay visual (opsional)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    filterDevicesByCategory(selectedCategory)
+                    hideShimmer()
+                }, 300) // Delay 300ms untuk efek visual yang lebih baik
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
-
-//        val sharedPreferences_tutorial = requireContext().getSharedPreferences("AppPrefs",
-//            Context.MODE_PRIVATE
-//        )
-//        val isFirstTime = sharedPreferences_tutorial.getBoolean("isFirstTimes", true)
-//
-//        if (isFirstTime) {
-//            TapTargetSequence(requireActivity())
-//                .targets(
-//                    TapTarget.forView(view.findViewById(R.id.fabAddDevice), "Add Device", "Klik tombol ini untuk menambahkan perangkat Arduino.")
-//                        .cancelable(false)
-//                        .transparentTarget(true),
-//
-//                )
-//                .listener(object : TapTargetSequence.Listener {
-//                    override fun onSequenceFinish() {
-//                        // Tandai bahwa user sudah pernah lihat tutorial
-//                        sharedPreferences_tutorial.edit().putBoolean("isFirstTimes", false).apply()
-//                    }
-//
-//                    override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
-//                    override fun onSequenceCanceled(lastTarget: TapTarget) {}
-//                }).start()
-//        }
 
         val sharedPreferences2 = context?.getSharedPreferences("Bagogo", Context.MODE_PRIVATE)
         val deviceIdd = sharedPreferences2?.getString("device_id", null)
@@ -192,17 +181,18 @@ class DeviceListFragment : Fragment() {
             }
         }, viewLifecycleOwner)
 
-        // 🔹 Muat daftar perangkat lokal sebelum cek shared devices
-//        loadDeviceList()
+        // 🔹 Muat daftar perangkat lokal sebelum cek shared device
         if (recyclerView.adapter == null) {
-            recyclerView.layoutManager = LinearLayoutManager(requireContext())
+//            recyclerView.layoutManager = LinearLayoutManager(requireContext())
+            recyclerView.layoutManager = GridLayoutManager(requireContext(), 2) // 2 kolom
             recyclerView.adapter = deviceAdapter
+
+            // Jika ingin responsive berdasarkan ukuran layar:
+            val displayMetrics = resources.displayMetrics
+            val dpWidth = displayMetrics.widthPixels / displayMetrics.density
+            val numColumns = (dpWidth / 180).toInt() // 180dp adalah lebar perkiraan per item
+            recyclerView.layoutManager = GridLayoutManager(requireContext(), numColumns.coerceAtLeast(2))
         }
-
-
-        // Jika ada email, baru cek shared devices (opsional)
-        shimmerLayout.startShimmer()
-        shimmerLayout.visibility = View.VISIBLE
 
         loadData{
             updateUI()
@@ -213,9 +203,11 @@ class DeviceListFragment : Fragment() {
                 setRefreshing(true)
                 shimmerLayout.startShimmer()
                 shimmerLayout.visibility = View.VISIBLE
+                recyclerView.visibility = View.GONE
+                tvNoDevices.visibility = View.GONE
 
                 loadData {
-                    setRefreshing(false) // Hanya setelah data selesai dimuat
+                    setRefreshing(false)
                     updateUI()
                 }
             }
@@ -267,38 +259,47 @@ class DeviceListFragment : Fragment() {
         return view
     }
 
-    private fun loadData(onFinished: (() -> Unit)? = null) {
-
+    private fun showShimmer() {
+        shimmerLayout.startShimmer()
+        shimmerLayout.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
         tvNoDevices.visibility = View.GONE
+    }
+
+    private fun hideShimmer() {
+        shimmerLayout.stopShimmer()
+        shimmerLayout.visibility = View.GONE
+        recyclerView.visibility = View.VISIBLE
+    }
+
+    private fun loadData(onFinished: (() -> Unit)? = null) {
+
+//        recyclerView.visibility = View.GONE
+//        tvNoDevices.visibility = View.GONE
 
         CoroutineScope(Dispatchers.IO).launch {
+            recyclerView.visibility = View.GONE
+            tvNoDevices.visibility = View.GONE
+            shimmerLayout.visibility = View.VISIBLE
+            shimmerLayout.startShimmer()
             val userEmail = email
-
             val ownedDevices = async { fetchDevicesSuspend(userEmail) }
             val sharedDevices = async { fetchSharedDevicesSuspend(userEmail) }
-
             val combinedDevices = (ownedDevices.await() + sharedDevices.await())
                 .distinctBy { it.id + it.isShared.toString() }
 
             allDevices = combinedDevices // biar filter category tetap jalan
-
             withContext(Dispatchers.Main) {
                 // Simpan ke ViewModel supaya adapter dapat
                 deviceViewModel.updateDeviceList(combinedDevices)
-
                 filterDevicesByCategory(categorySpinner.selectedItem.toString())
-
                 shimmerLayout.stopShimmer()
                 shimmerLayout.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE
-
                 deviceViewModel.getDeviceList().observe(viewLifecycleOwner) { list ->
                     deviceAdapter.updateData(list)
                     updateUI()
                 }
-
-
                 updateUI()
                 onFinished?.invoke()
             }
@@ -479,14 +480,23 @@ class DeviceListFragment : Fragment() {
 
 
     private fun filterDevicesByCategory(category: String) {
-        val filtered = if (category == "All") {
-            allDevices
+        showShimmer() // Tampilkan shimmer sebelum memulai filter
 
-        } else {
-            allDevices.filter { it.category.equals(category, ignoreCase = true) }
+        CoroutineScope(Dispatchers.Main).launch {
+            val filtered = withContext(Dispatchers.Default) {
+                if (category == "All") {
+                    allDevices
+                } else {
+                    allDevices.filter {
+                        it.category.equals(category, ignoreCase = true)
+                    }
+                }
+            }
+
+            deviceViewModel.updateDeviceList(filtered)
+            updateUI()
+            hideShimmer() // Sembunyikan shimmer setelah selesai
         }
-
-        deviceViewModel.updateDeviceList(filtered)
     }
 
 
@@ -881,7 +891,7 @@ class DeviceListFragment : Fragment() {
     }
 
 
-    private fun updateUI() {
+/*    private fun updateUI() {
         val currentList = deviceViewModel.getDeviceList().value.orEmpty()
 
         if (currentList.isEmpty()) {
@@ -896,12 +906,31 @@ class DeviceListFragment : Fragment() {
             // ✅ Update ke adapter
             deviceAdapter.updateData(currentList)
 
+
+        }
+    }*/
+
+    private fun updateUI() {
+        val currentList = deviceViewModel.getDeviceList().value.orEmpty()
+
+        if (currentList.isEmpty()) {
+            tvNoDevices.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
+            tvListDvc.text = "Total Devices: 0"
+        } else {
+            tvNoDevices.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
+            tvListDvc.text = "Total Devices: ${currentList.size}"
+            deviceAdapter.updateData(currentList)
             // 🔁 Refresh ke tiap device
             currentList.forEach { device ->
                 Log.d("MQTT", "🔁 Refresh untuk ${device.id}")
                 deviceAdapter.publish("sending_order_${device.id}", device.id, "refresh")
             }
         }
+
+        // Pastikan shimmer selalu disembunyikan saat update UI
+        hideShimmer()
     }
 
 

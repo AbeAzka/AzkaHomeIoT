@@ -171,18 +171,27 @@ object DeviceSharingService {
             .build()
 
         val request = Request.Builder()
-            .url("http://www.indodevstudio.my.id/api/arduino/add_user")
+            .url("https://www.indodevstudio.my.id/api/arduino/add_user")
             .post(requestBody)
             .build()
 
+        Log.d("API_REQUEST", "URL: ${request.url}")
+        Log.d("API_REQUEST", "Headers: ${request.headers}")
+        Log.d("API_REQUEST", "Body: ${requestBody.toString()}")
+
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                //callback(false, "Gagal mengirim undangan: ${e.message}")
-                Logger.log("INFO", "Gagal add user: ${e.message}")
+                Log.e("API_ERROR", "Gagal add user: ${e.message}", e)
             }
 
             override fun onResponse(call: Call, response: Response) {
-                //callback(true, "Undangan terkirim: ${response.body?.string()}")
+                val responseBody = response.body?.string()
+                Log.d("API_RESPONSE", "Code: ${response.code}")
+                Log.d("API_RESPONSE", "Body: $responseBody")
+
+                if (!response.isSuccessful) {
+                    Log.e("API_ERROR", "Gagal add user. Response code: ${response.code}")
+                }
             }
         })
     }
@@ -198,7 +207,7 @@ object DeviceSharingService {
             .build()
 
         val request = Request.Builder()
-            .url("http://www.indodevstudio.my.id/api/arduino/accept_invite")
+            .url("https://www.indodevstudio.my.id/api/arduino/accept_invite")
             .post(requestBody)
             .build()
 
@@ -217,7 +226,7 @@ object DeviceSharingService {
     // Fungsi untuk mendapatkan daftar perangkat yang dibagikan
     fun getSharedDevices(userEmail: String, callback: (Boolean, String) -> Unit) {
         val request = Request.Builder()
-            .url("http://www.indodevstudio.my.id/api/arduino/shared_devices?user_email=$userEmail")
+            .url("https://www.indodevstudio.my.id/api/arduino/shared_devices?user_email=$userEmail")
             .build()
 
         client.newCall(request).enqueue(object : Callback {

@@ -138,32 +138,16 @@ private fun updateUI(account: GoogleSignInAccount) {
             val bundle = Bundle()
             val user = FirebaseAuth.getInstance().currentUser
             val token = FirebaseAuth.getInstance().currentUser?.getIdToken(false)?.result?.token // atau customToken kamu
-
-//                val accounts = token?.let { it1 ->
-//                    AccountData(
-//                        email = user?.email ?: "",
-//                        token = it1,
-//                        provider = AuthProvider.CUSTOM, // atau AuthProvider.FIREBASE
-//                        avatarUrl = user?.photoUrl.toString(),
-//                        username = user?.displayName,
-//                        isVerified = true
-//                    )
-//                }
-//
-//                if (accounts != null) {
-//                    AccountManager.saveAccount(this, accounts)
-//                }
-//                AccountManager.setCurrentAccount(this, user?.email ?: "")
-
             bundle.putString("name", account.displayName)
             intent.putExtra("email" , account.email)
             intent.putExtra("name" , account.displayName)
             intent.putExtra("isFirebase", true)
-            account.email?.let { it1 -> account.displayName?.let { it2 ->
+/*            account.email?.let { it1 -> account.displayName?.let { it2 ->
                 DeviceSharingService.addUser(it1,
                     it2
                 )
-            } };
+            } }*/
+            DeviceSharingService.addUser(account.email.toString(), account.displayName.toString())
             saveEmailToSharedPref(this, account.email.toString())
             if(firebaseAuth.currentUser!!.isEmailVerified == true){
                 Log.i("Status", "Account verified for " + account.email)
@@ -193,20 +177,21 @@ override fun onStart() {
             val intent = Intent(this, MainActivity::class.java)
             val bundle = Bundle()
             bundle.putString("name", user!!.displayName)
-            intent.putExtra("email", user!!.email)
-            intent.putExtra("name", user!!.displayName)
-            user!!.email?.let { user!!.displayName?.let { it1 ->
+            intent.putExtra("email", user.email)
+            intent.putExtra("name", user.displayName)
+/*            user!!.email?.let { user!!.displayName?.let { it1 ->
                 DeviceSharingService.addUser(it,
                     it1
                 )
-            } }
+            } }*/
+            DeviceSharingService.addUser(user.email.toString(), user.displayName.toString())
             startActivity(intent)
             /*Toast.makeText(
                 applicationContext,
                 "Welcome back " + user!!.email,
                 Toast.LENGTH_SHORT
             ).show()*/
-            saveEmailToSharedPref(this, user!!.email.toString())
+            saveEmailToSharedPref(this, user.email.toString())
 
             overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right)
             //finish()

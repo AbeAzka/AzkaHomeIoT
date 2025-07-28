@@ -32,7 +32,7 @@
     <color name="color_primary_light">#1CAB55</color>
     <color name="color_primary_variant_light">#1CAB55</color>
     <color name="color_on_primary_light">#A4F6AC</color>
-
+    <color name="White_Card_lamp">#ECEFF1</color>
     <!--    Light (Brand Color) -->
     <color name="color_secondary_light">#930F15</color>
     <color name="color_secondary_variant_light">#930F15</color>

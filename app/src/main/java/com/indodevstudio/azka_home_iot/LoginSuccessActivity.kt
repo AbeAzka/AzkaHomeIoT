@@ -13,6 +13,8 @@ import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.indodevstudio.azka_home_iot.API.DeviceSharingService
 import org.json.JSONObject
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 class LoginSuccessActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,13 +23,14 @@ class LoginSuccessActivity : AppCompatActivity() {
         val data: Uri? = intent.data
         val token = data?.getQueryParameter("token")
         val username = data?.getQueryParameter("username")
-        val email = data?.getQueryParameter("email")
+        val rawEmail = data?.getQueryParameter("email")
         val avatar = data?.getQueryParameter("avatar")
-
+        val email = rawEmail?.let { decodeUrlEncodedString(it) }
         if (!token.isNullOrEmpty() && !username.isNullOrEmpty()) {
             saveUserData(token, username, email, avatar)
-            if (email != null) {
-                DeviceSharingService.addUser(email, username)
+            email?.let { decodedEmail ->
+                // Gunakan email yang sudah di-decode
+                DeviceSharingService.addUser(decodedEmail, username)
             }
             val intent = Intent(this, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -36,6 +39,14 @@ class LoginSuccessActivity : AppCompatActivity() {
         }
 
         finish() // Tutup activity redirect
+    }
+
+    private fun decodeUrlEncodedString(encoded: String): String {
+        return try {
+            URLDecoder.decode(encoded, StandardCharsets.UTF_8.name())
+        } catch (e: Exception) {
+            encoded // Jika gagal decode, kembalikan string aslinya
+        }
     }
 
     private fun saveUserData(token: String, username: String, email: String?, avatar: String?) {

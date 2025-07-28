@@ -1,5 +1,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#FFFFFF"/>
+    <solid android:color="?attr/lampCard2"/>
     <corners android:radius="16dp"/>
     <stroke android:width="2dp" android:color="#FFA000"/>
 </shape>

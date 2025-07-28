@@ -40,7 +40,7 @@ class TimelineAdapter(private val items: List<TimelineEvent>) :
         holder.tvEventDesc.text = item.description
 
         // Hilangkan garis di item terakhir
-        holder.viewLine.visibility = if (position == items.size -1) View.GONE else View.VISIBLE
+        holder.viewLine.visibility = if (position == 0) View.GONE else View.VISIBLE
 
         // Ganti warna bulatan ON/OFF
         val colorRes = if (item.status == "ON") android.R.color.holo_green_light else android.R.color.holo_red_light

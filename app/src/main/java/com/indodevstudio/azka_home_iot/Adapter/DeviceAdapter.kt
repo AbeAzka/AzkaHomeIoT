@@ -57,7 +57,8 @@ class DeviceAdapter(
     private val viewHolders = mutableListOf<DeviceViewHolder>() // Menyimpan semua ViewHolder
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_device, parent, false)
+        //val view = LayoutInflater.from(parent.context).inflate(R.layout.item_device, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_device_grid, parent, false)
         val holder = DeviceViewHolder(view, parent)
         viewHolders.add(holder) // Simpan ViewHolder agar bisa di-disconnect nanti
         return holder
@@ -188,7 +189,7 @@ class DeviceAdapter(
         private val tvShared: TextView = itemView.findViewById(R.id.tvShared)
         private val tvCategory: TextView = itemView.findViewById(R.id.tvCategory)
         private val btnInvite: ImageButton = itemView.findViewById(R.id.btnInvite)
-
+        private val  tvDeviceId: TextView = itemView.findViewById(R.id.deviceId)
 
         val view = LayoutInflater.from(parent.context).inflate(R.layout.bottom_sheet_dialog_device_control, null)
 //        private val btnInvite: MaterialButton = view.findViewById(R.id.inviteBtn)
@@ -233,7 +234,8 @@ class DeviceAdapter(
 //            }
 
             // Set nama dan ID
-            tvDeviceName.text = "${device.name} - ID: ${device.id}"
+            tvDeviceName.text = "${device.name}"
+            tvDeviceId.text = "ID: ${device.id}"
             tvCategory.visibility = View.VISIBLE
             tvCategory.text = device.category.toString()
             // Setup MQTT dan refresh status

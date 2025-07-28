@@ -83,18 +83,6 @@ import java.io.IOException
 import java.net.URL
 
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [FinansialFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-
-
 
 class FinansialFragment : Fragment() {
     // TODO: Rename and change types of parameters
@@ -195,13 +183,6 @@ class FinansialFragment : Fragment() {
 
     private lateinit var countdownTimer: CountDownTimer
     private val countdownTimeInMillis: Long = 5000      // 1 hour and 1 minute (for testing purposes)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -276,22 +257,32 @@ class FinansialFragment : Fragment() {
         harianTxt = view.findViewById(R.id.harian_Txt)
         monthlyTxt = view.findViewById(R.id.bulanan_Txt)
         expendTxt = view.findViewById(R.id.titleDaily)
+        // Di dalam onCreateView, perbaiki bagian pengambilan email dan authToken
         val firebaseUser = FirebaseAuth.getInstance().currentUser
         val prefs = requireContext().getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
         val authToken = prefs.getString("auth_token", null)
         val userData = getUserData()
 
-        if(firebaseUser != null){
-            email = FirebaseAuth.getInstance().currentUser?.email.toString()
-
+        // Pastikan email diambil dengan benar
+        email = if (firebaseUser != null) {
+            firebaseUser.email ?: "" // Gunakan email dari Firebase jika ada
+        } else if (authToken != null) {
+            userData["email"]?.toString() ?: "" // Gunakan email dari SharedPreferences jika ada
+        } else {
+            "" // Default value jika tidak ada data
         }
 
-        if(authToken != null) {
-            email = userData["email"].toString()
-
+        emailU = if (firebaseUser != null) {
+            firebaseUser.displayName ?: email // Gunakan displayName atau email dari Firebase
+        } else if (authToken != null) {
+            userData["username"]?.toString() ?: email // Gunakan username atau email dari SharedPreferences
+        } else {
+            email // Default value jika tidak ada data
         }
 
-
+        Log.d("FinansialFragment", "Email: $email")
+        Log.d("FinansialFragment", "EmailU: $emailU")
+        Log.d("FinansialFragment", "AuthToken: $authToken")
 
         context?.let { createNotificationChannel(it) }
         var inflater = LayoutInflater.from(getActivity())
@@ -299,11 +290,6 @@ class FinansialFragment : Fragment() {
             inflater.inflate(R.layout.popup_grafik2, null, false)
         var buttonDownload =
             popupview.findViewById<Button>(R.id.downloadPdf)
-
-
-
-
-        emailU = FirebaseAuth.getInstance().currentUser?.displayName.toString()
 
 //        headerTable = view.findViewById(R.id.recyclerView2_table)
 
@@ -1775,24 +1761,4 @@ class FinansialFragment : Fragment() {
         countdownTimer.cancel()
     }
 
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FinansialFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FinansialFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }

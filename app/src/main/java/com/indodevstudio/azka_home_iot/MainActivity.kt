@@ -175,6 +175,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         connectToFirebase()
         val sharedPreferenceManger = SharedPreferenceManger(this)
         AppCompatDelegate.setDefaultNightMode(sharedPreferenceManger.themeFlag[sharedPreferenceManger.theme])
+
         //connect(this)
         Log.i("MQTT", "MAIN ACTIVITY MQTT RUN")
 
@@ -549,13 +550,26 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
         viewModel = ViewModelProvider(this)[EventViewModel::class.java]
         handleIntent(intent)
-
+        handleIntent2(intent)
 
     }
+
+    // Tambahkan fungsi ini:
+    private fun handleIntent2(intent: Intent?) {
+        when (intent?.getStringExtra("OPEN_FRAGMENT")) {
+            "DEVICE_LIST" -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, DeviceListFragment())
+                    .commit()
+            }
+        }
+    }
+
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         handleIntent(intent)
+        handleIntent2(intent)
     }
 
     private fun handleIntent(intent: Intent?) {
@@ -1469,42 +1483,12 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
     private fun showUnderMaintenanceDialog(underMaintenanceMessage: String) {
 
-        val builder = AlertDialog.Builder(this)
+        MaterialAlertDialogBuilder(this)
+            .setTitle("AzkaHomeIoT")
+            .setMessage("$underMaintenanceMessage")
+            .setCancelable(false)
+            .show()
 
-        builder.setTitle("AzkaHomeIoT")
-        builder.setMessage("$underMaintenanceMessage")
-
-//        builder.setPositiveButton("OK") { dialog, which ->
-//            // handle OK button click
-//        }
-
-
-
-        builder.setCancelable(false)
-        val dialog = builder.create()
-
-        dialog.show()
-
-        /*//Inflate the dialog as custom view
-        val messageBoxView = LayoutInflater.from(this).inflate(R.layout.message_box, null)
-        val x = messageBoxView.findViewById<TextView>(R.id.message_box_header)
-        val y = messageBoxView.findViewById<TextView>(R.id.message_box_content)
-        //AlertDialogBuilder
-        val messageBoxBuilder = AlertDialog.Builder(this).setView(messageBoxView)
-
-        //setting text values
-        x.text = "AzkaHomeIoT"
-        y.text = "$underMaintenanceMessage"
-
-
-        //show dialog
-        val  messageBoxInstance = messageBoxBuilder.show()
-
-        //set Listener
-        messageBoxView.setOnClickListener(){
-            //close dialog
-            messageBoxInstance.dismiss()
-        }*/
     }
     private fun dismissUnderMaintenanceDialog() {
         val dialog = Dialog(this)

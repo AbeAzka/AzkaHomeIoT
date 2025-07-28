@@ -22,7 +22,7 @@
         android:layout_marginStart="7dp"
         android:layout_alignTop="@id/viewCircle"
         android:layout_alignBottom="@id/viewCircle"
-        android:background="#CCCCCC" />
+        android:background="?attr/textContent" />
 
     <TextView
         android:id="@+id/tvEventTitle"
@@ -53,7 +53,7 @@
         android:layout_marginStart="16dp"
         android:text="Switch 1 nyala"
         android:textSize="14sp"
-        android:textColor="#888888"
+        android:textColor="?attr/textContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

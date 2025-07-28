@@ -236,10 +236,15 @@ class DeviceControlActivity : AppCompatActivity() {
 
         }
 
-        toolbar.setNavigationOnClickListener(View.OnClickListener {
-            //What to do on back clicked
-            onBackPressed()
-        })
+        toolbar.setNavigationOnClickListener {
+            // Gunakan cara yang sama dengan onBackPressed
+            val intent = Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                putExtra("OPEN_FRAGMENT", "DEVICE_LIST")
+            }
+            startActivity(intent)
+            finish()
+        }
 
         val shar = getSharedPreferences("STAT", Context.MODE_PRIVATE)
 
@@ -374,6 +379,8 @@ class DeviceControlActivity : AppCompatActivity() {
         })
 
     }
+
+
 
     private fun addTimelineEvent(status: String, description: String) {
         val url = "https://www.indodevstudio.my.id/api/arduino/add_timeline.php" // Ganti URL kamu
@@ -656,9 +663,13 @@ class DeviceControlActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-//        supportFragmentManager.beginTransaction()
-//            .replace(R.id.fragment_container, manual_book_fragment()).commit()
-        onBackPressedDispatcher.onBackPressed()
+        // Ganti implementasi back untuk selalu kembali ke DeviceListFragment
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            putExtra("OPEN_FRAGMENT", "DEVICE_LIST")
+        }
+        startActivity(intent)
+        finish()
     }
 
     fun publishCommand(switch: String, command: String) {
