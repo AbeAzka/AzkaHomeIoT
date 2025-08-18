@@ -31,6 +31,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.indodevstudio.azka_home_iot.API.DeviceSharingService
 import com.indodevstudio.azka_home_iot.Adapter.DeviceAdapter
+import com.indodevstudio.azka_home_iot.Adapter.ShimmerDeviceAdapter
 import com.indodevstudio.azka_home_iot.Model.DeviceModel
 import com.indodevstudio.azka_home_iot.Model.DeviceViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -67,6 +68,8 @@ class DeviceListFragment : Fragment() {
     var selectedCategory = ""
     private var ipAddress = ""
 
+
+
     lateinit var shimmerLayout : ShimmerFrameLayout
     lateinit var swipeRefresh: SwipeRefreshLayout
 
@@ -82,12 +85,23 @@ class DeviceListFragment : Fragment() {
         tvNoDevices = view.findViewById(R.id.tvNoDevices)
         tvListDvc = view.findViewById(R.id.tvTotalDevice)
         categorySpinner = view.findViewById(R.id.categorySpinner)
-        emptyTextView = view.findViewById(R.id.emptyTextView)
+        //emptyTextView = view.findViewById(R.id.emptyTextView)
+
+        val shimmerRecycler = view.findViewById<RecyclerView>(R.id.shimmerRecycler)
+        val shimmerAdapter = ShimmerDeviceAdapter(6) // misal tampilkan 6 placeholder
+
+        if (shimmerRecycler.adapter == null) {
+            shimmerRecycler.layoutManager = GridLayoutManager(requireContext(), 2)
+            shimmerRecycler.adapter = ShimmerDeviceAdapter(6)
+        }
+
 
         shimmerLayout.startShimmer()
         shimmerLayout.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
         tvNoDevices.visibility = View.GONE
+
+
 
 
         val categories = listOf("All", "Lamp", "Sensor", "Custom")
@@ -272,6 +286,7 @@ class DeviceListFragment : Fragment() {
         recyclerView.visibility = View.VISIBLE
     }
 
+
     private fun loadData(onFinished: (() -> Unit)? = null) {
 
 //        recyclerView.visibility = View.GONE
@@ -300,7 +315,7 @@ class DeviceListFragment : Fragment() {
                     deviceAdapter.updateData(list)
                     updateUI()
                 }
-                updateUI()
+//                updateUI()
                 onFinished?.invoke()
             }
         }

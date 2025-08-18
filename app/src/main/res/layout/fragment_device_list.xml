@@ -5,139 +5,121 @@
     android:layout_height="match_parent"
     android:background="?android:attr/windowBackground">
 
-    <!-- Header -->
+    <!-- Header Modern -->
     <LinearLayout
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp"
-        android:background="?attr/colorPrimaryDark"
+        android:padding="12dp"
+        android:background="?attr/colorPrimary"
         android:elevation="4dp">
 
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Device List For Your Arduino"
+            android:text="My Devices"
             android:textColor="@android:color/white"
-            android:textSize="22sp"
-            android:layout_gravity="center"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvTotalDevice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Total Devices: 0"
+            android:text="0 devices connected"
             android:textColor="@android:color/white"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp" />
+            android:textSize="12sp"
+            android:layout_marginTop="2dp" />
 
         <Spinner
             android:id="@+id/categorySpinner"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_margin="8dp"
+            android:layout_height="42dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_spinner"
             android:spinnerMode="dropdown"
-            android:background="?attr/cardBG"
             android:popupBackground="?attr/cardBG"
-
-            android:padding="10dp"
-            android:visibility="visible"
+            android:paddingHorizontal="10dp"
             android:tooltipText="Select category" />
-
-
     </LinearLayout>
 
-    <!-- Shimmer Layout -->
+    <!-- Shimmer Placeholder -->
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/shimmerLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/headerLayout"
-        android:visibility="visible"
-        android:layout_marginTop="60dp"
         app:shimmer_auto_start="true"
-        app:shimmer_duration="1500">
+        app:shimmer_duration="1500"
+        android:visibility="gone">
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/shimmerRecycler"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <!-- Placeholder shimmer -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_marginBottom="16dp"
-                android:background="@android:color/darker_gray" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_marginBottom="16dp"
-                android:background="@android:color/darker_gray" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_marginBottom="16dp"
-                android:background="@android:color/darker_gray" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_marginBottom="16dp"
-                android:background="@android:color/darker_gray" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_marginBottom="16dp"
-                android:background="@android:color/darker_gray" />
-        </LinearLayout>
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:clipToPadding="false"
+            android:overScrollMode="never" />
     </com.facebook.shimmer.ShimmerFrameLayout>
 
-    <!-- SwipeRefreshLayout untuk konten utama -->
+    <!-- Main Content -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         android:layout_below="@id/headerLayout">
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!-- Pesan jika tidak ada perangkat -->
+            <!-- Empty State -->
+            <LinearLayout
+                android:id="@+id/emptyStateLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:padding="20dp">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@android:drawable/ic_menu_help"
+                    app:tint="@android:color/darker_gray" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No devices found"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/darker_gray"
+                    android:layout_marginTop="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tap (+) to add your first device"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/darker_gray" />
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/tvNoDevices"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
                 android:gravity="center"
-                android:text="Tidak ada perangkat. \n\nKlik tombol (+) di kanan bawah untuk menambahkan perangkat."
+                android:textAlignment="center"
+                android:text="Tidak ada perangkat.\n\nKlik tombol (+) di kanan bawah untuk menambahkan perangkat."
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:layout_gravity="center"
-                android:visibility="visible" />
-            <TextView
-                android:id="@+id/emptyTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Tidak ada perangkat yang ditemukan"
-                android:gravity="center"
-                android:textStyle="bold"
-                android:visibility="gone"
-                android:textSize="20sp"
-                android:textColor="@android:color/darker_gray"
-                android:layout_marginTop="16dp"
-                />
+                android:visibility="gone" />
 
-            <!-- RecyclerView -->
+            <!-- Device List -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
@@ -145,13 +127,10 @@
                 android:padding="8dp"
                 android:clipToPadding="false"
                 android:visibility="gone" />
-
-
-
         </FrameLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <!-- Tombol Tambah -->
+    <!-- Floating Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddDevice"
         android:layout_width="wrap_content"
@@ -159,7 +138,9 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
-        android:tooltipText="Tambahkan Arduino"
+        android:contentDescription="Add Device"
+        app:backgroundTint="?attr/colorPrimary"
+        app:tint="@android:color/white"
         android:src="@android:drawable/ic_input_add" />
 
 </RelativeLayout>

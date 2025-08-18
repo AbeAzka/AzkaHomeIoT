@@ -433,7 +433,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             if(authToken != null) {
                 val avatarPath = userData["avatar"].toString()
 
-// Base URL untuk server
+                // Base URL untuk server
                 val baseUrl = "https://games.abeazka.my.id/u/"
                 val baseUrl2 = "https://games.abeazka.my.id/u/images/"
 
@@ -599,7 +599,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
     fun openWebLogin(context: Context) {
         val redirectUrl = "myapp://link_success"  // Deep link kembali ke aplikasi
-        val loginUrl = "https://games.abeazka.my.id/u/login?redirect=$redirectUrl"
+        val loginUrl = "https://www.indodevstudio.my.id/u/login?redirect=$redirectUrl"
 
         val builder = CustomTabsIntent.Builder()
         val customTabsIntent = builder.build()

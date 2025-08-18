@@ -30,6 +30,8 @@
 
 
 
+
+
     <style name="Theme.MainActivity" parent="Theme.Material3.DayNight.NoActionBar">
 <!--        <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownStyle</item>-->
         <!-- Primary brand color. -->
