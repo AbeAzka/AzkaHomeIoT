@@ -142,20 +142,12 @@
                 android:title="Tandon Bunda"/>
             <item
                 android:id="@+id/nav_listrik_uti"
-                android:icon="@drawable/baseline_electric_bolt_24"
+                android:icon="@drawable/baseline_sensors_24"
                 android:title="Listrik Uti"/>
             <item
                 android:id="@+id/nav_listrik_bunda"
-                android:icon="@drawable/baseline_electric_bolt_24"
+                android:icon="@drawable/baseline_sensors_24"
                 android:title="Listrik Bunda"/>
-            <item
-                android:id="@+id/nav_grafik_uti"
-                android:icon="@drawable/baseline_image_24"
-                android:title="Grafik Tandon Uti"/>
-            <item
-                android:id="@+id/nav_grafik_bunda"
-                android:icon="@drawable/baseline_image_24"
-                android:title="Grafik Tandon Bunda"/>
             </group>
         </menu>
     </item>

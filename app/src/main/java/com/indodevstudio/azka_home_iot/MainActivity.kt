@@ -1118,21 +1118,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                 navigationView.setCheckedItem(R.id.nav_listrik_bunda)
             }
 
-            R.id.nav_grafik_bunda -> {
-                val navigationView = findViewById<NavigationView>(R.id.nav_view)
-                navigationView.setNavigationItemSelectedListener(this)
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, GrafikBundaFragment()).commit()
-                navigationView.setCheckedItem(R.id.nav_grafik_bunda)
-            }
 
-            R.id.nav_grafik_uti -> {
-                val navigationView = findViewById<NavigationView>(R.id.nav_view)
-                navigationView.setNavigationItemSelectedListener(this)
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, GrafikUtiFregment()).commit()
-                navigationView.setCheckedItem(R.id.nav_grafik_uti)
-            }
 
             R.id.nav_book -> {
                 val navigationView = findViewById<NavigationView>(R.id.nav_view)
