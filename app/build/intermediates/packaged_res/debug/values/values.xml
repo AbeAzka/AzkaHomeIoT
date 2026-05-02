@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="boolean_options">
+        <item>Bensin_Xenia</item>
+        <item>Kebutuhan_Alat_Mandi</item>
+        <item>Jajan_Anak</item>
+        <item>Makan_Bunda_Di_Kantor</item>
+        <item>Kebutuhan_Sarapan_dan_Sayuran</item>
+        <item>Kebutuhan_Cadangan_Bunda</item>
+    </string-array>
+    <string-array name="boolean_options_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+    <string-array name="dark_mode_entries">
+        <item>Use System Dark Mode</item>
+        <item>Light Mode</item>
+        <item>Dark Mode</item>
+    </string-array>
+    <string-array name="dark_mode_entries_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <attr format="color" name="SPcardBG"/>
+    <attr format="color" name="cardBG"/>
+    <attr format="color" name="colorControlNormal"/>
+    <attr format="color" name="color_btn_dva"/>
+    <attr format="color" name="color_btn_dvc"/>
+    <attr format="color" name="drawerBackground"/>
+    <attr format="color" name="drawerItemBackground"/>
+    <attr format="color" name="drawerItemColorChecked"/>
+    <attr format="color" name="drawerItemColorNormal"/>
+    <attr format="color" name="lampCard"/>
+    <attr format="color" name="lampCard2"/>
+    <attr format="color" name="navHeaderDescriptionColor"/>
+    <attr format="color" name="navHeaderTitleColor"/>
+    <attr format="color" name="selected_icon"/>
+    <attr format="color" name="shared"/>
+    <attr format="reference|color" name="spinnerDropdownTextColor"/>
+    <attr format="reference|color" name="spinnerTextColor"/>
+    <attr format="color" name="stroke_Spin"/>
+    <attr format="color" name="textContent"/>
+    <attr format="color" name="textContent2"/>
+    <color name="White_Card_lamp">#ECEFF1</color>
+    <color name="background_dark">#121212</color>
+    <color name="background_light">#FFFFFF</color>
+    <color name="black">#FF000000</color>
+    <color name="black_2">#3A3A3A</color>
+    <color name="colorAccent">#80FFC4</color>
+    <color name="colorPrimary">#382BEE</color>
+    <color name="colorPrimaryDark">#0641B7</color>
+    <color name="color_on_primary">#332940</color>
+    <color name="color_on_primary_light">#A4F6AC</color>
+    <color name="color_on_secondary_dark">#332940</color>
+    <color name="color_on_secondary_light">#E63C3C</color>
+    <color name="color_primary_dark">#121212</color>
+    <color name="color_primary_light">#1CAB55</color>
+    <color name="color_primary_variant_dark">#070A10</color>
+    <color name="color_primary_variant_light">#1CAB55</color>
+    <color name="color_secondary_dark">#FF7597</color>
+    <color name="color_secondary_light">#930F15</color>
+    <color name="color_secondary_variant_dark">#FF0266</color>
+    <color name="color_secondary_variant_light">#930F15</color>
+    <color name="cyan">#34ebb7</color>
+    <color name="gray">#DDDDDD</color>
+    <color name="gray_transparant">#00A3A3A3</color>
+    <color name="green">#4CAF50</color>
+    <color name="lavender">#8692f7</color>
+    <color name="lavender2">#9ba4f2</color>
+    <color name="light_blue">#6EDBFF</color>
+    <color name="light_gray">#E0E0E0</color>
+    <color name="orange">#FF7700</color>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="realGray">#505050</color>
+    <color name="red">#80FF0000</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="transparant">#00FFFFFF</color>
+    <color name="veryLavender">#5869F8</color>
+    <color name="very_blue">#0000FF</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="white_2">#FAFAFA</color>
+    <color name="yellow">#FFC801</color>
+    <dimen name="dimen_0">0dp</dimen>
+    <dimen name="dimen_16">16dp</dimen>
+    <dimen name="dimen_32">32dp</dimen>
+    <dimen name="dimen_60">60dp</dimen>
+    <dimen name="et_text_size">18dp</dimen>
+    <dimen name="font_size_16">16sp</dimen>
+    <dimen name="font_size_24">24sp</dimen>
+    <dimen name="navigation_bar_icon_size">40dp</dimen>
+    <dimen name="radio_button_width">60dp</dimen>
+    <dimen name="start_end_margin">10dp</dimen>
+    <dimen name="til_radius">10dp</dimen>
+    <string name="app_name">Azka Home IoT</string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="close_nav">Close Navigation Drawer</string>
+    <string name="default_web_client_id" translatable="false">507008627074-i044hkon2rcr5oq9doo4eimrgnp7a1dr.apps.googleusercontent.com</string>
+    <string name="emailInfo"/>
+    <string name="error_text">Not empty</string>
+    <string name="firebase_database_url" translatable="false">https://azka-home-iot-default-rtdb.asia-southeast1.firebasedatabase.app</string>
+    <string name="gcm_defaultSenderId" translatable="false">507008627074</string>
+    <string name="google_api_key" translatable="false">AIzaSyBA1Zxdi5fKu8dKgLhdtKa31M0uG0Xe6zk</string>
+    <string name="google_app_id" translatable="false">1:507008627074:android:6149cc1dd677aa0e04df9b</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBA1Zxdi5fKu8dKgLhdtKa31M0uG0Xe6zk</string>
+    <string name="google_storage_bucket" translatable="false">azka-home-iot.firebasestorage.app</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="messages_header">Messages</string>
+    <string name="open_nav">Open Navigation Drawer</string>
+    <string name="project_id" translatable="false">azka-home-iot</string>
+    <string name="reply_title">Default reply action</string>
+    <string name="settings">Settings</string>
+    <string name="shortcut_one_long_label">Finansial Planning</string>
+    <string name="shortcut_one_short_label">Finansial Planning</string>
+    <string name="shortcut_three_long_label">Arduino List</string>
+    <string name="shortcut_three_short_label">Arduino Management</string>
+    <string name="shortcut_two_long_label">New Event</string>
+    <string name="shortcut_two_short_label">Event List</string>
+    <string name="signature_title">Your signature</string>
+    <string name="status_air">Pada saat menekan tombol cek status air, kita akan melihat gambar dibawah yang terdapat 5 warna. Warnanya terdiri dari <b>Hijau</b>, <b>Biru</b>, <b>Kuning</b>, <b>Oranye</b>, dan <b>Merah</b>.
+        Masing-masing warna memiliki arti yang berbeda.<br>\n</br>
+        <br>\n<b>- Hijau</b>\nWarna hijau menandakan air dalam tandon berada pada level diatas 30 cm dan termasuk normal.\n</br>
+        <br> \n<b>- Biru</b>\nWarna biru menandakan air dalam tandon berada pada level diantara 30 - 40 cm dan termasuk normal.\n</br>
+
+     <br>\n<b>- Kuning</b>\nWarna kuning menandakan air dalam tandon berada pada level diantara 40 - 50 cm dan termasuk normal.\n</br>
+     <br>\n<b>- Oranye</b>\nWarna oranye menandakan air dalam tandon berada pada level diantara 50 - 60 cm. Kategori warna ini termasuk peringatan jika tandon tidak mengisi.\n</br>
+     <br>\n<b>- Merah</b>\nWarna merah menandakan air dalam tandon berada pada level diatas 60 cm. Kategori warna ini termasuk error karena tandon tidak mengisi atau sensornya error.\n</br></string>
+    <string name="sync_header">Sync</string>
+    <string name="sync_title">Sync email periodically</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <style name="ActionButton">
+        <item name="android:layout_width">36dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:padding">6dp</item>
+        <item name="android:scaleType">centerInside</item>
+    </style>
+    <style name="CalendarTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">?android:textColorPrimary</item>
+
+    </style>
+    <style name="CustomAlertDialogStyle" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+    <item name="android:background">@android:color/white</item> 
+    <item name="android:padding">16dp</item> 
+    <item name="android:maxWidth">600dp</item> 
+</style>
+    <style name="CustomAlertDialogStyle.Night" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
+<item name="android:background">@android:color/black</item> 
+<item name="android:padding">16dp</item>
+<item name="android:maxWidth">600dp</item> 
+</style>
+    <style name="CustomCardViewStyle" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners</item>
+    </style>
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+    <style name="DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@android:color/white</item>
+    </style>
+    <style name="FloatingWindow" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
+        
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+    </style>
+    <style name="MaterialAlertDialog" parent="MaterialAlertDialog.Material3">
+        <item name="shapeAppearance">@style/ShapeAppearance.App.MediumComponent</item>
+        <item name="shapeAppearanceOverlay">@null</item>
+    </style>
+    <style name="MyCardView" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.MaterialCardView.Cut</item>
+    </style>
+    <style name="OverFlow" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="tint">@color/white</item>
+    </style>
+    <style name="ShapeAppearance.App.MediumComponent" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+    <style name="ShapeAppearanceOverlay.MaterialCardView.Cut" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">15dp</item>
+        <item name="cornerSizeTopLeft">15dp</item>
+        <item name="cornerSizeBottomRight">15dp</item>
+        <item name="cornerSizeBottomLeft">15dp</item>
+    </style>
+    <style name="ShapeAppearanceOverlay_card_custom_corners" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">0dp</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeBottomRight">16dp</item>
+        <item name="cornerSizeBottomLeft">16dp</item>
+    </style>
+    <style name="SpinnerDropDownStyle" parent="Widget.AppCompat.Spinner.DropDown">
+        
+        <item name="spinnerTextColor">@color/white</item>
+
+        
+        <item name="spinnerDropdownTextColor">@color/white</item>
+    </style>
+    <style name="Theme.App.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">?attr/drawerBackground</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/azkahiot_2</item>
+        <item name="postSplashScreenTheme">@style/Theme.MainActivity</item>
+
+    </style>
+    <style name="Theme.MainActivity" parent="Theme.Material3.DayNight.NoActionBar">
+
+        
+        <item name="alertDialogTheme">@style/ThemeOverlay.Material3.MaterialAlertDialog</item>
+
+        <item name="color_btn_dvc">#ECEFF1</item>
+        <item name="color_btn_dva">#FFFFFF</item>
+
+        <item name="shared">@color/red</item>
+        <item name="colorPrimary">@color/lavender</item>
+        <item name="colorPrimaryVariant">@color/white</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        
+        <item name="colorSecondary">@color/color_secondary_light</item>
+        <item name="colorSecondaryVariant">@color/color_secondary_variant_light</item>
+        <item name="colorOnSecondary">@color/color_on_secondary_light</item>
+
+        
+        <item name="android:windowBackground">@color/background_light</item>
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorSecondary">@color/black_2</item>
+        
+        <item name="android:statusBarColor">@color/lavender</item>
+        <item name="android:actionMenuTextColor">@color/black</item>
+
+        <item name="actionOverflowButtonStyle">@style/OverFlow</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+
+        <item name="drawerItemBackground">@color/white</item>
+        <item name="drawerItemColorChecked">@color/lavender2</item>
+        <item name="drawerItemColorNormal">@color/white</item>
+        <item name="navHeaderTitleColor">@color/white</item>
+        <item name="navHeaderDescriptionColor">@color/white_2</item>
+        <item name="drawerBackground">@color/white</item>
+        <item name="cardBG">@color/white_2</item>
+        <item name="stroke_Spin">@color/black</item>
+        <item name="textContent">@color/black</item>
+        <item name="textContent2">@color/black</item>
+        <item name="lampCard">@color/White_Card_lamp</item>
+        <item name="lampCard2">@color/white</item>
+        <item name="SPcardBG">@color/gray</item>
+
+        
+
+
+
+    </style>
+    <style name="Theme.NavigationDrawer" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        
+        <item name="colorPrimary">@color/lavender</item>
+        <item name="colorPrimaryVariant">@color/lavender</item>
+        <item name="colorOnPrimary">@color/white</item>
+        
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        
+        <item name="android:statusBarColor">@color/lavender</item>
+        <item name="android:actionMenuTextColor">@color/black</item>
+
+        <item name="drawerItemBackground">@color/white</item>
+        <item name="drawerItemColorChecked">@color/lavender2</item>
+        <item name="drawerItemColorNormal">@color/white</item>
+        <item name="navHeaderTitleColor">@color/white</item>
+        <item name="navHeaderDescriptionColor">@color/white_2</item>
+        <item name="drawerBackground">@color/white</item>
+
+        
+    </style>
+    <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="alertDialogStyle">@style/MaterialAlertDialog</item>
+    </style>
+    <style name="WhatsAppDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@drawable/bg_dialog_whatsapp</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+    </style>
+    <style name="spinnerDropDownItemStyle" parent="android:TextAppearance.Widget.TextView.SpinnerItem">
+
+    </style>
+    <style name="spinnerItemStyle" parent="android:Widget.TextView.SpinnerItem">
+
+</style>
+</resources>
