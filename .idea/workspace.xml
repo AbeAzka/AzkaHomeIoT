@@ -100,6 +100,11 @@
           <theme>@style/Theme.MainActivity</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/idspct.xml">
+        <config>
+          <theme>@style/Theme.MainActivity</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/indicator_off.xml">
         <config>
           <theme>@style/Theme.MainActivity</theme>
@@ -127,6 +132,16 @@
         </config>
       </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
+        <config>
+          <theme>@style/Theme.MainActivity</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_reset_pw.xml">
+        <config>
+          <theme>@style/Theme.MainActivity</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_sign_in.xml">
         <config>
           <theme>@style/Theme.MainActivity</theme>
         </config>
@@ -298,15 +313,63 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cef8a18f-c0ec-4eef-93da-e0aad99c3872" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/incremental/debug/mergeDebugResources/stripped.dir/layout/nav_header.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/incremental/debug/mergeDebugResources/stripped.dir/layout/nav_header.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/packaged_res/debug/layout/fragment_listrik_bunda.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/packaged_res/debug/layout/fragment_listrik_bunda.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/packaged_res/debug/layout/fragment_listrik_uti_fregment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/packaged_res/debug/layout/fragment_listrik_uti_fregment.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/packaged_res/debug/layout/fragment_tandon_bunda.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/packaged_res/debug/layout/fragment_tandon_bunda.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/packaged_res/debug/layout/fragment_tandon_uti.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/packaged_res/debug/layout/fragment_tandon_uti.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/packaged_res/debug/menu/nav_menu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/packaged_res/debug/menu/nav_menu.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/indodevstudio/azka_home_iot/WebViewFragment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/indodevstudio/azka_home_iot/WebViewFragment.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_web_view.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_web_view.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/debug/R.jar" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/debug/R.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/ListrikUtiFregment$Companion.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/ListrikUtiFregment$Companion.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/ListrikUtiFregment$onClick$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/ListrikUtiFregment$onClick$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/ListrikUtiFregment$onClick$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/ListrikUtiFregment$onCreateView$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/ListrikUtiFregment$onCreateView$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/ListrikUtiFregment.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/ListrikUtiFregment.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/MainActivity$connectToFirebase$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/MainActivity$connectToFirebase$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/MainActivity.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/MainActivity.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/TandonBundaFragment$Companion.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/TandonBundaFragment$Companion.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/TandonBundaFragment$onClick$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/TandonBundaFragment$onClick$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/TandonBundaFragment$onClick$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/TandonBundaFragment$onCreateView$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/TandonBundaFragment$onCreateView$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/TandonBundaFragment.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/TandonBundaFragment.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/TandonUtiFragment$Companion.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/TandonUtiFragment$Companion.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/TandonUtiFragment$onClick$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/TandonUtiFragment$onClick$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/TandonUtiFragment$onClick$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/TandonUtiFragment$onCreateView$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/TandonUtiFragment$onCreateView$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/TandonUtiFragment.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/tmp/kotlin-classes/debug/com/indodevstudio/azka_home_iot/TandonUtiFragment.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/android_google_ctn_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/android_google_ctn_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/azkahiot.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/azkahiot.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/azkahiot_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/azkahiot_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/azkahomeiot.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/azkahomeiot.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/azkahomeiot_288px_white.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/azkahomeiot_288px_white.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/azkahomeiot_500px_black.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/azkahomeiot_500px_black.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/azkahomeiot_500px_white.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/azkahomeiot_500px_white.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/azkahomeiot__288_x_288_pixel_.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/azkahomeiot__288_x_288_pixel_.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/azkahomeiot_new.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/azkahomeiot_new.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/azkahomeiotoe.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/azkahomeiotoe.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/circle_logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/circle_logo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/google.webp" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/google.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/google_icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/google_icon.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/headerbg.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/headerbg.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/ids.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/ids.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/level_tandon.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/level_tandon.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/loginbkg.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/loginbkg.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/logo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/logo_5550.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/logo_5550.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/profile_pc.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/profile_pc.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/sample.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/sample.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/sample_graph.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/sample_graph.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/signin_screen.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/signin_screen.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/signup_screen.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/signup_screen.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/text_splash.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/text_splash.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/ui_login.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/ui_login.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/ui_login_ldsp.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/ui_login_ldsp.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/unverified.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/unverified.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/verified.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/verified.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-xxxhdpi/android_google_ctn_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxxhdpi/android_google_ctn_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/bg_spinner.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/bg_spinner.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/ic_cancel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_cancel.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/ic_nav_background_2.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_nav_background_2.PNG" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/menu/nav_menu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/menu/nav_menu.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -384,6 +447,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "AnalyzeApkAction.lastApkPath": "D:/PROJECT_KOTLIN/AHI/app/build/outputs/apk/debug/app-debug.apk",
+    "Android App.Azka_Home_Iot.app.executor": "Run",
     "Android App.app.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
@@ -391,7 +455,8 @@
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "Reverting in master",
+    "com.google.services.firebase.aqiPopupShown": "true",
+    "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/PROJECT_KOTLIN/AHI",
     "project.structure.last.edited": "Project",
@@ -408,9 +473,80 @@
       <recent name="D:\PROJECT_KOTLIN\AHI\app\src\main\res\layout" />
     </key>
   </component>
-  <component name="RunManager">
-    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
+  <component name="RunManager" selected="Android App.Azka_Home_Iot.app">
+    <configuration name="Azka_Home_Iot.app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
       <module name="Azka_Home_Iot.app" />
+      <option name="ANDROID_RUN_CONFIGURATION_SCHEMA_VERSION" value="1" />
+      <option name="DEPLOY" value="true" />
+      <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
+      <option name="DEPLOY_AS_INSTANT" value="false" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="PM_INSTALL_OPTIONS" value="" />
+      <option name="ALL_USERS" value="false" />
+      <option name="ALWAYS_INSTALL_WITH_PM" value="false" />
+      <option name="ALLOW_ASSUME_VERIFIED" value="false" />
+      <option name="CLEAR_APP_STORAGE" value="false" />
+      <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
+      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="RESTORE_ENABLED" value="false" />
+      <option name="RESTORE_FILE" value="" />
+      <option name="RESTORE_FRESH_INSTALL_ONLY" value="false" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
+      <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
+      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
+      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
+      <option name="DEBUGGER_TYPE" value="Auto" />
+      <Auto>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+        <option name="DEBUG_SANDBOX_SDK" value="false" />
+      </Auto>
+      <Hybrid>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+        <option name="DEBUG_SANDBOX_SDK" value="false" />
+      </Hybrid>
+      <Java>
+        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+        <option name="DEBUG_SANDBOX_SDK" value="false" />
+      </Java>
+      <Native>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+        <option name="DEBUG_SANDBOX_SDK" value="false" />
+      </Native>
+      <Profilers>
+        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Java/Kotlin Method Sample (legacy)" />
+        <option name="STARTUP_NATIVE_MEMORY_PROFILING_ENABLED" value="false" />
+        <option name="NATIVE_MEMORY_SAMPLE_RATE_BYTES" value="2048" />
+      </Profilers>
+      <option name="DEEP_LINK" value="" />
+      <option name="ACTIVITY" value="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <option name="SEARCH_ACTIVITY_IN_GLOBAL_SCOPE" value="false" />
+      <option name="SKIP_ACTIVITY_VALIDATION" value="false" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
       <option name="ANDROID_RUN_CONFIGURATION_SCHEMA_VERSION" value="1" />
       <option name="DEPLOY" value="true" />
       <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
@@ -498,12 +634,12 @@
       <map>
         <entry key="com.indodevstudio.azka_home_iot">
           <value>
-            <CheckInfo lastCheckTimestamp="1777467285138" />
+            <CheckInfo lastCheckTimestamp="1778856119240" />
           </value>
         </entry>
         <entry key="com.indodevstudio.azka_home_iot.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1777467285138" />
+            <CheckInfo lastCheckTimestamp="1778856119240" />
           </value>
         </entry>
       </map>

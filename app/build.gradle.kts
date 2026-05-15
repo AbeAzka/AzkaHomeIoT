@@ -18,7 +18,7 @@ android {
         minSdk = 30
         targetSdk = 34
         versionCode = 1
-        versionName = "2.8"//Last 2.4
+        versionName = "2.10"//Last 2.45
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -94,6 +94,9 @@ dependencies {
     implementation("com.android.volley:volley:1.2.1")
     implementation("androidx.privacysandbox.tools:tools-core:1.0.0-alpha12")
     implementation("androidx.webkit:webkit:1.14.0")
+    implementation("androidx.credentials:credentials:1.6.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.6.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.2.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
