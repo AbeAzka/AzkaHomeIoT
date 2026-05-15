@@ -4102,6 +4102,8 @@ int id nav_about 0x7f0a0220
 int id nav_book 0x7f0a0221
 int id nav_device 0x7f0a0222
 int id nav_grafik 0x7f0a0223
+int id nav_grafik_bunda 0x7f0a03af
+int id nav_grafik_uti 0x7f0a03b0
 int id nav_head 0x7f0a0224
 int id nav_home 0x7f0a0225
 int id nav_listrik_bunda 0x7f0a0226

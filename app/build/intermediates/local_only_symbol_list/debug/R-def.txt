@@ -431,6 +431,8 @@ id nav_about
 id nav_book
 id nav_device
 id nav_grafik
+id nav_grafik_bunda
+id nav_grafik_uti
 id nav_head
 id nav_home
 id nav_listrik_bunda

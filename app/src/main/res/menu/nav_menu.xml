@@ -144,10 +144,19 @@
                 android:id="@+id/nav_listrik_uti"
                 android:icon="@drawable/baseline_sensors_24"
                 android:title="Listrik Uti"/>
-            <item
-                android:id="@+id/nav_listrik_bunda"
-                android:icon="@drawable/baseline_sensors_24"
-                android:title="Listrik Bunda"/>
+
+                <item
+                    android:id="@+id/nav_listrik_bunda"
+                    android:icon="@drawable/baseline_electric_bolt_24"
+                    android:title="Listrik Bunda"/>
+                <item
+                    android:id="@+id/nav_grafik_uti"
+                    android:icon="@drawable/baseline_image_24"
+                    android:title="Grafik Tandon Uti"/>
+                <item
+                    android:id="@+id/nav_grafik_bunda"
+                    android:icon="@drawable/baseline_image_24"
+                    android:title="Grafik Tandon Bunda"/>
             </group>
         </menu>
     </item>
@@ -173,74 +182,4 @@
             </group>
         </menu>
     </item>
-
-
-
-
-    <!--<item
-        android:title="OTOMATISASI RUMAH">
-
-        <menu>
-            <item
-                android:id="@+id/nav_taman"
-                android:icon="@drawable/ic_nature"
-                android:title="Taman - LAB"/>
-            <item
-                android:id="@+id/nav_taman_p"
-                android:icon="@drawable/ic_nature"
-                android:title="Taman - Production"/>
-        </menu>
-    </item>
-    <item
-        android:title="SENSOR RUMAH">
-
-        <menu>
-
-            <item
-                android:id="@+id/nav_tandon_uti"
-                android:icon="@drawable/baseline_sensors_24"
-                android:title="Tandon Uti"/>
-            <item
-                android:id="@+id/nav_tandon_bunda"
-                android:icon="@drawable/baseline_sensors_24"
-                android:title="Tandon Bunda"/>
-            <item
-                android:id="@+id/nav_listrik_uti"
-                android:icon="@drawable/baseline_electric_bolt_24"
-                android:title="Listrik Uti"/>
-            <item
-                android:id="@+id/nav_listrik_bunda"
-                android:icon="@drawable/baseline_electric_bolt_24"
-                android:title="Listrik Bunda"/>
-            <item
-                android:id="@+id/nav_grafik_uti"
-                android:icon="@drawable/baseline_image_24"
-                android:title="Grafik Tandon Uti"/>
-            <item
-                android:id="@+id/nav_grafik_bunda"
-                android:icon="@drawable/baseline_image_24"
-                android:title="Grafik Tandon Bunda"/>
-
-        </menu>
-    </item>
-
-
-    <item
-        android:title="SENSOR MASJID">
-        <menu>
-            <item
-                android:id="@+id/nav_masjid"
-                android:icon="@drawable/baseline_sensors_24"
-                android:title="Tandon Masjid"/>
-            <item
-                android:id="@+id/nav_listrik_masjid"
-                android:icon="@drawable/baseline_electric_bolt_24"
-                android:title="Listrik Masjid"/>
-            <item
-                android:id="@+id/nav_grafik"
-                android:icon="@drawable/baseline_image_24"
-                android:title="Grafik Tandon Masjid"/>
-        </menu>
-    </item>-->
-
 </menu>

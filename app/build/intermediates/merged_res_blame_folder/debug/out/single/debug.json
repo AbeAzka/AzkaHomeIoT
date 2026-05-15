@@ -32,12 +32,12 @@
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\drawable\\ic_more_vert_white.xml"
     },
     {
-        "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\layout-land_fragment_listrik_bunda.xml.flat",
-        "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\layout-land\\fragment_listrik_bunda.xml"
-    },
-    {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\drawable_ic_arrow_forward.xml.flat",
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\drawable\\ic_arrow_forward.xml"
+    },
+    {
+        "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\layout-land_fragment_listrik_bunda.xml.flat",
+        "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\layout-land\\fragment_listrik_bunda.xml"
     },
     {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\layout_bottom_sheet_timeline.xml.flat",
@@ -54,6 +54,10 @@
     {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\layout-land_fragment_about.xml.flat",
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\layout-land\\fragment_about.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-merged_res-74:/menu_nav_menu.xml.flat",
+        "source": "com.indodevstudio.azka_home_iot.app-main-76:/menu/nav_menu.xml"
     },
     {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\layout_fragment_arduino.xml.flat",
@@ -172,12 +176,12 @@
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\layout\\item_device.xml"
     },
     {
-        "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\layout_nav_header.xml.flat",
-        "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\layout\\nav_header.xml"
-    },
-    {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\drawable_ic_reload.xml.flat",
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\drawable\\ic_reload.xml"
+    },
+    {
+        "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\layout_nav_header.xml.flat",
+        "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\layout\\nav_header.xml"
     },
     {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\drawable_idspct.xml.flat",
@@ -736,12 +740,12 @@
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\drawable\\bg_dialog_whatsapp.xml"
     },
     {
-        "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\drawable_google_pct.xml.flat",
-        "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\drawable\\google_pct.xml"
-    },
-    {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\drawable_bg_shimmer_rounded.xml.flat",
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\drawable\\bg_shimmer_rounded.xml"
+    },
+    {
+        "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\drawable_google_pct.xml.flat",
+        "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\drawable\\google_pct.xml"
     },
     {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\drawable_ic_add_black.xml.flat",
@@ -984,12 +988,12 @@
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\drawable-nodpi\\ic_person.xml"
     },
     {
-        "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\drawable_circle_background.xml.flat",
-        "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\drawable\\circle_background.xml"
-    },
-    {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\drawable-nodpi_logo_5550.png.flat",
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\drawable-nodpi\\logo_5550.png"
+    },
+    {
+        "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\drawable_circle_background.xml.flat",
+        "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\drawable\\circle_background.xml"
     },
     {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\drawable-nodpi_login_btn_bg.xml.flat",
@@ -1004,20 +1008,16 @@
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\drawable\\ic_money.xml"
     },
     {
-        "merged": "com.indodevstudio.azka_home_iot.app-merged_res-74:/layout_nav_header.xml.flat",
-        "source": "com.indodevstudio.azka_home_iot.app-main-76:/layout/nav_header.xml"
-    },
-    {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\menu_settings_menu.xml.flat",
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\menu\\settings_menu.xml"
     },
     {
-        "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\drawable_bg_switch_on.xml.flat",
-        "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\drawable\\bg_switch_on.xml"
-    },
-    {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\xml_root_preferences.xml.flat",
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\xml\\root_preferences.xml"
+    },
+    {
+        "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\drawable_bg_switch_on.xml.flat",
+        "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-main-76:\\drawable\\bg_switch_on.xml"
     },
     {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.2\\com.indodevstudio.azka_home_iot.app-merged_res-74:\\drawable_news.xml.flat",

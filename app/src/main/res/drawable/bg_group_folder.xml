@@ -1,0 +1,23 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Body folder -->
+    <item android:top="24dp">
+        <shape android:shape="rectangle">
+            <corners android:radius="12dp"/>
+            <solid android:color="@color/folderBody"/>
+        </shape>
+    </item>
+
+    <!-- Tab folder -->
+    <item
+        android:width="72dp"
+        android:height="24dp"
+        android:left="16dp">
+        <shape android:shape="rectangle">
+            <corners android:topLeftRadius="12dp"
+                android:topRightRadius="12dp"/>
+            <solid android:color="@color/folderTab"/>
+        </shape>
+    </item>
+
+</layer-list>
