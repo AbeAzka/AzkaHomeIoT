@@ -1,5 +1,3 @@
-
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -9,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.indodevstudio.azka_home_iot"
-    compileSdk = 34
+    compileSdk = 35
 
 
     defaultConfig {
@@ -17,8 +15,8 @@ android {
         applicationId = "com.indodevstudio.azka_home_iot"
         minSdk = 30
         targetSdk = 34
-        versionCode = 1
-        versionName = "2.10"//Last 2.45
+        versionCode = 2
+        versionName = "2.15"//Last 2.45
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -32,8 +30,6 @@ android {
             )
         }
     }
-
-
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -52,7 +48,7 @@ android {
 
 
 dependencies {
-// Untuk Executor bawaan Android (pengganti ListenableFuture)
+    // Untuk Executor bawaan Andro  zid (pengganti ListenableFuture)
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation ("com.google.android.material:material:1.11.0")
     implementation ("com.getkeepsafe.taptargetview:taptargetview:1.13.3")

@@ -434,8 +434,8 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                 val avatarPath = userData["avatar"].toString()
 
                 // Base URL untuk server
-                val baseUrl = "https://games.abeazka.my.id/u/"
-                val baseUrl2 = "https://games.abeazka.my.id/u/images/"
+                val baseUrl = "https://www.indodevstudio.my.id/u/"
+                val baseUrl2 = "https://www.indodevstudio.my.id/u/images/"
 
                 /*// Pastikan path benar
                 val fullAvatarUrl = when {
@@ -444,7 +444,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                     avatarPath.startsWith("http") -> avatarPath // Jika sudah full URL
                     else -> baseUrl2 + "user.png" // Jika path tidak diketahui
                 }*/
-                val fullAvatarUrl = "https://games.abeazka.my.id/u/$avatarPath"
+                val fullAvatarUrl = "https://www.indodevstudio.my.id/u/$avatarPath"
 
                 Log.d("AvatarURL", "Final URL2: $fullAvatarUrl") // Debugging
 
@@ -486,7 +486,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             accSete.tooltipText="Account Settings"
             accSete.setOnClickListener{
                 //val redirectUrl = "myapp://link_success"  // Deep link kembali ke aplikasi
-                //val loginUrl = "https://games.abeazka.my.id/u/login?redirect=$redirectUrl"
+                //val loginUrl = "https://www.indodevstudio.my.id/u/login?redirect=$redirectUrl"
                 email = userData["email"].toString()
                 val encrypted = AESUtil.encrypt(email)
                 val loginUrl = "https://www.indodevstudio.my.id/u/profile?redirect=$encrypted"
@@ -513,8 +513,8 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             val avatarPath = userData["avatar"].toString()
             userData["email"]?.let { sendFCMTokenToServer(applicationContext,it) }
 // Base URL untuk server
-            val baseUrl = "https://games.abeazka.my.id/u/"
-            val baseUrl2 = "https://games.abeazka.my.id/u/images/"
+            val baseUrl = "https://www.indodevstudio.my.id/u/"
+            val baseUrl2 = "https://www.indodevstudio.my.id/u/images/"
 
             // Pastikan path benar
             /*val fullAvatarUrl = when {
@@ -524,7 +524,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                 else -> baseUrl2 + "user.png" // Jika path tidak diketahui
             }*/
 
-            val fullAvatarUrl = "https://games.abeazka.my.id/u/$avatarPath"
+            val fullAvatarUrl = "https://www.indodevstudio.my.id/u/$avatarPath"
 
             Log.d("AvatarURL", "Final URL: $fullAvatarUrl") // Debugging
 
@@ -543,7 +543,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         when (intent.getStringExtra("fragment_to_open")) {
             "finansial" -> openFragment(FinansialFragment(), R.id.finansial_plan )
             "event" -> openFragment(EventFragment(), R.id.events_)
-            "arduino" -> openFragment(DeviceListFragment(), R.id.nav_device)
+//            "arduino" -> openFragment(DeviceListFragment(), R.id.nav_device)
 
             else -> openFragment(HomeFragment(), R.id.nav_home)
         }
@@ -1174,13 +1174,13 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                     .replace(R.id.fragment_container, EventFragment()).commit()
                 navigationView.setCheckedItem(R.id.events_)
             }
-            R.id.nav_device -> {
-                val navigationView = findViewById<NavigationView>(R.id.nav_view)
-                navigationView.setNavigationItemSelectedListener(this)
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, DeviceListFragment()).commit()
-                navigationView.setCheckedItem(R.id.nav_book)
-            }
+//            R.id.nav_device -> {
+//                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+//                navigationView.setNavigationItemSelectedListener(this)
+//                supportFragmentManager.beginTransaction()
+//                    .replace(R.id.fragment_container, DeviceListFragment()).commit()
+//                navigationView.setCheckedItem(R.id.nav_book)
+//            }
             R.id.nav_log -> {
                 val navigationView = findViewById<NavigationView>(R.id.nav_view)
                 navigationView.setNavigationItemSelectedListener(this)
@@ -1200,6 +1200,8 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
              //   .replace(R.id.fragment_container, UpdateLogFragment()).commit()
 
             R.id.nav_logout -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
                 //auth.signOut()
                 //startActivity(Intent(this , SignInActivity::class.java))
 

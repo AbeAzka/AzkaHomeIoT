@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-72:/values-v23/values-v23.xml",
+            "outputFile": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-73:/values-v23/values-v23.xml",
             "map": [
                 {
                     "source": "C:\\Users\\azkaj\\.gradle\\caches\\transforms-3\\a5bd6706fd62abf056125e9b293738b6\\transformed\\work-runtime-2.9.1\\res\\values-v23\\values-v23.xml",

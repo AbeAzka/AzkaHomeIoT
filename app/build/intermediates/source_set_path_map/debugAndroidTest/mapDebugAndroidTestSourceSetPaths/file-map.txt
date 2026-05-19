@@ -1,0 +1,7 @@
+com.indodevstudio.azka_home_iot.test.app-jetified-core-1.6.1-0 C:\Users\azkaj\.gradle\caches\8.12\transforms\1de5ffca41202a5244cd377dc7b31ef0\transformed\jetified-core-1.6.1\res
+com.indodevstudio.azka_home_iot.test.app-jetified-annotation-experimental-1.4.1-1 C:\Users\azkaj\.gradle\caches\8.12\transforms\659dcc9adda532ecd8e2c742153af56f\transformed\jetified-annotation-experimental-1.4.1\res
+com.indodevstudio.azka_home_iot.test.app-jetified-tracing-1.2.0-2 C:\Users\azkaj\.gradle\caches\8.12\transforms\6ff0d0b0d9107c2b091848255877f9b3\transformed\jetified-tracing-1.2.0\res
+com.indodevstudio.azka_home_iot.test.app-androidTest-3 D:\PROJECT_KOTLIN\AHI\app\build\generated\res\resValues\androidTest\debug
+com.indodevstudio.azka_home_iot.test.app-mergeDebugAndroidTestResources-4 D:\PROJECT_KOTLIN\AHI\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.indodevstudio.azka_home_iot.test.app-mergeDebugAndroidTestResources-5 D:\PROJECT_KOTLIN\AHI\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.indodevstudio.azka_home_iot.test.app-debugAndroidTest-6 D:\PROJECT_KOTLIN\AHI\app\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources

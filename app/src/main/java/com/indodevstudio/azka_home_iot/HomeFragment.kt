@@ -130,39 +130,6 @@ class HomeFragment : Fragment() {
 
         val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
-//        val sharedPreferences_tutorial = requireContext().getSharedPreferences("AppPrefs",
-//            Context.MODE_PRIVATE
-//        )
-//        val isFirstTime = sharedPreferences_tutorial.getBoolean("isFirstTimes3", true)
-//
-//        if (isFirstTime) {
-//            TapTargetSequence(requireActivity())
-//                .targets(
-//                    TapTarget.forView(view.findViewById(R.id.humidity_txt), "Humidity", "Informasi tingkat kelembapan.")
-//                        .cancelable(false)
-//                        .transparentTarget(true),
-//                    TapTarget.forView(view.findViewById(R.id.temperature_txt), "Temperature", "Informasi suhu.")
-//                        .cancelable(false)
-//                        .transparentTarget(true),
-//                    TapTarget.forView(view.findViewById(R.id.rv_data), "Latest Inbox", "Menampilkan pesan Inbox terbaru.")
-//                        .cancelable(false)
-//                        .transparentTarget(true),
-//                    TapTarget.forView(view.findViewById(R.id.imageGrafikSampleTest), "Graph", "Menampilkan grafik.")
-//                        .cancelable(true)
-//                        .transparentTarget(true),
-//                    )
-//                .listener(object : TapTargetSequence.Listener {
-//                    override fun onSequenceFinish() {
-//                        // Tandai bahwa user sudah pernah lihat tutorial
-//                        sharedPreferences_tutorial.edit().putBoolean("isFirstTimes3", false).apply()
-//                    }
-//
-//                    override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
-//                    override fun onSequenceCanceled(lastTarget: TapTarget) {}
-//                }).start()
-//        }
-
-
         startDateInput.setOnClickListener {
             showDatePicker { date ->
                 startDateInput.setText(date)
@@ -189,7 +156,7 @@ class HomeFragment : Fragment() {
 
 //        chart = view.findViewById(R.id.chart)
 //        pbData_BG = view.findViewById(R.id.load)
-         val imageGraphSample = view.findViewById<ImageView>(R.id.imageGrafikSample)
+        val imageGraphSample = view.findViewById<ImageView>(R.id.imageGrafikSample)
         val imageGraphSample2 = view.findViewById<ImageView>(R.id.imageGrafikSampleTest)
         lmData = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         (lmData as LinearLayoutManager).setReverseLayout(true);
@@ -210,7 +177,7 @@ class HomeFragment : Fragment() {
                 lineChart.visibility = View.GONE
                 imageGraphSample.visibility = View.GONE
                 imageGraphSample2.setImageResource(R.drawable.sample)
-
+                showLoadingState()
                 // Simulate your data retrieval methods (replace with your actual logic)
                 retrieveData()
                 retrieveTemp()
@@ -221,9 +188,9 @@ class HomeFragment : Fragment() {
 
 
 
-                    // Set the actual image after data has been retrieved
-                    // For example, setImageBitmap(actualImage)
-                    // imageGrafikSample.setImageBitmap(actualImage)
+                // Set the actual image after data has been retrieved
+                // For example, setImageBitmap(actualImage)
+                // imageGrafikSample.setImageBitmap(actualImage)
 
 
 
@@ -261,12 +228,12 @@ class HomeFragment : Fragment() {
         imageGraphSample.setOnClickListener{ view->
             if (click == true){
                 getActivity()?.runOnUiThread {
-                            Toast.makeText(
-                                getActivity(),
-                                "You already click this image!",
-                                Toast.LENGTH_SHORT
-                            ).show();
-                        }
+                    Toast.makeText(
+                        getActivity(),
+                        "You already click this image!",
+                        Toast.LENGTH_SHORT
+                    ).show();
+                }
             }else {
                 click = true
                 var inflater = LayoutInflater.from(getActivity())
@@ -308,10 +275,11 @@ class HomeFragment : Fragment() {
 
         val calendar = Calendar.getInstance()
         val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
-        val greetingss: String = if (currentHour in 0..11) {
-            "Good morning"
-        } else {
-            "Good evening"
+        val greetingss: String = when (currentHour) {
+            in 0..11 -> "Good morning"
+            in 12..14 -> "Good afternoon"
+            in 15..17 -> "Good evening"
+            else -> "Good night"
         }
 
         greeting.text = "$greetingss, $namee"
@@ -409,7 +377,10 @@ class HomeFragment : Fragment() {
     private fun getChartData2() {
         val start = startDateInput.text.toString().takeIf { it.isNotEmpty() }
         val end = endDateInput.text.toString().takeIf { it.isNotEmpty() }
+        shimmerLayout.visibility = View.VISIBLE
+        shimmerLayout.startShimmer()
 
+        lineChart.visibility = View.GONE
         TandonClient.instance.getTandonData2().enqueue(object : retrofit2.Callback<ArrayList<TandonData>> {
             override fun onResponse(call: retrofit2.Call<ArrayList<TandonData>>, response: retrofit2.Response<ArrayList<TandonData>>) {
                 if (response.isSuccessful) {
@@ -438,6 +409,14 @@ class HomeFragment : Fragment() {
                     Toast.makeText(it, "Gagal: ${t.message}", Toast.LENGTH_LONG).show()
 
                 }
+                shimmerLayout.stopShimmer()
+                shimmerLayout.visibility = View.GONE
+
+                lineChart.visibility = View.VISIBLE
+
+                lineChart.clear()
+                lineChart.setNoDataText("Gagal memuat grafik")
+                lineChart.invalidate()
             }
         })
     }
@@ -488,11 +467,11 @@ class HomeFragment : Fragment() {
                 mode = LineDataSet.Mode.CUBIC_BEZIER
             }
             val legend = lineChart.legend
-            legend.textColor = textColor!!
+            legend.textColor = textColor ?: Color.WHITE
             legend.textSize = 12f
             legend.form = Legend.LegendForm.LINE
 
-            lineChart.axisLeft.textColor = textColor!!
+            lineChart.axisLeft.textColor = textColor ?: Color.WHITE
             lineChart.axisLeft.gridColor = textColor as Int
 
             lineChart.axisRight.textColor = textColor as Int
@@ -559,7 +538,7 @@ class HomeFragment : Fragment() {
                     Log.i("Response", "Received response from server. Response")
                     if (response.code == 200) {
                         //Thread.sleep(3_000)
-                         // Adjust this delay to match your data loading time
+                        // Adjust this delay to match your data loading time
                         println("GAMBAR BERHASIL DIBUILD")
                         println("TAHAP MUNCULIN GAMBAR.....")
                         //Popup
@@ -638,59 +617,95 @@ class HomeFragment : Fragment() {
         }
     }
 
-    fun retrieveData(){
-//        pbData_BG!!.visibility = View.VISIBLE
-        pbData?.visibility = View.VISIBLE
+    fun retrieveData() {
 
-        val ardData: APIRequestData = RetroServer.konekRetrofit().create(APIRequestData::class.java)
-        val tampilData: retrofit2.Call<ResponseModel> = ardData.ardRetrieveData()
-        tampilData.enqueue(object: retrofit2.Callback<ResponseModel> {
-            override fun onResponse(call: retrofit2.Call<ResponseModel>, response: retrofit2.Response<ResponseModel>) {
+        showLoadingState()
 
-                text.visibility = View.GONE
-                if(response.body()?.data == null){
-                    text.visibility = View.VISIBLE
-                    srlDat?.visibility = View.GONE
-                    rvData?.visibility = View.GONE
-//                    text.visibility = View.VISIBLE
-                    pbData?.visibility = View.INVISIBLE
-//                    pbData_BG!!.visibility = View.INVISIBLE
-                }else{
+        val ardData = RetroServer
+            .konekRetrofit()
+            .create(APIRequestData::class.java)
+
+        ardData.ardRetrieveData()
+            .enqueue(object : retrofit2.Callback<ResponseModel> {
+
+                override fun onResponse(
+                    call: retrofit2.Call<ResponseModel>,
+                    response: retrofit2.Response<ResponseModel>
+                ) {
+
+                    hideLoadingState()
+
+                    val body = response.body()
+                    val data = body?.data
+
+                    if (data.isNullOrEmpty()) {
+
+                        text.visibility = View.VISIBLE
+                        text.text = "No data available yet"
+
+                        rvData?.visibility = View.VISIBLE
+
+                        adData = AdapterData(context, emptyList())
+                        rvData?.adapter = adData
+
+                        return
+                    }
+
+                    listData = data
 
                     text.visibility = View.GONE
-                    srlDat?.visibility = View.VISIBLE
-                    listData = response.body()?.data!!
-                    adData = AdapterData(context, listData)
-                    rvData?.smoothScrollToPosition(listData.size-1);
                     rvData?.visibility = View.VISIBLE
 
-//                    text.visibility = View.GONE
+                    adData = AdapterData(context, listData)
                     rvData?.adapter = adData
 
+                    rvData?.smoothScrollToPosition(listData.size - 1)
+
                     adData?.notifyDataSetChanged()
-//                    pbData_BG!!.visibility = View.INVISIBLE
-                    pbData?.visibility = View.INVISIBLE
                 }
 
+                override fun onFailure(
+                    call: retrofit2.Call<ResponseModel>,
+                    t: Throwable
+                ) {
 
-            }
+                    hideLoadingState()
 
-            override fun onFailure(call: retrofit2.Call<ResponseModel>, t: Throwable) {
-                srlDat?.visibility = View.GONE
-                text.visibility = View.VISIBLE
-                getActivity()?.runOnUiThread {
-                    Toast.makeText(
-                        context, "Failed to connect: " + t.message, Toast.LENGTH_SHORT
-                    ).show()
+                    text.visibility = View.VISIBLE
+                    text.text = "Koneksi gagal"
+
+                    rvData?.visibility = View.VISIBLE
+
+                    adData = AdapterData(context, emptyList())
+                    rvData?.adapter = adData
+
+                    Log.e("API_ERROR", t.message.toString())
                 }
-                return
-                Log.i("ERROR", "Failed to connect: " + t.message)
-                pbData?.visibility = View.INVISIBLE
-//                pbData_BG!!.visibility = View.INVISIBLE
-            }
-
-        })
+            })
     }
+
+    private fun showLoadingState() {
+
+        shimmerLayout.visibility = View.VISIBLE
+        shimmerLayout.startShimmer()
+
+        rvData?.visibility = View.GONE
+
+        pbData?.visibility = View.VISIBLE
+    }
+
+    private fun hideLoadingState() {
+
+        shimmerLayout.stopShimmer()
+        shimmerLayout.visibility = View.GONE
+
+        rvData?.visibility = View.VISIBLE
+
+        pbData?.visibility = View.GONE
+
+        srlData?.isRefreshing = false
+    }
+
     private fun getUserData(): Map<String, String?> {
         val prefs = requireContext().getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
         return mapOf(
@@ -710,84 +725,70 @@ class HomeFragment : Fragment() {
         return peluang
     }
 
+    fun retrieveTemp() {
 
+        val ardData = RetroServer
+            .konekRetrofit()
+            .create(APIRequestData::class.java)
 
+        ardData.ardRetrieveTemp()
+            .enqueue(object : retrofit2.Callback<ResponseModel> {
 
+                override fun onResponse(
+                    call: retrofit2.Call<ResponseModel>,
+                    response: retrofit2.Response<ResponseModel>
+                ) {
 
+                    val data = response.body()?.data ?: emptyList()
 
-    fun retrieveTemp(){
-        pbData?.visibility = View.VISIBLE
+                    if (data.isEmpty()) {
 
-        val ardData: APIRequestData = RetroServer.konekRetrofit().create(APIRequestData::class.java)
-        val tampilData: retrofit2.Call<ResponseModel> = ardData.ardRetrieveTemp()
-        tampilData.enqueue(object: retrofit2.Callback<ResponseModel> {
-            override fun onResponse(call: retrofit2.Call<ResponseModel>, response: retrofit2.Response<ResponseModel>) {
-                val r = response.body()!!.data
+                        textHum.text = "--%"
+                        textTemo.text = "--℃"
+                        textTime.text = "No data available yet"
 
-                listLaundry = response.body()!!.data
-                //text.visibility = View.GONE
-                if(response.body()?.data != null){
-//                    val dataset: BarDataSet = BarDataSet(yVals, r.get(0).);
-
-                    var chanceRain = ""
-
-
-
-                    if (listLaundry[r.lastIndex].kelembapan.toString() > "65"){
-                        chanceRain = "Diperkirakan hujan/setelah hujan!"
-                    }
-                    else if(listLaundry[r.lastIndex].kelembapan.toString() == "100"){
-                        chanceRain = "Sedang hujan!"
-                    }
-                    else{
-                        chanceRain = "Diperkirakan tidak hujan!"
+                        return
                     }
 
-                    // Contoh penggunaan
-                    val kelembapan = listLaundry[r.lastIndex].kelembapan.toDouble()
-                    val suhu = listLaundry[r.lastIndex].suhu.toDouble()
-                    val peluangHujan = hitungPeluangHujan(kelembapan, suhu)
+                    val latest = data.lastOrNull() ?: return
 
-                    println("Peluang hujan: %.1f%%".format(peluangHujan))
+                    val humidity =
+                        latest.kelembapan.toDoubleOrNull() ?: 0.0
 
-                    textHum.text = listLaundry[r.lastIndex].kelembapan.toString() + "%"
-                    textTemo.text = listLaundry[r.lastIndex].suhu.toString() + "\u2103"
-                    textTime.text = "Last update: "+ listLaundry[r.lastIndex].date.toString() + "\n $chanceRain\n" + "Peluang hujan: %.1f%%".format(peluangHujan)
+                    val temp =
+                        latest.suhu.toDoubleOrNull() ?: 0.0
+
+                    val peluangHujan =
+                        hitungPeluangHujan(humidity, temp)
+
+                    val chanceRain = when {
+                        humidity >= 100 -> "Sedang hujan!"
+                        humidity > 65 -> "Diperkirakan hujan"
+                        else -> "Tidak hujan"
+                    }
+
+                    textHum.text = "${latest.kelembapan}%"
+                    textTemo.text = "${latest.suhu}℃"
+
+                    textTime.text =
+                        "Last update: ${latest.date}\n" +
+                                "$chanceRain\n" +
+                                "Peluang hujan: %.1f%%"
+                                    .format(peluangHujan)
                 }
-                //else{
-//                    text.visibility = View.GONE
-//                    srlDat!!.visibility = View.VISIBLE
-//                    listData = response.body()!!.data
-//                    adData = AdapterData(context, listData)
-//                    rvData!!.smoothScrollToPosition(listData.size-1);
-//                    rvData!!.visibility = View.VISIBLE
-//
-////                    text.visibility = View.GONE
-//                    rvData!!.adapter = adData
-//
-//                    adData!!.notifyDataSetChanged()
-////                    pbData_BG!!.visibility = View.INVISIBLE
-//                    pbData!!.visibility = View.INVISIBLE
-//                }
 
+                override fun onFailure(
+                    call: retrofit2.Call<ResponseModel>,
+                    t: Throwable
+                ) {
 
-            }
+                    textHum.text = "--%"
+                    textTemo.text = "--℃"
+                    textTime.text = "Koneksi gagal"
 
-            override fun onFailure(call: retrofit2.Call<ResponseModel>, t: Throwable) {
-//                srlDat!!.visibility = View.GONE
-//                text.visibility = View.VISIBLE
-                getActivity()?.runOnUiThread {
-                    Toast.makeText(
-                        context, "Failed to connect: " + t.message, Toast.LENGTH_SHORT
-                    ).show()
+                    Log.e("TEMP_ERROR", t.message.toString())
                 }
-                return
-                Log.i("ERROR", "Failed to connect: " + t.message)
-                pbData!!.visibility = View.INVISIBLE
-//                pbData_BG!!.visibility = View.INVISIBLE
-            }
-
-        })
+            })
     }
 
 }

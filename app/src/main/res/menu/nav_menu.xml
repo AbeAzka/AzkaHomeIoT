@@ -49,22 +49,22 @@
             </group>
         </menu>
     </item>
-    <item
-        android:title="ARDUINO"
-        android:id="@+id/ard"
-        >
-        <menu>
-            <group
-                android:checkableBehavior="single"
-                >
-                <item
-                    android:id="@+id/nav_device"
-                    android:icon="@drawable/ic_arduino_blue"
-                    android:title="Arduino Management [BETA]"/>
+<!--    <item-->
+<!--        android:title="ARDUINO"-->
+<!--        android:id="@+id/ard"-->
+<!--        >-->
+<!--        <menu>-->
+<!--            <group-->
+<!--                android:checkableBehavior="single"-->
+<!--                >-->
+<!--                <item-->
+<!--                    android:id="@+id/nav_device"-->
+<!--                    android:icon="@drawable/ic_arduino_blue"-->
+<!--                    android:title="Arduino Management [BETA]"/>-->
 
-            </group>
-        </menu>
-    </item>
+<!--            </group>-->
+<!--        </menu>-->
+<!--    </item>-->
 
     <item
         android:title="IBADAH"
@@ -142,7 +142,7 @@
                 android:title="Tandon Bunda"/>
             <item
                 android:id="@+id/nav_listrik_uti"
-                android:icon="@drawable/baseline_sensors_24"
+                android:icon="@drawable/baseline_electric_bolt_24"
                 android:title="Listrik Uti"/>
 
                 <item

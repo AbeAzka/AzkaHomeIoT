@@ -35,8 +35,8 @@
             app:entryValues="@array/dark_mode_entries_values"/>
         <Preference
             android:key="notification_ringtone"
-            android:title="Nada Dering Notifikasi"
-            android:summary="Pilih nada dering notifikasi"
+            android:title="Notification Ringtone"
+            android:summary="Select notification ringtone"
             android:fragment="com.indodevstudio.azka_home_iot.RingtonePickerFragment" />
 
         <!--<SwitchPreferenceCompat
@@ -53,7 +53,7 @@
                         app:key="link"
                         android:summary="Open website!">
                         <intent android:action="android.intent.action.VIEW"
-                            android:data="https://www.abeazka.my.id"/>
+                            android:data="https://www.indodevstudio.my.id"/>
 
                     </Preference>
 
