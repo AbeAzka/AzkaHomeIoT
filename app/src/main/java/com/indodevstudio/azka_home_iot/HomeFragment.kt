@@ -729,10 +729,13 @@ class HomeFragment : Fragment() {
                     else{
                         chanceRain = "Diperkirakan tidak hujan!"
                     }
+                    val kelembapan = listLaundry[r.lastIndex].kelembapan.toDouble()
+                    val suhu = listLaundry[r.lastIndex].suhu.toDouble()
+                    val peluangHujan = hitungPeluangHujan(kelembapan, suhu)
 
                     textHum.text = listLaundry[r.lastIndex].kelembapan.toString() + "%"
                     textTemo.text = listLaundry[r.lastIndex].suhu.toString() + "\u2103"
-                    textTime.text = "Last update: "+ listLaundry[r.lastIndex].date.toString() + "\n $chanceRain"
+                    textTime.text = "Last update: "+ listLaundry[r.lastIndex].date.toString() + "\n $chanceRain \n" + "Peluang hujan: %.1f%%".format(peluangHujan)
                 }
                 //else{
 //                    text.visibility = View.GONE
@@ -749,8 +752,17 @@ class HomeFragment : Fragment() {
 ////                    pbData_BG!!.visibility = View.INVISIBLE
 //                    pbData!!.visibility = View.INVISIBLE
 //                }
+                
 
 
+            }
+
+            fun hitungPeluangHujan(kelembapan: Double, suhu: Double): Double {
+                var peluang = 0.6 * kelembapan - 0.3 * suhu
+                // Batasi peluang antara 0 - 100%
+                if (peluang < 0) peluang = 0.0
+                if (peluang > 100) peluang = 100.0
+                return peluang
             }
 
             override fun onFailure(call: retrofit2.Call<ResponseModel>, t: Throwable) {
