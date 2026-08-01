@@ -53,11 +53,11 @@ class InboxActivity : AppCompatActivity() {
         val topicList = listOf("Semua", "Arduino Control", "Tandon", "Movement Detection")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, topicList)
         spinner.adapter = adapter
-
+        var selectedTopic = ""
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val selectedTopic = parent.getItemAtPosition(position).toString()
+                selectedTopic = parent.getItemAtPosition(position).toString()
                 rvData.removeAllViewsInLayout()
                 shimmerFrame.startShimmer()
                 shimmerFrame.visibility = View.VISIBLE
@@ -93,7 +93,7 @@ class InboxActivity : AppCompatActivity() {
                 shimmerFrame.startShimmer();
                 shimmerFrame.setVisibility(View.VISIBLE);
                 rvData.removeAllViewsInLayout()
-                retrieveData("Semua")
+                retrieveData(selectedTopic)
                 setRefreshing(false)
 
             }

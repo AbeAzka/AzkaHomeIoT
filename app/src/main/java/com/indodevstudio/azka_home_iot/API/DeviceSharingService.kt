@@ -38,7 +38,7 @@ object DeviceSharingService {
     }
     fun getDeviceStatus(deviceId: String) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://ahi.abeazka.my.id/api/arduino/") // Ganti dengan URL server kamu
+            .baseUrl("https://www.indodevstudio.my.id/api/arduino/") // Ganti dengan URL server kamu
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -69,7 +69,7 @@ object DeviceSharingService {
 
     fun getStatus(deviceId: String) {
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://ahi.abeazka.my.id/api/arduino/") // Ganti dengan URL server kamu
+            .baseUrl("https://www.indodevstudio.my.id/api/arduino/") // Ganti dengan URL server kamu
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -106,11 +106,11 @@ object DeviceSharingService {
             .add("owner_email", ownerEmail)
             .add("shared_email", sharedEmail)
             .add("device_id", deviceID)
-            .add("device_name", deviceName)
+//            .add("device_name", deviceName)
             .build()
 
         val request = Request.Builder()
-            .url("http://ahi.abeazka.my.id/api/arduino/invite")
+            .url("https://www.indodevstudio.my.id/api/arduino/invite")
             .post(requestBody)
             .build()
 
@@ -125,7 +125,7 @@ object DeviceSharingService {
         })
     }
 
-    fun sendDevice(ownerEmail: String, deviceName: String, deviceID: String, deviceIP: String) {
+    fun sendDevice(ownerEmail: String, deviceName: String, deviceID: String, deviceIP: String, category: String) {
 //        val requestBody = FormBody.Builder()
 //            .add("owner_email", ownerEmail)
 //            .add("device_name", deviceName)
@@ -137,7 +137,8 @@ object DeviceSharingService {
             "owner_email": "$ownerEmail",
             "device_name": "$deviceName",
             "device_id": "$deviceID",
-            "device_ip": "$deviceIP"
+            "device_ip": "$deviceIP",
+            "category": "$category"
         }
     """.trimIndent()
 
@@ -146,7 +147,8 @@ object DeviceSharingService {
 
 
         val request = Request.Builder()
-            .url("http://ahi.abeazka.my.id/api/arduino/add_device")
+            .addHeader("Content-Type", "application/json")
+            .url("https://www.indodevstudio.my.id/api/arduino/add_device")
             .post(requestBody)
             .build()
 
@@ -169,18 +171,27 @@ object DeviceSharingService {
             .build()
 
         val request = Request.Builder()
-            .url("http://ahi.abeazka.my.id/api/arduino/add_user")
+            .url("https://www.indodevstudio.my.id/api/arduino/add_user")
             .post(requestBody)
             .build()
 
+        Log.d("API_REQUEST", "URL: ${request.url}")
+        Log.d("API_REQUEST", "Headers: ${request.headers}")
+        Log.d("API_REQUEST", "Body: ${requestBody.toString()}")
+
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                //callback(false, "Gagal mengirim undangan: ${e.message}")
-                Logger.log("INFO", "Gagal add user: ${e.message}")
+                Log.e("API_ERROR", "Gagal add user: ${e.message}", e)
             }
 
             override fun onResponse(call: Call, response: Response) {
-                //callback(true, "Undangan terkirim: ${response.body?.string()}")
+                val responseBody = response.body?.string()
+                Log.d("API_RESPONSE", "Code: ${response.code}")
+                Log.d("API_RESPONSE", "Body: $responseBody")
+
+                if (!response.isSuccessful) {
+                    Log.e("API_ERROR", "Gagal add user. Response code: ${response.code}")
+                }
             }
         })
     }
@@ -196,7 +207,7 @@ object DeviceSharingService {
             .build()
 
         val request = Request.Builder()
-            .url("http://ahi.abeazka.my.id/api/arduino/accept_invite")
+            .url("https://www.indodevstudio.my.id/api/arduino/accept_invite")
             .post(requestBody)
             .build()
 
@@ -215,7 +226,7 @@ object DeviceSharingService {
     // Fungsi untuk mendapatkan daftar perangkat yang dibagikan
     fun getSharedDevices(userEmail: String, callback: (Boolean, String) -> Unit) {
         val request = Request.Builder()
-            .url("http://ahi.abeazka.my.id/api/arduino/shared_devices?user_email=$userEmail")
+            .url("https://www.indodevstudio.my.id/api/arduino/shared_devices?user_email=$userEmail")
             .build()
 
         client.newCall(request).enqueue(object : Callback {

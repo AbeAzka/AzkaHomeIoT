@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package com.indodevstudio.azka_home_iot
 
 import android.app.DatePickerDialog
@@ -801,4 +802,799 @@ class HomeFragment : Fragment() {
                 }
             }
     }
+=======
+package com.indodevstudio.azka_home_iot
+
+import android.app.DatePickerDialog
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.Typeface
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import android.util.TypedValue
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.PopupWindow
+import android.widget.ProgressBar
+import android.widget.ScrollView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.facebook.shimmer.Shimmer
+import com.facebook.shimmer.ShimmerFrameLayout
+import com.getkeepsafe.taptargetview.TapTarget
+import com.getkeepsafe.taptargetview.TapTargetSequence
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+
+import com.google.firebase.auth.FirebaseAuth
+import com.indodevstudio.azka_home_iot.API.APIRequestData
+import com.indodevstudio.azka_home_iot.API.RetroServer
+import com.indodevstudio.azka_home_iot.API.TandonClient
+import com.indodevstudio.azka_home_iot.API.TandonData
+import com.indodevstudio.azka_home_iot.Adapter.AdapterData
+import com.indodevstudio.azka_home_iot.Model.DataModel
+import com.indodevstudio.azka_home_iot.Model.ResponseModel
+import com.ortiz.touchview.TouchImageView
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import java.io.IOException
+import java.io.InputStream
+import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+
+class HomeFragment : Fragment() {
+    // TODO: Rename and change types of parameters
+    private var param1: String? = null
+    private var param2: String? = null
+    lateinit var listLaundry: List<DataModel>
+    var textColor: Int? = null
+
+    lateinit var imageGrafik : TouchImageView
+    lateinit var inputStream : InputStream
+    var click = false
+    var image : Bitmap? = null
+    var image2 : Bitmap? = null
+    lateinit var text : TextView
+    var rvData : RecyclerView? = null
+    var test : RecyclerView? = null
+    var adData : RecyclerView.Adapter<*>? = null
+    var lmData : RecyclerView.LayoutManager? = null
+    var listData: List<DataModel> = ArrayList<DataModel>()
+    var srlDat: NestedScrollView? = null
+    var srlData: SwipeRefreshLayout? = null
+    var pbData: ProgressBar? = null
+    var cards2: CardView? = null
+    lateinit var shimmerLayout : ShimmerFrameLayout
+    private lateinit var lineChart: LineChart
+
+    private lateinit var startDateInput: EditText
+    private lateinit var endDateInput: EditText
+    lateinit var textTime : TextView
+    lateinit var textHum : TextView
+    lateinit var textTemo : TextView
+
+    private val refreshHandler = Handler(Looper.getMainLooper())
+    private lateinit var refreshRunnable: Runnable
+
+
+    lateinit var text_card : TextView
+//    var pbData_BG: ConstraintLayout? = null
+
+
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view =  inflater.inflate(R.layout.fragment_home, container, false)
+
+        shimmerLayout = view.findViewById<ShimmerFrameLayout>(R.id.shimmer_layout)
+        rvData = view.findViewById(R.id.rv_data)
+        srlData = view.findViewById(R.id.srl_data)
+        pbData = view.findViewById(R.id.pb_data)
+        text = view.findViewById(R.id.text_Inbox)
+        //srlDat = view.findViewById(R.id.srl_dta)
+        lineChart = view.findViewById(R.id.lineChart)
+        startDateInput = view.findViewById(R.id.startDateInput)
+        endDateInput = view.findViewById(R.id.endDateInput)
+//        cards2 = view.findViewById(R.id.cards_info2)
+//        text_card = view.findViewById(R.id.pp)
+        textTime = view.findViewById(R.id.last_update)
+        textHum = view.findViewById(R.id.humidity_txt)
+        textTemo = view.findViewById(R.id.temperature_txt)
+
+        val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+        startDateInput.setOnClickListener {
+            showDatePicker { date ->
+                startDateInput.setText(date)
+                getChartData() // refresh grafik dengan filter
+            }
+        }
+
+        endDateInput.setOnClickListener {
+            showDatePicker { date ->
+                endDateInput.setText(date)
+                getChartData()
+            }
+        }
+        getChartData2()
+// Set interval auto-refresh
+        /*refreshRunnable = object : Runnable {
+            override fun run() {
+                getChartData() // Panggil fungsi ambil data grafik
+                refreshHandler.postDelayed(this, 30000) // 30 detik
+            }
+        }
+        refreshHandler.post(refreshRunnable)*/
+
+
+//        chart = view.findViewById(R.id.chart)
+//        pbData_BG = view.findViewById(R.id.load)
+        val imageGraphSample = view.findViewById<ImageView>(R.id.imageGrafikSample)
+        val imageGraphSample2 = view.findViewById<ImageView>(R.id.imageGrafikSampleTest)
+        lmData = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        (lmData as LinearLayoutManager).setReverseLayout(true);
+        (lmData as LinearLayoutManager).setStackFromEnd(true);
+        with(rvData){this?.setLayoutManager(lmData)}
+
+        with (srlData) {
+            this?.setOnRefreshListener {
+                setRefreshing(true)
+
+                // Start the shimmer effect
+
+                shimmerLayout.startShimmer() // Start shimmer
+                shimmerLayout.visibility = View.VISIBLE
+                // Clear the image initially
+
+                imageGraphSample.setImageBitmap(null)
+                lineChart.visibility = View.GONE
+                imageGraphSample.visibility = View.GONE
+                imageGraphSample2.setImageResource(R.drawable.sample)
+                showLoadingState()
+                // Simulate your data retrieval methods (replace with your actual logic)
+                retrieveData()
+                retrieveTemp()
+                //retrieveImage()
+
+                // Panggil grafik pakai tanggal default
+                getChartData2()
+
+
+
+                // Set the actual image after data has been retrieved
+                // For example, setImageBitmap(actualImage)
+                // imageGrafikSample.setImageBitmap(actualImage)
+
+
+
+                setRefreshing(false)
+                // Stop the shimmer after a short delay (ensure image retrieval completes first)
+
+            }
+        }
+
+        // Inflate the layout for this fragment
+        val user = FirebaseAuth.getInstance().currentUser
+        val greeting = view.findViewById<TextView>(R.id.greetings)
+
+        val displayName = getArguments()?.getString("name")
+        val userData = getUserData()
+        var namee = ""
+//        val imageGraphSample2 = view.findViewById<ImageView>(R.id.imageGrafikSampleHehe)
+
+        val prefs = requireContext().getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
+        val authToken = prefs.getString("auth_token", null)
+        val firebaseUser = FirebaseAuth.getInstance().currentUser
+        if (firebaseUser != null) {
+            namee = user?.displayName.toString()
+        }
+        if(authToken != null){
+            namee = userData["username"].toString()
+        }
+
+
+
+
+
+        //END OF MAKE IMG
+
+        imageGraphSample.setOnClickListener{ view->
+            if (click == true){
+                getActivity()?.runOnUiThread {
+                    Toast.makeText(
+                        getActivity(),
+                        "You already click this image!",
+                        Toast.LENGTH_SHORT
+                    ).show();
+                }
+            }else {
+                click = true
+                var inflater = LayoutInflater.from(getActivity())
+                var popupview = inflater.inflate(R.layout.popup_grafik, null, false)
+                var imagee = popupview.findViewById<ImageView>(R.id.imageGrafikPop)
+                var close = popupview.findViewById<ImageView>(R.id.close)
+                var builder = PopupWindow(
+                    popupview,
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    true
+                )
+                imagee.setImageBitmap(image)
+
+                imageGraphSample.setImageBitmap(image)
+
+                builder.setBackgroundDrawable(
+                    AppCompatResources.getDrawable(
+                        requireContext(),
+                        R.drawable.background
+                    )
+                )
+                builder.animationStyle = R.style.DialogAnimation
+                builder.showAtLocation(
+                    getActivity()?.findViewById(R.id.drawer_layout),
+                    Gravity.CENTER,
+                    0,
+                    0
+                )
+                close.setOnClickListener {
+                    builder.dismiss()
+                    click = false
+                }
+            }
+        }
+
+
+
+
+        val calendar = Calendar.getInstance()
+        val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
+        val greetingss: String = when (currentHour) {
+            in 0..11 -> "Good morning"
+            in 12..14 -> "Good afternoon"
+            in 15..17 -> "Good evening"
+            else -> "Good night"
+        }
+
+        greeting.text = "$greetingss, $namee"
+
+//        val current = LocalDateTime.now()
+//
+//        val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+//        val formatted = current.format(formatter)
+        //val email2 = user!!.email
+
+
+//        println("Current Date is: $formatted")
+
+
+        return view
+    }
+    override fun onPause() {
+        super.onPause()
+        //refreshHandler.removeCallbacks(refreshRunnable)
+    }
+    override fun onResume(){
+        super.onResume()
+        retrieveData()
+        retrieveTemp()
+        getChartData2()
+        //refreshHandler.post(refreshRunnable)
+        /*//retrieveImage()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+        // Tanggal hari ini
+        val today = Calendar.getInstance()
+
+        // Tanggal kemarin
+        val yesterday = Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_MONTH, -1)
+        }
+
+        // Set default di input
+        startDateInput.setText(dateFormat.format(yesterday.time))
+        endDateInput.setText(dateFormat.format(today.time))
+
+        // Panggil grafik pakai tanggal default
+        getChartData()*/
+
+
+    }
+
+    private fun showDatePicker(onDateSelected: (String) -> Unit) {
+        val calendar = Calendar.getInstance()
+        context?.let {
+            val dpd = DatePickerDialog(it, { _, year, month, dayOfMonth ->
+                val selectedDate = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth)
+                onDateSelected(selectedDate)
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+            dpd.show()
+        }
+
+    }
+
+    private fun getChartData() {
+        val start = startDateInput.text.toString().takeIf { it.isNotEmpty() }
+        val end = endDateInput.text.toString().takeIf { it.isNotEmpty() }
+
+        TandonClient.instance.getTandonData(start, end).enqueue(object : retrofit2.Callback<ArrayList<TandonData>> {
+            override fun onResponse(call: retrofit2.Call<ArrayList<TandonData>>, response: retrofit2.Response<ArrayList<TandonData>>) {
+                if (response.isSuccessful) {
+                    val chartData = response.body()
+                    if (!chartData.isNullOrEmpty()) {
+                        showLineChart(chartData)
+                    } else {
+                        lineChart.clear()
+                        lineChart.setNoDataText("Tidak ada data tersedia")
+                        textColor?.let { lineChart.setNoDataTextColor(it) }
+                        lineChart.invalidate()
+                    }
+
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.post{
+                        shimmerLayout.stopShimmer()
+                        shimmerLayout.visibility = View.GONE // Hide shimmer after loading
+                        lineChart.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onFailure(call: retrofit2.Call<ArrayList<TandonData>>, t: Throwable) {
+                context?.let {
+                    Toast.makeText(it, "Gagal: ${t.message}", Toast.LENGTH_LONG).show()
+
+                }
+            }
+        })
+    }
+
+    private fun getChartData2() {
+        val start = startDateInput.text.toString().takeIf { it.isNotEmpty() }
+        val end = endDateInput.text.toString().takeIf { it.isNotEmpty() }
+        shimmerLayout.visibility = View.VISIBLE
+        shimmerLayout.startShimmer()
+
+        lineChart.visibility = View.GONE
+        TandonClient.instance.getTandonData2().enqueue(object : retrofit2.Callback<ArrayList<TandonData>> {
+            override fun onResponse(call: retrofit2.Call<ArrayList<TandonData>>, response: retrofit2.Response<ArrayList<TandonData>>) {
+                if (response.isSuccessful) {
+                    val chartData = response.body()
+
+                    if (!chartData.isNullOrEmpty()) {
+                        showLineChart(chartData)
+                    } else {
+                        lineChart.clear()
+                        lineChart.setNoDataText("Tidak ada data tersedia")
+                        textColor?.let { lineChart.setNoDataTextColor(it) }
+                        lineChart.invalidate()
+                    }
+
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.post{
+                        shimmerLayout.stopShimmer()
+                        shimmerLayout.visibility = View.GONE // Hide shimmer after loading
+                        lineChart.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onFailure(call: retrofit2.Call<ArrayList<TandonData>>, t: Throwable) {
+                context?.let {
+                    Toast.makeText(it, "Gagal: ${t.message}", Toast.LENGTH_LONG).show()
+
+                }
+                shimmerLayout.stopShimmer()
+                shimmerLayout.visibility = View.GONE
+
+                lineChart.visibility = View.VISIBLE
+
+                lineChart.clear()
+                lineChart.setNoDataText("Gagal memuat grafik")
+                lineChart.invalidate()
+            }
+        })
+    }
+
+    private fun showLineChart(data: ArrayList<TandonData>) {
+        try {
+            context?.theme?.let { theme ->
+                val typedValue = TypedValue()
+                theme.resolveAttribute(R.attr.textContent, typedValue, true)
+                textColor = typedValue.data
+                // pakai textColor selanjutnya...
+            }
+
+
+            if (data.isEmpty()) {
+                lineChart.clear()
+                lineChart.setNoDataText("Tidak ada data tandon tersedia")
+                lineChart.setNoDataTextColor(Color.RED)
+                lineChart.invalidate()
+                lineChart.setNoDataText("Tidak ada data tersedia")
+                textColor?.let { lineChart.setNoDataTextColor(it) }
+                lineChart.setNoDataTextTypeface(Typeface.DEFAULT_BOLD)
+
+                return
+            }
+
+            val entries = data.mapIndexedNotNull { index, item ->
+                item.tandon?.let { Entry(index.toFloat(), it) }
+            }
+
+            val labelTanggal = data.map { it.date } // ["2025-04-01", "2025-04-02", "2025-04-03"]
+
+
+            val dataSet = LineDataSet(entries, "Tinggi Air (cm)").apply {
+                context?.let {
+                    color = ContextCompat.getColor(it, R.color.very_blue)
+
+                    valueTextColor = ContextCompat.getColor(it, R.color.yellow)
+                    //fillColor = ContextCompat.getColor(it, R.color.light_blue)
+                }
+
+                valueTextSize = 12f
+                setDrawValues(false)
+                lineWidth = 2f
+                setDrawCircles(true)
+                setDrawFilled(false)
+                fillAlpha = 100
+                mode = LineDataSet.Mode.CUBIC_BEZIER
+            }
+            val legend = lineChart.legend
+            legend.textColor = textColor ?: Color.WHITE
+            legend.textSize = 12f
+            legend.form = Legend.LegendForm.LINE
+
+            lineChart.axisLeft.textColor = textColor ?: Color.WHITE
+            lineChart.axisLeft.gridColor = textColor as Int
+
+            lineChart.axisRight.textColor = textColor as Int
+            lineChart.axisRight.gridColor = textColor as Int
+            lineChart.axisRight.isEnabled = false
+            lineChart.axisLeft.setDrawGridLines(true)
+            lineChart.axisLeft.gridColor = Color.LTGRAY
+
+            val lineData = LineData(dataSet)
+            lineChart.data = lineData
+
+            lineChart.setTouchEnabled(true)
+            lineChart.setPinchZoom(true)
+
+
+            val desc = Description()
+            desc.text = "Grafik Tandon Air"
+            lineChart.description = desc
+            lineChart.xAxis.valueFormatter = IndexAxisValueFormatter(labelTanggal)
+            lineChart.xAxis.granularity = 1f // penting agar label tidak tumpang tindih
+            lineChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
+            lineChart.xAxis.textColor = textColor as Int
+            lineChart.xAxis.labelRotationAngle = -45f // miringkan label biar muat
+            lineChart.xAxis.setDrawGridLines(false)
+
+
+            lineChart.invalidate()
+        }catch (e: Exception) {
+            Log.e("ChartError", "Gagal menampilkan chart: ${e.message}")
+            lineChart.clear()
+            lineChart.setNoDataText("Kesalahan saat memuat grafik")
+            textColor?.let { lineChart.setNoDataTextColor(it) }
+            lineChart.invalidate()
+        }
+    }
+
+
+    fun retrieveImage(){
+        //START OF GET IMAGE
+        val imageGraphSample2 = view?.findViewById<ImageView>(R.id.imageGrafikSampleTest)
+        val imageGraphSample = view?.findViewById<ImageView>(R.id.imageGrafikSample)
+        val URL: String = "https://abeazka.my.id/telemetri/tandongrafikbunda.php"
+        if (URL.isNotEmpty()) {
+            val http = OkHttpClient()
+            val request = Request.Builder()
+                .url(URL)
+                .build()
+            //myWebView.loadUrl(URL)
+
+            http.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    e.printStackTrace();
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    val response: Response = http.newCall(request).execute()
+                    val responseCode = response.code
+                    val results = response.body?.string()
+
+                    println("Success " + response.toString())
+                    println("Success " + response.message.toString())
+                    println("Success " + results)
+                    Log.i("KODE", "CODE: " + responseCode)
+                    Log.i("Response", "Received response from server. Response")
+                    if (response.code == 200) {
+                        //Thread.sleep(3_000)
+                        // Adjust this delay to match your data loading time
+                        println("GAMBAR BERHASIL DIBUILD")
+                        println("TAHAP MUNCULIN GAMBAR.....")
+                        //Popup
+
+                        //Munculin Gambar
+                        val handler = Handler(Looper.getMainLooper())
+                        val URL2 = URL( "https://abeazka.my.id/telemetri/tandon/grafiktandon_bunda-x.php.png")
+                        try{
+                            val `in` = URL2.openStream()
+                            image = BitmapFactory.decodeStream(`in`)
+                            handler.post{
+                                shimmerLayout.stopShimmer()
+                                shimmerLayout.visibility = View.GONE // Hide shimmer after loading
+                                imageGraphSample?.visibility = View.VISIBLE
+                                //imageGrafik.setImageBitmap(image)
+
+//                                var inflater = LayoutInflater.from(getActivity())
+//                                var popupview = inflater.inflate(R.layout.popup_grafik, null,false)
+//                                var imagee = popupview.findViewById<ImageView>(R.id.imageGrafikPop)
+//                                var close = popupview.findViewById<ImageView>(R.id.close)
+//                                var builder = PopupWindow(popupview, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true)
+//                                imagee.setImageBitmap(image)
+
+                                if (imageGraphSample != null) {
+                                    imageGraphSample.setImageBitmap(image)
+
+                                }else{
+                                    imageGraphSample?.setImageResource(R.drawable.sample)
+                                }
+                                //imagee.setRotation(90f)
+//                                builder.setBackgroundDrawable(
+//                                    AppCompatResources.getDrawable(
+//                                        requireContext(),
+//                                        R.drawable.background
+//                                    )
+//                                )
+//                                builder.animationStyle=R.style.DialogAnimation
+//                                builder.showAtLocation(getActivity()?.findViewById(R.id.drawer_layout), Gravity.CENTER, 0 ,0)
+//                                close.setOnClickListener{
+//                                    builder.dismiss()
+//                                }
+
+                            }
+
+
+                        }catch (e:java.lang.Exception){
+                            e.printStackTrace()
+                        }
+
+
+
+
+
+//                        getActivity()?.runOnUiThread {
+//                            Toast.makeText(
+//                                getActivity(),
+//                                "Success",
+//                                Toast.LENGTH_SHORT
+//                            ).show();
+//                        }
+                    } else {
+                        getActivity()?.runOnUiThread {
+
+                            Log.e(
+                                "HTTP Error",
+                                "Something didn't load, or wasn't succesfully"
+                            )
+                            Toast.makeText(getActivity(), "Fail", Toast.LENGTH_LONG)
+                                .show();
+
+                        }
+                        return
+                    }
+                }
+            })
+        }
+    }
+
+    fun retrieveData() {
+
+        showLoadingState()
+
+        val ardData = RetroServer
+            .konekRetrofit()
+            .create(APIRequestData::class.java)
+
+        ardData.ardRetrieveData()
+            .enqueue(object : retrofit2.Callback<ResponseModel> {
+
+                override fun onResponse(
+                    call: retrofit2.Call<ResponseModel>,
+                    response: retrofit2.Response<ResponseModel>
+                ) {
+
+                    hideLoadingState()
+
+                    val body = response.body()
+                    val data = body?.data
+
+                    if (data.isNullOrEmpty()) {
+
+                        text.visibility = View.VISIBLE
+                        text.text = "No data available yet"
+
+                        rvData?.visibility = View.VISIBLE
+
+                        adData = AdapterData(context, emptyList())
+                        rvData?.adapter = adData
+
+                        return
+                    }
+
+                    listData = data
+
+                    text.visibility = View.GONE
+                    rvData?.visibility = View.VISIBLE
+
+                    adData = AdapterData(context, listData)
+                    rvData?.adapter = adData
+
+                    rvData?.smoothScrollToPosition(listData.size - 1)
+
+                    adData?.notifyDataSetChanged()
+                }
+
+                override fun onFailure(
+                    call: retrofit2.Call<ResponseModel>,
+                    t: Throwable
+                ) {
+
+                    hideLoadingState()
+
+                    text.visibility = View.VISIBLE
+                    text.text = "Koneksi gagal"
+
+                    rvData?.visibility = View.VISIBLE
+
+                    adData = AdapterData(context, emptyList())
+                    rvData?.adapter = adData
+
+                    Log.e("API_ERROR", t.message.toString())
+                }
+            })
+    }
+
+    private fun showLoadingState() {
+
+        shimmerLayout.visibility = View.VISIBLE
+        shimmerLayout.startShimmer()
+
+        rvData?.visibility = View.GONE
+
+        pbData?.visibility = View.VISIBLE
+    }
+
+    private fun hideLoadingState() {
+
+        shimmerLayout.stopShimmer()
+        shimmerLayout.visibility = View.GONE
+
+        rvData?.visibility = View.VISIBLE
+
+        pbData?.visibility = View.GONE
+
+        srlData?.isRefreshing = false
+    }
+
+    private fun getUserData(): Map<String, String?> {
+        val prefs = requireContext().getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
+        return mapOf(
+            "token" to prefs.getString("auth_token", null),
+            "username" to prefs.getString("username", null),
+            "email" to prefs.getString("email", null),
+            "avatar" to prefs.getString("avatar", null),
+            "isFirebase" to prefs.getString("isFirebase", null)
+        )
+    }
+
+    fun hitungPeluangHujan(kelembapan: Double, suhu: Double): Double {
+        var peluang = 0.6 * kelembapan - 0.3 * suhu
+        // Batasi peluang antara 0 - 100%
+        if (peluang < 0) peluang = 0.0
+        if (peluang > 100) peluang = 100.0
+        return peluang
+    }
+
+    fun retrieveTemp() {
+
+        val ardData = RetroServer
+            .konekRetrofit()
+            .create(APIRequestData::class.java)
+
+        ardData.ardRetrieveTemp()
+            .enqueue(object : retrofit2.Callback<ResponseModel> {
+
+                override fun onResponse(
+                    call: retrofit2.Call<ResponseModel>,
+                    response: retrofit2.Response<ResponseModel>
+                ) {
+
+                    val data = response.body()?.data ?: emptyList()
+
+                    if (data.isEmpty()) {
+
+                        textHum.text = "--%"
+                        textTemo.text = "--℃"
+                        textTime.text = "No data available yet"
+
+                        return
+                    }
+
+                    val latest = data.lastOrNull() ?: return
+
+                    val humidity =
+                        latest.kelembapan.toDoubleOrNull() ?: 0.0
+
+                    val temp =
+                        latest.suhu.toDoubleOrNull() ?: 0.0
+
+                    val peluangHujan =
+                        hitungPeluangHujan(humidity, temp)
+
+                    val chanceRain = when {
+                        humidity >= 100 -> "Sedang hujan!"
+                        humidity > 65 -> "Diperkirakan hujan"
+                        else -> "Tidak hujan"
+                    }
+
+                    textHum.text = "${latest.kelembapan}%"
+                    textTemo.text = "${latest.suhu}℃"
+
+                    textTime.text =
+                        "Last update: ${latest.date}\n" +
+                                "$chanceRain\n" +
+                                "Peluang hujan: %.1f%%"
+                                    .format(peluangHujan)
+                }
+
+                override fun onFailure(
+                    call: retrofit2.Call<ResponseModel>,
+                    t: Throwable
+                ) {
+
+                    textHum.text = "--%"
+                    textTemo.text = "--℃"
+                    textTime.text = "Koneksi gagal"
+
+                    Log.e("TEMP_ERROR", t.message.toString())
+                }
+            })
+    }
+
+>>>>>>> 979be08badf5648252b7756919ad6ae92ebe82af
 }

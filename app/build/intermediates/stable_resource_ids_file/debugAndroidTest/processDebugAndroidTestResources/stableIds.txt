@@ -1,0 +1,2 @@
+com.indodevstudio.azka_home_iot.test:style/WhiteBackgroundTheme = 0x7f010001
+com.indodevstudio.azka_home_iot.test:style/WhiteBackgroundDialogTheme = 0x7f010000

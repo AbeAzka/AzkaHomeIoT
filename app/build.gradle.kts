@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.indodevstudio.azka_home_iot"
-    compileSdk = 34
+    compileSdk = 35
 
 
     defaultConfig {
@@ -15,8 +15,13 @@ android {
         applicationId = "com.indodevstudio.azka_home_iot"
         minSdk = 30
         targetSdk = 34
+<<<<<<< HEAD
         versionCode = 1
         versionName = "2.7.1.2"//Last 2.4
+=======
+        versionCode = 2
+        versionName = "2.15"//Last 2.45
+>>>>>>> 979be08badf5648252b7756919ad6ae92ebe82af
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -30,6 +35,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -47,10 +53,11 @@ android {
 
 
 dependencies {
-// Untuk Executor bawaan Android (pengganti ListenableFuture)
+    // Untuk Executor bawaan Andro  zid (pengganti ListenableFuture)
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation ("com.google.android.material:material:1.11.0")
     implementation ("com.getkeepsafe.taptargetview:taptargetview:1.13.3")
-
+    implementation("androidx.core:core-google-shortcuts:1.1.0")
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation ("com.airbnb.android:lottie:5.2.0")
     implementation ("com.github.prolificinteractive:material-calendarview:2.0.1")
@@ -87,6 +94,10 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.9.0")
     implementation("com.android.volley:volley:1.2.1")
     implementation("androidx.privacysandbox.tools:tools-core:1.0.0-alpha12")
+    implementation("androidx.webkit:webkit:1.14.0")
+    implementation("androidx.credentials:credentials:1.6.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.6.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.2.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

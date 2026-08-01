@@ -77,10 +77,10 @@ class manual_book_fragment : Fragment() {
             }
             override fun onQueryTextChange(newText: String?): Boolean {
                 searchList.clear()
-                val searchText = newText!!.toLowerCase(Locale.getDefault())
+                val searchText = newText!!.lowercase(Locale.getDefault())
                 if (searchText.isNotEmpty()){
                     dataList.forEach{
-                        if (it.dataTitle.toLowerCase(Locale.getDefault()).contains(searchText)) {
+                        if (it.dataTitle.lowercase(Locale.getDefault()).contains(searchText)) {
                             searchList.add(it)
                         }
                     }

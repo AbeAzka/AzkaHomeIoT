@@ -1,0 +1,74 @@
+[
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout-land/activity_sign_in.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout-land/activity_sign_in.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout-land/fragment_home.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout-land/fragment_home.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout-land/fragment_listrik_bunda.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout-land/fragment_listrik_bunda.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout-land/activity_taman.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout-land/activity_taman.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout-land/fragment_listrik_masjid.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout-land/fragment_listrik_masjid.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout-land/fragment_masjid.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout-land/fragment_masjid.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout-land/activity_inbox.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout-land/activity_inbox.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout-land/fragment_about.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout-land/fragment_about.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout-land/popup_grafik.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout-land/popup_grafik.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout-land/fragment_grafik_uti_fregment.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout-land/fragment_grafik_uti_fregment.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout-land/fragment_tandon_bunda.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout-land/fragment_tandon_bunda.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout-land/fragment_grafik_masjid.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout-land/fragment_grafik_masjid.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout-land/fragment_listrik_uti_fregment.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout-land/fragment_listrik_uti_fregment.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout-land/fragment_manual_book_fragment.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout-land/fragment_manual_book_fragment.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout-land/fragment_taman_prod.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout-land/fragment_taman_prod.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout-land/fragment_tandon_uti.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout-land/fragment_tandon_uti.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout-land/fragment_taman.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout-land/fragment_taman.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout-land/fragment_grafik_bunda.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout-land/fragment_grafik_bunda.xml"
+    }
+]

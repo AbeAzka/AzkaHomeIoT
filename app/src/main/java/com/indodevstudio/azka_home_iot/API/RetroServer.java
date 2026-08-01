@@ -5,7 +5,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetroServer {
-    private static final String baseURL = "https://abeazka.my.id/arduino_keypad/";
+    private static final String baseURL = "https://www.indodevstudio.my.id/api/arduino_keypad/";
     private static Retrofit retro;
 
     public static Retrofit konekRetrofit(){

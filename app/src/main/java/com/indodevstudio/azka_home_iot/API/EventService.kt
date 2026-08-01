@@ -21,4 +21,11 @@ interface EventService {
         @Field("title") title: String,
         @Field("body") body: String
     ): Call<ResponseBody>
+
+    @POST("api/events/mark_complete.php")
+    @FormUrlEncoded
+    fun markEventsAsDone(
+        @Field("date") date: String,
+        @Field("events[]") events: List<String>
+    ): Call<ResponseBody>
 }

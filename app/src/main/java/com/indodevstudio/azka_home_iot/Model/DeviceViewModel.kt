@@ -57,13 +57,13 @@ class DeviceViewModel(application: Application) : AndroidViewModel(application) 
 
 
 
-    fun updateDeviceName(position: Int, newName: String, newIP : String) {
-        val currentList = deviceList.value ?: return
-        if (position in currentList.indices) {
-            currentList[position] = DeviceModel(currentList[position].id, newName, newIP)
-            deviceList.value = currentList
-        }
-    }
+//    fun updateDeviceName(position: Int, newName: String, newIP : String) {
+//        val currentList = deviceList.value ?: return
+//        if (position in currentList.indices) {
+//            currentList[position] = DeviceModel(currentList[position].id, newName, newIP)
+//            deviceList.value = currentList
+//        }
+//    }
 
     private fun loadDeviceList() {
         val json = sharedPreferences.getString("device_list", null)

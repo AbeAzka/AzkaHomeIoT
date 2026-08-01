@@ -2,6 +2,7 @@ package com.indodevstudio.azka_home_iot
 
 
 import android.Manifest
+import android.app.Activity
 import com.jakewharton.threetenabp.AndroidThreeTen
 import android.app.AlertDialog
 import android.app.Dialog
@@ -11,11 +12,14 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+
+
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Icon
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.net.Uri
@@ -48,6 +52,7 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.MenuProvider
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.privacysandbox.tools.core.model.Method
 import com.android.volley.toolbox.JsonObjectRequest
@@ -91,6 +96,7 @@ import java.net.URL
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.indodevstudio.azka_home_iot.Model.EventViewModel
 
 import com.indodevstudio.azka_home_iot.utils.FirebaseUtils.firebaseUser
 
@@ -103,7 +109,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
     var image : Bitmap? = null
     lateinit var inputStream : InputStream
     private lateinit var auth : FirebaseAuth
-
+    private lateinit var viewModel: EventViewModel
     lateinit var mGoogleSignInClient: GoogleSignInClient
 
 
@@ -131,6 +137,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
     private lateinit var nama : TextView
     private lateinit var em : TextView
     private lateinit var profilepc : ImageView
+    private lateinit var accSete : ImageView
     private var isFirebase = false
 
 
@@ -141,6 +148,18 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        // Cek jika dipanggil dari shortcut
+//        val fragmentName = intent?.getStringExtra("open_fragment")
+//
+//        if (fragmentName == "financial") {
+//            supportFragmentManager.beginTransaction()
+//                .replace(R.id.fragment_container, FinansialFragment())
+//                .commit()
+//        } else {
+//            // Tampilkan fragment default
+//        }
+
         auth = FirebaseAuth.getInstance()
         val mFirebaseUser = FirebaseAuth.getInstance().currentUser
         mFirebaseUser?.let { user ->
@@ -156,6 +175,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         connectToFirebase()
         val sharedPreferenceManger = SharedPreferenceManger(this)
         AppCompatDelegate.setDefaultNightMode(sharedPreferenceManger.themeFlag[sharedPreferenceManger.theme])
+
         //connect(this)
         Log.i("MQTT", "MAIN ACTIVITY MQTT RUN")
 
@@ -203,7 +223,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
         // Cek jika Activity dibuka dari notifikasi
         if (intent.hasExtra("openFragment") && intent.getStringExtra("openFragment") == "EventFragment") {
-            openFragment(EventFragment())
+            openFragment(EventFragment(), R.id.events_)
         }
 
         // Inisialisasi Logger
@@ -232,11 +252,23 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         nama = headerView.findViewById<TextView>(R.id.namas)
         val ipAddress = headerView.findViewById<TextView>(R.id.ipAddress)
         profilepc = headerView.findViewById<ImageView>(R.id.logo_p)
+        accSete = headerView.findViewById<ImageView>(R.id.more_options)
+//        val switchAccountBtn = headerView.findViewById<TextView>(R.id.switchAccountBtn)
+//        switchAccountBtn.setOnClickListener {
+//            // Arahkan ke halaman login, dialog ganti akun, atau hapus token
+//            showSwitchAccountDialog(this)
+//        }
+        em = headerView.findViewById<TextView>(R.id.emailGet)
+
+//        val current = AccountManager.getCurrentAccount(this)
+//        nama.text = current?.username ?: "Guest"
+//        em.text = current?.email ?: "-"
+//        Glide.with(this).load(current?.avatarUrl).into(profilepc)
+//
 
         val localIpAddresses = getLocalUnicastIpAddresses()
         ipAddress.text = "$localIpAddresses"
 
-        em = headerView.findViewById<TextView>(R.id.emailGet)
         val status = headerView.findViewById<ImageView>(R.id.status22)
 
         val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav)
@@ -276,12 +308,17 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         val firebaseUser = FirebaseAuth.getInstance().currentUser
 
         if(firebaseUser != null){
+            accSete.tooltipText="Account Settings (Only For IndodevStudio Account)"
+            accSete.setOnClickListener{
+                Toast.makeText(this, "You need to using IndodevStudio Account to access this feature!", Toast.LENGTH_SHORT).show()
+            }
             Toast.makeText(this, "User login dengan akun Google", Toast.LENGTH_SHORT).show()
-            email = intent.getStringExtra("email").toString()
-            val displayName = intent.getStringExtra("name")
-            val photo = intent.getStringExtra("photop")
+
+
+            val displayName = firebaseUser.displayName
+            email = firebaseUser.email.toString()
+            val picture3 = firebaseUser.photoUrl?.toString()
             sendFCMTokenToServer(applicationContext, email)
-            val picture3 = mFirebaseUser?.photoUrl?.toString() ?: ""
             profilepc.tooltipText = email
             if (picture3 == null && firebaseUser != null) {
                 profilepc.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.azkahomeiot))
@@ -293,8 +330,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             }
             nama.text = displayName;
 
-            val obfuscatedEmail = email?.let { obfuscateEmail(it) }
-            em.text = obfuscatedEmail;
+            em.text = email.let { obfuscateEmail(it) } ?: "Unknown"
         }
 
         if (savedInstanceState == null) {
@@ -307,7 +343,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         AndroidThreeTen.init(this) // Inisialisasi ThreeTenABP
         // Cek apakah notifikasi membawa data untuk membuka EventFragment
         if (intent?.getStringExtra("FRAGMENT") == "EventFragment") {
-            openFragment(EventFragment())
+            openFragment(EventFragment(), R.id.events_)
         }
         val userData = getUserData()
 
@@ -397,9 +433,9 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             if(authToken != null) {
                 val avatarPath = userData["avatar"].toString()
 
-// Base URL untuk server
-                val baseUrl = "https://games.abeazka.my.id/u/"
-                val baseUrl2 = "https://games.abeazka.my.id/u/images/"
+                // Base URL untuk server
+                val baseUrl = "https://www.indodevstudio.my.id/u/"
+                val baseUrl2 = "https://www.indodevstudio.my.id/u/images/"
 
                 /*// Pastikan path benar
                 val fullAvatarUrl = when {
@@ -408,7 +444,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                     avatarPath.startsWith("http") -> avatarPath // Jika sudah full URL
                     else -> baseUrl2 + "user.png" // Jika path tidak diketahui
                 }*/
-                val fullAvatarUrl = "https://games.abeazka.my.id/u/$avatarPath"
+                val fullAvatarUrl = "https://www.indodevstudio.my.id/u/$avatarPath"
 
                 Log.d("AvatarURL", "Final URL2: $fullAvatarUrl") // Debugging
 
@@ -447,6 +483,27 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         }
 
         if(authToken != null) {
+            accSete.tooltipText="Account Settings"
+            accSete.setOnClickListener{
+                //val redirectUrl = "myapp://link_success"  // Deep link kembali ke aplikasi
+                //val loginUrl = "https://www.indodevstudio.my.id/u/login?redirect=$redirectUrl"
+                email = userData["email"].toString()
+                val encrypted = AESUtil.encrypt(email)
+                val loginUrl = "https://www.indodevstudio.my.id/u/profile?redirect=$encrypted"
+
+                val builder = CustomTabsIntent.Builder()
+                val customTabsIntent = builder.build()
+                customTabsIntent.launchUrl(this, Uri.parse(loginUrl))
+
+
+
+//                val intent2 = Intent(this , MainActivity::class.java)
+//                val sharedPref = this.getSharedPreferences("USER_DATA", Context.MODE_PRIVATE)
+//                val editor = sharedPref.edit()
+//                editor.putString("isFirebase", false.toString())
+//                intent2.putExtra("isFirebase", false)
+            }
+
             Toast.makeText(this, "User login dengan akun IndodevStudio", Toast.LENGTH_SHORT).show()
             nama.text = userData["username"]
             val obfuscatedEmail = userData["email"]?.let { obfuscateEmail(it) }
@@ -456,8 +513,8 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             val avatarPath = userData["avatar"].toString()
             userData["email"]?.let { sendFCMTokenToServer(applicationContext,it) }
 // Base URL untuk server
-            val baseUrl = "https://games.abeazka.my.id/u/"
-            val baseUrl2 = "https://games.abeazka.my.id/u/images/"
+            val baseUrl = "https://www.indodevstudio.my.id/u/"
+            val baseUrl2 = "https://www.indodevstudio.my.id/u/images/"
 
             // Pastikan path benar
             /*val fullAvatarUrl = when {
@@ -467,7 +524,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                 else -> baseUrl2 + "user.png" // Jika path tidak diketahui
             }*/
 
-            val fullAvatarUrl = "https://games.abeazka.my.id/u/$avatarPath"
+            val fullAvatarUrl = "https://www.indodevstudio.my.id/u/$avatarPath"
 
             Log.d("AvatarURL", "Final URL: $fullAvatarUrl") // Debugging
 
@@ -480,12 +537,69 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
         }
 
+        val shortcutManager = ShortcutsManager(this)
+        shortcutManager.createShortcuts()
+
+        when (intent.getStringExtra("fragment_to_open")) {
+            "finansial" -> openFragment(FinansialFragment(), R.id.finansial_plan )
+            "event" -> openFragment(EventFragment(), R.id.events_)
+//            "arduino" -> openFragment(DeviceListFragment(), R.id.nav_device)
+
+            else -> openFragment(HomeFragment(), R.id.nav_home)
+        }
+
+        viewModel = ViewModelProvider(this)[EventViewModel::class.java]
+        handleIntent(intent)
+        handleIntent2(intent)
 
     }
 
+    // Tambahkan fungsi ini:
+    private fun handleIntent2(intent: Intent?) {
+        when (intent?.getStringExtra("OPEN_FRAGMENT")) {
+            "DEVICE_LIST" -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, DeviceListFragment())
+                    .commit()
+            }
+        }
+    }
+
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+        handleIntent2(intent)
+    }
+
+    private fun handleIntent(intent: Intent?) {
+        if (intent?.getBooleanExtra("show_dialog", false) == true) {
+            val date = intent.getStringExtra("event_date") ?: ""
+            val eventNames = intent.getStringArrayListExtra("event_list") ?: emptyList()
+            showMarkCompleteDialog(eventNames, date)
+        }
+    }
+
+    private fun showMarkCompleteDialog(eventNames: List<String>, date: String) {
+        val email = getSharedPreferences("my_prefs", MODE_PRIVATE)
+            .getString("email", "") ?: ""
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Confirm Completion")
+            .setMessage("Mark ${eventNames.joinToString()} on $date as completed?")
+            .setPositiveButton("Yes") { _, _ ->
+                viewModel.markEventsAsComplete(eventNames, date, email)
+            }
+            .setNegativeButton("No", null)
+            .setCancelable(false)
+            .show()
+    }
+
+
+
     fun openWebLogin(context: Context) {
         val redirectUrl = "myapp://link_success"  // Deep link kembali ke aplikasi
-        val loginUrl = "https://games.abeazka.my.id/u/login?redirect=$redirectUrl"
+        val loginUrl = "https://www.indodevstudio.my.id/u/login?redirect=$redirectUrl"
 
         val builder = CustomTabsIntent.Builder()
         val customTabsIntent = builder.build()
@@ -513,6 +627,50 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
         }
         return true
     }
+
+
+        fun showSwitchAccountDialog(context: Context) {
+            val accounts = AccountManager.getAllAccounts(context)
+            val names = accounts.map { "${it.username ?: it.email} (${it.provider})" }.toMutableList()
+
+            // Tambahkan opsi "Tambahkan akun"
+            names.add("➕ Tambahkan akun")
+
+            AlertDialog.Builder(this)
+                .setTitle("Pilih Akun")
+                .setItems(names.toTypedArray()) { _, which ->
+                    if (which == accounts.size) {
+                        // Tambah akun baru
+                        val intent = Intent(this, SignInActivity::class.java)
+                        intent.putExtra("skipAutoLogin", true)
+                        startActivity(intent)
+                    } else {
+                        val selected = accounts[which]
+                        AccountManager.setCurrentAccount(context, selected.email)
+
+
+                        // Restart aktivitas agar UI pakai akun baru
+                        val intent = Intent(this, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                        startActivity(intent)
+                        finish()
+
+                        if (selected.provider == AuthProvider.FIREBASE) {
+                            FirebaseAuth.getInstance().signInWithCustomToken(selected.token)
+                                .addOnSuccessListener {
+                                    (context as Activity).recreate()
+                                }
+                        } else {
+                            (context as Activity).recreate()
+                        }
+                    }
+                }
+                .show()
+        }
+
+
+
+
 
 
 
@@ -565,7 +723,7 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
     }
 
     fun sendTokenToServer(context: Context, email: String, token: String) {
-        val url = "https://ahi.abeazka.my.id/api/events/save_fcm_token.php"
+        val url = "https://www.indodevstudio.my.id/api/events/save_fcm_token.php"
         val jsonBody = JSONObject().apply {
             put("email", email)
             put("fcm_token", token)
@@ -593,11 +751,15 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
 
 
-    private fun openFragment(fragment: Fragment) {
+    private fun openFragment(fragment: Fragment, menuItemId: Int) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
             .commit()
+
+        val navigationView = findViewById<NavigationView>(R.id.nav_view)
+        navigationView.setCheckedItem(menuItemId)
     }
+
 
 
 
@@ -659,6 +821,18 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
     override fun onResume() {
         Options()
         super.onResume()
+
+//        val currentAccount = AccountManager.getCurrentAccount(this)
+//        if (currentAccount != null) {
+//            nama.text = currentAccount.username
+//        }
+//        if (currentAccount != null) {
+//            em.text = currentAccount.email
+//        }
+//        if (currentAccount != null) {
+//            Glide.with(this).load(currentAccount.avatarUrl).into(profilepc)
+//        }
+
     }
 
 
@@ -1000,25 +1174,34 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                     .replace(R.id.fragment_container, EventFragment()).commit()
                 navigationView.setCheckedItem(R.id.events_)
             }
-            R.id.nav_device -> {
-                val navigationView = findViewById<NavigationView>(R.id.nav_view)
-                navigationView.setNavigationItemSelectedListener(this)
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, DeviceListFragment()).commit()
-                navigationView.setCheckedItem(R.id.nav_book)
-            }
+//            R.id.nav_device -> {
+//                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+//                navigationView.setNavigationItemSelectedListener(this)
+//                supportFragmentManager.beginTransaction()
+//                    .replace(R.id.fragment_container, DeviceListFragment()).commit()
+//                navigationView.setCheckedItem(R.id.nav_book)
+//            }
             R.id.nav_log -> {
                 val navigationView = findViewById<NavigationView>(R.id.nav_view)
                 navigationView.setNavigationItemSelectedListener(this)
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, UpdateLogFragment()).commit()
-                navigationView.setCheckedItem(R.id.nav_book)
+                navigationView.setCheckedItem(R.id.nav_log)
             }
+//            R.id.cbt_icon -> {
+////                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+////                navigationView.setNavigationItemSelectedListener(this)
+////                supportFragmentManager.beginTransaction()
+////                    .replace(R.id.fragment_container, WebViewFragment()).commit()
+////                navigationView.setCheckedItem(R.id.cbt_icon)
+//            }
 
             //R.id.nav_update -> supportFragmentManager.beginTransaction()
              //   .replace(R.id.fragment_container, UpdateLogFragment()).commit()
 
             R.id.nav_logout -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
                 //auth.signOut()
                 //startActivity(Intent(this , SignInActivity::class.java))
 
@@ -1302,42 +1485,12 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 
     private fun showUnderMaintenanceDialog(underMaintenanceMessage: String) {
 
-        val builder = AlertDialog.Builder(this)
+        MaterialAlertDialogBuilder(this)
+            .setTitle("AzkaHomeIoT")
+            .setMessage("$underMaintenanceMessage")
+            .setCancelable(false)
+            .show()
 
-        builder.setTitle("AzkaHomeIoT")
-        builder.setMessage("$underMaintenanceMessage")
-
-//        builder.setPositiveButton("OK") { dialog, which ->
-//            // handle OK button click
-//        }
-
-
-
-        builder.setCancelable(false)
-        val dialog = builder.create()
-
-        dialog.show()
-
-        /*//Inflate the dialog as custom view
-        val messageBoxView = LayoutInflater.from(this).inflate(R.layout.message_box, null)
-        val x = messageBoxView.findViewById<TextView>(R.id.message_box_header)
-        val y = messageBoxView.findViewById<TextView>(R.id.message_box_content)
-        //AlertDialogBuilder
-        val messageBoxBuilder = AlertDialog.Builder(this).setView(messageBoxView)
-
-        //setting text values
-        x.text = "AzkaHomeIoT"
-        y.text = "$underMaintenanceMessage"
-
-
-        //show dialog
-        val  messageBoxInstance = messageBoxBuilder.show()
-
-        //set Listener
-        messageBoxView.setOnClickListener(){
-            //close dialog
-            messageBoxInstance.dismiss()
-        }*/
     }
     private fun dismissUnderMaintenanceDialog() {
         val dialog = Dialog(this)

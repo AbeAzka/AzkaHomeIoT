@@ -16,7 +16,7 @@
     <color name="colorAccent">#80FFC4</color>
     <color name="lavender2">#9ba4f2</color>
     <color name="gray">#DDDDDD</color>
-    <color name="gray_transparant">#80A3A3A3</color>
+    <color name="gray_transparant">#00A3A3A3</color>
     <color name="red">#80FF0000</color>
     <color name="realGray">#505050</color>
     <color name="transparant">#00FFFFFF</color>
@@ -32,7 +32,7 @@
     <color name="color_primary_light">#1CAB55</color>
     <color name="color_primary_variant_light">#1CAB55</color>
     <color name="color_on_primary_light">#A4F6AC</color>
-
+    <color name="White_Card_lamp">#ECEFF1</color>
     <!--    Light (Brand Color) -->
     <color name="color_secondary_light">#930F15</color>
     <color name="color_secondary_variant_light">#930F15</color>
@@ -57,7 +57,11 @@
     <color name="white_2">#FAFAFA</color>
 
     <color name="black_2">#3A3A3A</color>
-
+    <color name="groupCardBG">#FFB300</color>
+    <!--  kuning folder gelap  -->
+    <color name="folderBody">#2E3B4E</color>
+    <!--  abu gelap  -->
+    <color name="folderTab">#3C4D63</color>
     <!--   Icon Tint color -->
 
 </resources>

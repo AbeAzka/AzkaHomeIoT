@@ -3,6 +3,9 @@ package com.indodevstudio.azka_home_iot.Adapter
 import ApiService2
 import Event2
 import Server2
+import android.animation.Animator
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.graphics.Color
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -15,6 +18,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.indodevstudio.azka_home_iot.R
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -52,7 +56,9 @@ class EventAdapter(
         } else {
             holder.btnCheck.visibility = View.VISIBLE
             holder.btnDelete.visibility = View.VISIBLE
-            holder.btnDelete.setOnClickListener { onDelete(event) }
+            holder.btnDelete.setOnClickListener {
+                showDeleteConfirmation(holder.itemView.context, event)
+            }
         }
 
         val context = holder.itemView.context
@@ -60,7 +66,7 @@ class EventAdapter(
 
         // **🔹 Ubah warna CardView berdasarkan status event**
         val backgroundColor = if (isCompleted) {
-            ContextCompat.getColor(context, R.color.green)  // Hijau jika selesai
+            ContextCompat.getColor(context, R.color.color_on_primary_light)  // Hijau jika selesai
         } else {
             val typedValue = TypedValue()
             context.theme.resolveAttribute(R.attr.drawerItemBackground, typedValue, true)
@@ -85,7 +91,44 @@ class EventAdapter(
         holder.btnCheck.setOnClickListener {
             val newStatus = if (isCompleted) 0 else 1
             updateEventStatus(event.id, newStatus, position, holder)
+            //viewModel.updateEventStatus(event.id, newStatus, email)
+//            val animationView = holder.animationCompleted
+//            animationView.visibility = View.VISIBLE
+//            animationView.playAnimation()
+//
+//            // Sembunyikan animasi setelah selesai (opsional)
+//            animationView.addAnimatorListener(object : Animator.AnimatorListener {
+//
+//
+//
+//                override fun onAnimationStart(animation: Animator) {
+//                    TODO("Not yet implemented")
+//                }
+//
+//                override fun onAnimationEnd(animation: Animator) {
+//                    animationView.visibility = View.GONE
+//                }
+//
+//                override fun onAnimationCancel(animation: Animator) {
+//                    TODO("Not yet implemented")
+//                }
+//
+//                override fun onAnimationRepeat(animation: Animator) {
+//                    TODO("Not yet implemented")
+//                }
+//            })
         }
+    }
+    private fun showDeleteConfirmation(context: Context, event: Event2) {
+        MaterialAlertDialogBuilder(context)
+            .setTitle("Delete This Event")
+            .setMessage("Are you sure want to remove this event \"${event.name}\" on ${event.date}?")
+            .setPositiveButton("Yes") { _, _ ->
+                onDelete(event)
+            }
+            .setNegativeButton("No", null)
+            .setCancelable(true)
+            .show()
     }
 
     private fun updateEventStatus(eventId: Int, isCompleted: Int, position: Int, holder: EventViewHolder) {

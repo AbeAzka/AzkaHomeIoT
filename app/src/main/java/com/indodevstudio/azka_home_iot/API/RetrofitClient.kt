@@ -5,8 +5,7 @@ import retrofit2.Retrofit
 
 
 object RetrofitClient {
-    private const val BASE_URL = "https://ahi.abeazka.my.id/api/fcm/"  // Ganti dengan URL backend kamu
-
+    private const val BASE_URL = "https://www.indodevstudio.my.id/" // 👈 base URL kamu
 
     val instance: Retrofit by lazy {
         Retrofit.Builder()

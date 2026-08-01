@@ -11,7 +11,6 @@ import MonthlyGet
 import Server
 import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -50,29 +49,23 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.google.common.util.concurrent.ListenableFuture
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.work.await
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.indodevstudio.azka_home_iot.Adapter.HistoryAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
@@ -82,25 +75,12 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.BufferedInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
-import java.io.InputStream
 import java.net.URL
-import java.util.concurrent.Executors
-import kotlin.coroutines.resume
-
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [FinansialFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 
 
 
@@ -203,13 +183,6 @@ class FinansialFragment : Fragment() {
 
     private lateinit var countdownTimer: CountDownTimer
     private val countdownTimeInMillis: Long = 5000      // 1 hour and 1 minute (for testing purposes)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -284,22 +257,32 @@ class FinansialFragment : Fragment() {
         harianTxt = view.findViewById(R.id.harian_Txt)
         monthlyTxt = view.findViewById(R.id.bulanan_Txt)
         expendTxt = view.findViewById(R.id.titleDaily)
+        // Di dalam onCreateView, perbaiki bagian pengambilan email dan authToken
         val firebaseUser = FirebaseAuth.getInstance().currentUser
         val prefs = requireContext().getSharedPreferences("my_prefs", AppCompatActivity.MODE_PRIVATE)
         val authToken = prefs.getString("auth_token", null)
         val userData = getUserData()
 
-        if(firebaseUser != null){
-            email = FirebaseAuth.getInstance().currentUser?.email.toString()
-
+        // Pastikan email diambil dengan benar
+        email = if (firebaseUser != null) {
+            firebaseUser.email ?: "" // Gunakan email dari Firebase jika ada
+        } else if (authToken != null) {
+            userData["email"]?.toString() ?: "" // Gunakan email dari SharedPreferences jika ada
+        } else {
+            "" // Default value jika tidak ada data
         }
 
-        if(authToken != null) {
-            email = userData["email"].toString()
-
+        emailU = if (firebaseUser != null) {
+            firebaseUser.displayName ?: email // Gunakan displayName atau email dari Firebase
+        } else if (authToken != null) {
+            userData["username"]?.toString() ?: email // Gunakan username atau email dari SharedPreferences
+        } else {
+            email // Default value jika tidak ada data
         }
 
-
+        Log.d("FinansialFragment", "Email: $email")
+        Log.d("FinansialFragment", "EmailU: $emailU")
+        Log.d("FinansialFragment", "AuthToken: $authToken")
 
         context?.let { createNotificationChannel(it) }
         var inflater = LayoutInflater.from(getActivity())
@@ -307,11 +290,6 @@ class FinansialFragment : Fragment() {
             inflater.inflate(R.layout.popup_grafik2, null, false)
         var buttonDownload =
             popupview.findViewById<Button>(R.id.downloadPdf)
-
-
-
-
-        emailU = FirebaseAuth.getInstance().currentUser?.displayName.toString()
 
 //        headerTable = view.findViewById(R.id.recyclerView2_table)
 
@@ -918,83 +896,136 @@ class FinansialFragment : Fragment() {
         }
     }
 
-//    private suspend fun <T> ListenableFuture<T>.await(): T = suspendCancellableCoroutine { cont ->
-//        addListener({ cont.resume(get()) }, Executors.newSingleThreadExecutor())
-//    }
+    fun saveToDownloads(context: Context, fileName: String, urlString: String) {
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val channelId = "download_channel"
+        val notificationId = 1001
 
-    fun saveToDownloads(context: Context, fileName: String, inputStream: InputStream, urlKang: String) {
-        val resolver = context.contentResolver
-        val uri: Uri?
-
-//        showDownloadingNotification(context, 100)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            // Scoped storage for Android 10+
-            val contentValues = ContentValues().apply {
-                put(MediaStore.Downloads.DISPLAY_NAME, fileName)
-                put(MediaStore.Downloads.MIME_TYPE, "application/pdf")
-                put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
-            }
-            uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
-
-        } else {
-            // Legacy storage for Android 9 and below
-            val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-            val file = File(downloadsDir, fileName)
-            uri = Uri.fromFile(file)
-
-//            downloadFileWithNotification(context, urlKang, file, "1")
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                channelId,
+                "File Download",
+                NotificationManager.IMPORTANCE_LOW
+            )
+            notificationManager.createNotificationChannel(channel)
         }
 
-        val notificationManager =
-            context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val builder = NotificationCompat.Builder(context, channelId)
+            .setSmallIcon(R.drawable.azkahomeiot__288_x_288_pixel_)
+            .setContentTitle("Mengunduh $fileName")
+            .setContentText("0%")
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setOnlyAlertOnce(true)
+            .setProgress(100, 0, false)
+
+        notificationManager.notify(notificationId, builder.build())
+
         Thread {
-            // Simulating a download process
-            for (progress in 1..100) {
-                Thread.sleep(100) // Simulate work (e.g., downloading)
+            try {
+                val url = URL(urlString)
+                val connection = url.openConnection()
+                connection.connect()
 
-                // Update progress notification
-//                builder.setProgress(maxProgress, progress, false)
-//                notificationManager.notify(NOTIFICATION_ID, builder.build())
-                val updatedNotification = buildProgressNotification(progress)
-                notificationManager.notify(NOTIFICATION_ID, updatedNotification)
-            }
-            notificationManager.cancel(NOTIFICATION_ID)
-            // After download finishes, show completed notification
-            val completedNotification = showDownloadingNotification()
-            notificationManager.notify(NOTIFICATION_ID2, completedNotification)
-            uri?.let {
-                resolver.openOutputStream(it)?.use { outputStream ->
-                    inputStream.copyTo(outputStream)
-                    getActivity()?.runOnUiThread {
-                        Toast.makeText(
-                            getActivity(),
-                            "File saved to Downloads folder: $it",
-                            Toast.LENGTH_LONG
-                        ).show();
+                val lengthOfFile = connection.contentLength
+                val input = BufferedInputStream(url.openStream())
+                val outputFile: File
+                val uri: Uri
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    val resolver = context.contentResolver
+                    val contentValues = ContentValues().apply {
+                        put(MediaStore.Downloads.DISPLAY_NAME, fileName)
+                        put(MediaStore.Downloads.MIME_TYPE, "application/pdf")
+                        put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+                        put(MediaStore.Downloads.IS_PENDING, 1)
                     }
-//                context?.let { showNotification(context, "File Successfully Saved", "File saved to Downloads folder: $it") }
-                    println("File saved to Downloads folder: $it")
-                }
-            } ?: run {
-                throw Exception("Failed to create file in Downloads folder")
-                getActivity()?.runOnUiThread {
-                    Toast.makeText(
-                        getActivity(),
-                        "Failed to create file in Downloads folder",
-                        Toast.LENGTH_LONG
-                    ).show();
 
+                    val newUri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
+                    uri = newUri!!
+                    resolver.openOutputStream(uri)!!.use { output ->
+                        val data = ByteArray(1024)
+                        var total: Long = 0
+                        var count: Int
+                        while (input.read(data).also { count = it } != -1) {
+                            total += count
+                            output.write(data, 0, count)
+                            val progress = ((total * 100) / lengthOfFile).toInt()
+                            builder.setProgress(100, progress, false)
+                                .setContentText("$progress%")
+                            notificationManager.notify(notificationId, builder.build())
+                        }
+                    }
+
+                    contentValues.clear()
+                    contentValues.put(MediaStore.Downloads.IS_PENDING, 0)
+                    resolver.update(uri, contentValues, null, null)
+
+                } else {
+                    val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                    outputFile = File(downloadsDir, fileName)
+                    val output = FileOutputStream(outputFile)
+                    val data = ByteArray(1024)
+                    var total: Long = 0
+                    var count: Int
+                    while (input.read(data).also { count = it } != -1) {
+                        total += count
+                        output.write(data, 0, count)
+                        val progress = ((total * 100) / lengthOfFile).toInt()
+                        builder.setProgress(100, progress, false)
+                            .setContentText("$progress%")
+                        notificationManager.notify(notificationId, builder.build())
+                    }
+                    output.flush()
+                    output.close()
+
+                    uri = FileProvider.getUriForFile(
+                        context,
+                        context.packageName + ".provider",
+                        outputFile
+                    )
                 }
+
+                input.close()
+
+                builder.setContentText("Download selesai")
+                    .setProgress(0, 0, false)
+                    .setAutoCancel(true)
+                notificationManager.notify(notificationId, builder.build())
+
+                val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                val uriFolder = FileProvider.getUriForFile(
+                    context,
+                    context.packageName + ".provider",
+                    downloadsDir
+                )
+
+                val openFolderIntent = Intent(Intent.ACTION_VIEW).apply {
+                    setDataAndType(uriFolder, "*/*")
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+
+                try {
+                    context.startActivity(openFolderIntent)
+                } catch (e: ActivityNotFoundException) {
+                    Toast.makeText(context, "File Manager tidak tersedia untuk membuka folder", Toast.LENGTH_LONG).show()
+                }
+
+
+
+
+            } catch (e: Exception) {
+                Log.e("DownloadError", "Error saat download: ${e.message}", e)
+                builder.setContentText("Download gagal: ${e.message}")
+                    .setProgress(0, 0, false)
+                notificationManager.notify(notificationId, builder.build())
             }
         }.start()
-
-
     }
 
+
     fun downloadPdf(token: String, name: String ){
-        val URL : String ="https://abeazka.my.id/json/finansial/generate_pdf.php"
+        val URL : String ="https://www.indodevstudio.my.id/api/json/finansial/generate_pdf.php"
 
         //myWebView.loadUrl("http://taryem.my.id/Lab01/labx.php?type=on")
         //myWebView.loadUrl("http://taryem.my.id/Lab01/labx.php?type=on")
@@ -1003,8 +1034,6 @@ class FinansialFragment : Fragment() {
             val request = Request.Builder()
                 .url(URL)
                 .header("Authorization", "Bearer $token")
-
-
                 .build()
             //myWebView.loadUrl(URL)
 
@@ -1027,7 +1056,7 @@ class FinansialFragment : Fragment() {
                         Log.i("retro", "Sukses generate pdf")
 
 
-                            val URL2 = URL("https://abeazka.my.id/json/finansial/pdf_file/$name.pdf")
+                            val URL2 = URL("https://www.indodevstudio.my.id/api/json/finansial/pdf_file/$name.pdf")
 
                         if (URL2.toString().isNotEmpty()) {
                             val http = OkHttpClient()
@@ -1048,19 +1077,14 @@ class FinansialFragment : Fragment() {
                                         getActivity()?.runOnUiThread {
                                             Toast.makeText(
                                                 getActivity(),
-                                                "Succesfully download pdf",
+                                                "Download File....",
                                                 Toast.LENGTH_LONG
                                             ).show();
                                         }
 //                                        context?.let { showDownloadingNotification(it, 100) }
 
-                                        context?.let {
-                                            saveToDownloads(
-                                                it,
-                                                "$name.pdf",
-                                                inputStream, URL2.toString()
-                                            )
-                                        }
+                                        saveToDownloads(requireContext(), "$name.pdf", "https://www.indodevstudio.my.id/api/finansial/pdf_file/$name.pdf")
+
 
 
 
@@ -1737,24 +1761,4 @@ class FinansialFragment : Fragment() {
         countdownTimer.cancel()
     }
 
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FinansialFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FinansialFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }

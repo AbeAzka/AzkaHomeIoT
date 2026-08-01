@@ -17,6 +17,7 @@
         <item name="drawerItemColorNormal">@color/white</item>
         <item name="navHeaderTitleColor">@color/white</item>
         <item name="navHeaderDescriptionColor">@color/white_2</item>
+
         <item name="drawerBackground">@color/black</item>
 
         <!-- Customize your theme here. -->

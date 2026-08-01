@@ -1,0 +1,282 @@
+[
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/bottom_sheet_dialog.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/bottom_sheet_dialog.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_listrik_uti_fregment.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_listrik_uti_fregment.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/settings_activity.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/settings_activity.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_masjid.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_masjid.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_home.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_home.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/card_item.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/card_item.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/message_box.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/message_box.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/activity_device_control.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/activity_device_control.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_setup_wifi.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_setup_wifi.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/activity_login_success.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/activity_login_success.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/dropdown_menu_popup_item.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/dropdown_menu_popup_item.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/layout_cardview_bukti.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/layout_cardview_bukti.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/simple_spinner_item.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/simple_spinner_item.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/activity_main.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/activity_sign_in.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/activity_sign_in.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/mytoolbar.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/mytoolbar.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/activity_sign_up.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/activity_sign_up.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_taman_prod.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_taman_prod.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/item_layout.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/item_layout.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/activity_inbox.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/activity_inbox.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/card_item_finansial_shimmer.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/card_item_finansial_shimmer.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/bottom_sheet_dialog_device_control.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/bottom_sheet_dialog_device_control.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/item_event.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/item_event.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/activity_invite.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/activity_invite.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/nav_header.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/nav_header.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_finansial.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_finansial.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_home_simmer.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_home_simmer.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/item_device.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/item_device.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/bottom_sheet_device.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/bottom_sheet_device.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/activity_splash.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/activity_splash.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/activity_reset_pw.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/activity_reset_pw.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_listrik_masjid.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_listrik_masjid.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/activity_verification.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/activity_verification.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/simple_spinner_dropdown_item.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/simple_spinner_dropdown_item.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/item_switcth.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/item_switcth.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/card_item_shimmer.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/card_item_shimmer.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_grafik_masjid.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_grafik_masjid.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_taman.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_taman.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_tandon_uti.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_tandon_uti.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_grafik_uti_fregment.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_grafik_uti_fregment.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_setup_wemos.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_setup_wemos.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_update_log.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_update_log.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/item_device_shimmer.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/item_device_shimmer.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/item_update_log.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/item_update_log.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/item_timeline_event.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/item_timeline_event.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_sholat.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_sholat.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_device_list.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_device_list.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_arduino.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_arduino.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_sholat2.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_sholat2.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/spinner_item_white.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/spinner_item_white.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/popup_grafik2.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/popup_grafik2.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_about.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_about.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/action_bar_notifitcation_icon.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/action_bar_notifitcation_icon.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/dialog_edit_text.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/dialog_edit_text.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_event.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_event.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_grafik_bunda.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_grafik_bunda.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/activity_detail.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/activity_detail.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/notification.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/notification.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/item_device_grid.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/item_device_grid.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_web_view.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_web_view.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_ringtone_picker.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_ringtone_picker.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_listrik_bunda.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_listrik_bunda.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_camera.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_camera.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/dialog_invite.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/dialog_invite.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/item_table_row.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/item_table_row.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_tandon_bunda.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_tandon_bunda.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/bottom_sheet_timeline.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/bottom_sheet_timeline.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/activity_taman.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/activity_taman.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/popup_grafik.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/popup_grafik.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/fragment_manual_book_fragment.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/fragment_manual_book_fragment.xml"
+    }
+]

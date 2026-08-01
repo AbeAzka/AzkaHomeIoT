@@ -50,5 +50,11 @@
         <item>4</item>
         <item>5</item>
     </string-array>
+    <string name="shortcut_one_short_label">Finansial Planning</string>
+    <string name="shortcut_one_long_label">Finansial Planning</string>
+    <string name="shortcut_two_short_label">Event List</string>
+    <string name="shortcut_two_long_label">New Event</string>
+    <string name="shortcut_three_short_label">Arduino Management</string>
+    <string name="shortcut_three_long_label">Arduino List</string>
 
 </resources>

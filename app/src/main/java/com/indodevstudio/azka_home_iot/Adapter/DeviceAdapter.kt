@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -17,6 +18,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.indodevstudio.azka_home_iot.API.DeviceSharingService
 import com.indodevstudio.azka_home_iot.DeviceControlActivity
@@ -56,8 +59,9 @@ class DeviceAdapter(
     private val viewHolders = mutableListOf<DeviceViewHolder>() // Menyimpan semua ViewHolder
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_device, parent, false)
-        val holder = DeviceViewHolder(view)
+        //val view = LayoutInflater.from(parent.context).inflate(R.layout.item_device, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_device_grid, parent, false)
+        val holder = DeviceViewHolder(view, parent)
         viewHolders.add(holder) // Simpan ViewHolder agar bisa di-disconnect nanti
         return holder
     }
@@ -104,21 +108,25 @@ class DeviceAdapter(
             val intent = Intent(holder.itemView.context, DeviceControlActivity::class.java)
             intent.putExtra("device_id", deviceIdd)
             intent.putExtra("deviceName", deviceNam)
+            intent.putExtra("category", device.category)
             holder.itemView.context.startActivity(intent)
         }
 
-        holder.itemView.setOnLongClickListener {
-            if (device.isShared) {
-                Toast.makeText(holder.itemView.context, "You don't have permission to modify this device", Toast.LENGTH_SHORT).show()
-                return@setOnLongClickListener true
-            }
-            showInviteDialog(holder.itemView.context, device)
-            true
-        }
+//        holder.itemView.setOnLongClickListener {
+//            if (device.isShared) {
+//                Toast.makeText(holder.itemView.context, "You don't have permission to modify this device", Toast.LENGTH_SHORT).show()
+//                return@setOnLongClickListener true
+//            }
+//            showInviteDialog(holder.itemView.context, device)
+//            true
+//        }
     }
 
 
     override fun getItemCount(): Int = deviceList.size
+
+
+
 
     private fun showInviteDialog(context: Context, device: DeviceModel) {
         if (device.isShared) {
@@ -176,14 +184,22 @@ class DeviceAdapter(
 
 
 
-    class DeviceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class DeviceViewHolder(itemView: View, private val parent: ViewGroup) : RecyclerView.ViewHolder(itemView) {
 
         private val tvDeviceName: TextView = itemView.findViewById(R.id.textViewDeviceName)
-        private val btnRename: ImageButton = itemView.findViewById(R.id.btnRename)
-        private val btnDelete: ImageButton = itemView.findViewById(R.id.btnDelete)
+        //private val btnRename: ImageButton = itemView.findViewById(R.id.btnRename)
+        //private val btnDelete: ImageButton = itemView.findViewById(R.id.btnDelete)
         private val btnRefresh: ImageButton = itemView.findViewById(R.id.btnRefresh)
         val deviceStatus: TextView = itemView.findViewById(R.id.textStatus)
         private val tvShared: TextView = itemView.findViewById(R.id.tvShared)
+        private val tvCategory: TextView = itemView.findViewById(R.id.tvCategory)
+        //private val btnInvite: ImageButton = itemView.findViewById(R.id.btnInvite)
+        private val  tvDeviceId: TextView = itemView.findViewById(R.id.deviceId)
+        private val btnMenu: ImageButton = itemView.findViewById(R.id.btnMenu)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.bottom_sheet_dialog_device_control, null)
+//        private val btnInvite: MaterialButton = view.findViewById(R.id.inviteBtn)
+//        private val btnRename: MaterialButton = view.findViewById(R.id.editBtn)
+
         val ip: TextView = itemView.findViewById(R.id.textIP)
         lateinit var mqttClient: MqttClient
 
@@ -203,10 +219,12 @@ class DeviceAdapter(
             observe(lifecycleOwner, wrapper)
         }
 
+
+
         fun bind(device: DeviceModel, listener: DeviceActionListener, position: Int, lifecycleOwner: LifecycleOwner) {
             // 🔄 Reset tampilan agar tidak mewarisi status lama
-            deviceStatus.text = "Checking... Please press refresh button"
-            deviceStatus.setTextColor(Color.DKGRAY)
+            deviceStatus.text = "Checking..."
+            deviceStatus.setTextColor(Color.GRAY)
             ip.text = device.ipAddress.ifEmpty { "0.0.0.0" }
 
 //            DeviceSharingService.getStatus(device.id)
@@ -223,19 +241,33 @@ class DeviceAdapter(
 //            }
 
             // Set nama dan ID
-            tvDeviceName.text = "${device.name} - ID: ${device.id}"
-
+            tvDeviceName.text = "${device.name}"
+            tvDeviceId.text = "ID: ${device.id}"
+            tvCategory.visibility = View.VISIBLE
+            tvCategory.text = device.category.toString()
             // Setup MQTT dan refresh status
             setupMqttClient(device)
             publishMessage("sending_order_${device.id}", device.id, "refresh")
-
-            // Tombol
-            btnRename.setOnClickListener { listener.onRenameDevice(device, position) }
-            btnDelete.setOnClickListener {
-                if (!device.isShared) {
-                    listener.onDeleteDevice(device, position)
-                }
+            btnMenu.setOnClickListener {
+                showDeviceBottomSheet(device.name, device, listener)
             }
+//            btnInvite.setOnClickListener {
+//                if (device.isShared) {
+//                    Toast.makeText(itemView.context, "You don't have permission to modify this device", Toast.LENGTH_SHORT).show()
+//                    return@setOnClickListener
+//                }
+//                showInviteDialog(itemView.context, device)
+//                true
+//            }
+            // Tombol
+//            btnRename.setOnClickListener { listener.onRenameDevice(device, position) }
+//            btnDelete.setOnClickListener {
+//                if (!device.isShared) {
+//                    listener.onDeleteDevice(device, position)
+//                }
+//            }
+
+
 //            btnRefresh.setOnClickListener {
 //                DeviceSharingService.getStatus(device.id)
 ////                Log.d("MQTT", "🔄 Manual Refresh untuk ${device.id}")
@@ -263,7 +295,7 @@ class DeviceAdapter(
                 when (status.lowercase()) {
                     "online" -> deviceStatus.setTextColor(Color.parseColor("#4CAF50")) // hijau
                     "offline" -> deviceStatus.setTextColor(Color.parseColor("#F44336")) // merah
-                    else -> deviceStatus.setTextColor(Color.DKGRAY) // warna default
+                    else -> deviceStatus.setTextColor(Color.GRAY) // warna default
                 }
             }
         }, 1000) // Delay 1 detik untuk memastikan status sempat diperbarui
@@ -274,8 +306,72 @@ class DeviceAdapter(
 
     // Shared status
             tvShared.visibility = if (device.isShared) View.VISIBLE else View.GONE
-            btnDelete.visibility = if (device.isShared) View.GONE else View.VISIBLE
-            btnRename.visibility = if (device.isShared) View.GONE else View.VISIBLE
+//            btnDelete.visibility = if (device.isShared) View.GONE else View.VISIBLE
+//            btnRename.visibility = if (device.isShared) View.GONE else View.VISIBLE
+        }
+
+        fun showDeviceBottomSheet(deviceName: String, device: DeviceModel, listener: DeviceActionListener) {
+            val bottomSheetDialog = BottomSheetDialog(itemView.context)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.bottom_sheet_device, null)
+
+            val titleSheet = view.findViewById<TextView>(R.id.titleSheet)
+            val editBtn = view.findViewById<LinearLayout>(R.id.actionEdit)
+            val inviteBtn = view.findViewById<LinearLayout>(R.id.actionInvite)
+            val deleteBtn = view.findViewById<LinearLayout>(R.id.actionDelete)
+            val noPermsTxt = view.findViewById<TextView>(R.id.noPermsText)
+            deleteBtn.visibility = if (device.isShared) View.GONE else View.VISIBLE
+            editBtn.visibility = if (device.isShared) View.GONE else View.VISIBLE
+            titleSheet.text = "Actions for $deviceName"
+            inviteBtn.visibility = if (device.isShared) View.GONE else View.VISIBLE
+            noPermsTxt.visibility = if (device.isShared) View.VISIBLE else View.GONE
+            editBtn.setOnClickListener {
+                listener.onRenameDevice(device, position)
+                bottomSheetDialog.dismiss()
+            }
+
+            inviteBtn.setOnClickListener {
+                if (device.isShared) {
+                    Toast.makeText(itemView.context, "You don't have permission to modify this device", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                showInviteDialog(itemView.context, device)
+                true
+                bottomSheetDialog.dismiss()
+            }
+
+            deleteBtn.setOnClickListener {
+                if (!device.isShared) {
+                    listener.onDeleteDevice(device, position)
+                }
+                bottomSheetDialog.dismiss()
+            }
+
+            bottomSheetDialog.setContentView(view)
+            bottomSheetDialog.show()
+        }
+
+
+
+        private fun showInviteDialog(context: Context, device: DeviceModel) {
+            if (device.isShared) {
+                Toast.makeText(context, "You don't have permission to modify this device", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            MaterialAlertDialogBuilder(context)
+                .setTitle("Invite user")
+                .setMessage("Want to invite other users to view this device ${device.name}?")
+                .setPositiveButton("Invite") { _, _ ->
+                    // Pindah ke Fragment/Activity undangan
+                    val intent = Intent(context, InviteActivity::class.java) // Ganti dengan activity yang sesuai
+                    intent.putExtra("device_id", device.id) // Kirim ID perangkat ke activity
+                    intent.putExtra("device_nama", device.name) // Kirim ID perangkat ke activity
+                    context.startActivity(intent)
+                }
+                .setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
         }
 
 

@@ -1,6 +1,5 @@
 package com.indodevstudio.azka_home_iot
 
-import android.adservices.topics.Topic
 import android.content.Context
 import android.net.wifi.WifiManager
 import android.os.Bundle
@@ -8,18 +7,23 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.facebook.shimmer.ShimmerFrameLayout
-import com.getkeepsafe.taptargetview.TapTarget
-import com.getkeepsafe.taptargetview.TapTargetSequence
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
@@ -27,11 +31,16 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.indodevstudio.azka_home_iot.API.DeviceSharingService
 import com.indodevstudio.azka_home_iot.Adapter.DeviceAdapter
+import com.indodevstudio.azka_home_iot.Adapter.ShimmerDeviceAdapter
 import com.indodevstudio.azka_home_iot.Model.DeviceModel
 import com.indodevstudio.azka_home_iot.Model.DeviceViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.Call
 import okhttp3.Callback
-import okhttp3.FormBody
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -47,12 +56,19 @@ class DeviceListFragment : Fragment() {
     private lateinit var deviceAdapter: DeviceAdapter
     private lateinit var tvNoDevices: TextView
     private lateinit var tvListDvc: TextView
-
+    private lateinit var categorySpinner: Spinner
+    private lateinit var emptyTextView: TextView
+    private lateinit var qrBtn: LinearLayout
+    private lateinit var wifibtn: LinearLayout
+    private var allDevices: List<DeviceModel> = listOf() // simpan semua hasil fetch
     private val deviceList = mutableListOf<DeviceModel>()
     private val deviceViewModel: DeviceViewModel by activityViewModels()
     private var email = ""
     var deviceId = ""
+    var selectedCategory = ""
     private var ipAddress = ""
+
+
 
     lateinit var shimmerLayout : ShimmerFrameLayout
     lateinit var swipeRefresh: SwipeRefreshLayout
@@ -68,30 +84,53 @@ class DeviceListFragment : Fragment() {
         recyclerView = view.findViewById(R.id.recyclerView)
         tvNoDevices = view.findViewById(R.id.tvNoDevices)
         tvListDvc = view.findViewById(R.id.tvTotalDevice)
+        categorySpinner = view.findViewById(R.id.categorySpinner)
+        //emptyTextView = view.findViewById(R.id.emptyTextView)
 
-//        val sharedPreferences_tutorial = requireContext().getSharedPreferences("AppPrefs",
-//            Context.MODE_PRIVATE
-//        )
-//        val isFirstTime = sharedPreferences_tutorial.getBoolean("isFirstTimes", true)
-//
-//        if (isFirstTime) {
-//            TapTargetSequence(requireActivity())
-//                .targets(
-//                    TapTarget.forView(view.findViewById(R.id.fabAddDevice), "Add Device", "Klik tombol ini untuk menambahkan perangkat Arduino.")
-//                        .cancelable(false)
-//                        .transparentTarget(true),
-//
-//                )
-//                .listener(object : TapTargetSequence.Listener {
-//                    override fun onSequenceFinish() {
-//                        // Tandai bahwa user sudah pernah lihat tutorial
-//                        sharedPreferences_tutorial.edit().putBoolean("isFirstTimes", false).apply()
-//                    }
-//
-//                    override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
-//                    override fun onSequenceCanceled(lastTarget: TapTarget) {}
-//                }).start()
-//        }
+        val shimmerRecycler = view.findViewById<RecyclerView>(R.id.shimmerRecycler)
+        val shimmerAdapter = ShimmerDeviceAdapter(6) // misal tampilkan 6 placeholder
+
+        if (shimmerRecycler.adapter == null) {
+            shimmerRecycler.layoutManager = GridLayoutManager(requireContext(), 2)
+            shimmerRecycler.adapter = ShimmerDeviceAdapter(6)
+        }
+
+
+        shimmerLayout.startShimmer()
+        shimmerLayout.visibility = View.VISIBLE
+        recyclerView.visibility = View.GONE
+        tvNoDevices.visibility = View.GONE
+
+
+
+
+        val categories = listOf("All", "Lamp", "Sensor", "Custom")
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            categories
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        categorySpinner.adapter = adapter
+
+
+        categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedCategory = categories[position]
+
+                // Tampilkan shimmer saat mulai filter
+                showShimmer()
+
+                // Gunakan handler untuk memberikan delay visual (opsional)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    filterDevicesByCategory(selectedCategory)
+                    hideShimmer()
+                }, 300) // Delay 300ms untuk efek visual yang lebih baik
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
 
         val sharedPreferences2 = context?.getSharedPreferences("Bagogo", Context.MODE_PRIVATE)
         val deviceIdd = sharedPreferences2?.getString("device_id", null)
@@ -124,6 +163,10 @@ class DeviceListFragment : Fragment() {
             email = firebaseUser.email.toString()
         }
         /*deviceAdapter.connect()*/
+        deviceViewModel.getDeviceList().observe(viewLifecycleOwner) { list ->
+            deviceAdapter.updateData(list)
+            updateUI()
+        }
 
 
         //FOR INDODEVSTUDIO LOGIN
@@ -133,27 +176,14 @@ class DeviceListFragment : Fragment() {
         if (authToken != null) {
             email = userData["email"].toString()
         }
-
-        // 🔹 Muat daftar perangkat lokal sebelum cek shared devices
-//        loadDeviceList()
-
-
-        // Jika ada email, baru cek shared devices (opsional)
-
-        loadData{
-            updateUI()
-
-        }
-
-
         deviceAdapter = DeviceAdapter(deviceList, object : DeviceAdapter.DeviceActionListener {
             override fun onRenameDevice(device: DeviceModel, position: Int) {
                 renameDevice(device, position)
             }
 
             override fun onDeleteDevice(device: DeviceModel, position: Int) {
-                deleteDevice(device, position)
-                deleteDevices(device.id, email)
+                //deleteDevice(device, position)
+                deleteDevices(device, device.id, email)
             }
 
             override fun onResetWiFi(device: DeviceModel) {
@@ -165,12 +195,33 @@ class DeviceListFragment : Fragment() {
             }
         }, viewLifecycleOwner)
 
+        // 🔹 Muat daftar perangkat lokal sebelum cek shared device
+        if (recyclerView.adapter == null) {
+//            recyclerView.layoutManager = LinearLayoutManager(requireContext())
+            recyclerView.layoutManager = GridLayoutManager(requireContext(), 2) // 2 kolom
+            recyclerView.adapter = deviceAdapter
 
+            // Jika ingin responsive berdasarkan ukuran layar:
+            val displayMetrics = resources.displayMetrics
+            val dpWidth = displayMetrics.widthPixels / displayMetrics.density
+            val numColumns = (dpWidth / 180).toInt() // 180dp adalah lebar perkiraan per item
+            recyclerView.layoutManager = GridLayoutManager(requireContext(), numColumns.coerceAtLeast(2))
+        }
+
+        loadData{
+            updateUI()
+
+        }
         with (swipeRefresh) {
             swipeRefresh?.setOnRefreshListener {
                 setRefreshing(true)
+                shimmerLayout.startShimmer()
+                shimmerLayout.visibility = View.VISIBLE
+                recyclerView.visibility = View.GONE
+                tvNoDevices.visibility = View.GONE
+
                 loadData {
-                    setRefreshing(false) // Hanya setelah data selesai dimuat
+                    setRefreshing(false)
                     updateUI()
                 }
             }
@@ -179,60 +230,159 @@ class DeviceListFragment : Fragment() {
 
         // Tombol tambah perangkat
         fabAddDevice.setOnClickListener {
-            val setupFragment = SetupWemosFragment()
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, setupFragment)
-                .addToBackStack(null)
-                .commit()
+//            val setupFragment = SetupWemosFragment()
+//            parentFragmentManager.beginTransaction()
+//                .replace(R.id.fragment_container, setupFragment)
+//                .addToBackStack(null)
+//                .commit()
+
+            // create a new bottom sheet dialog
+            val dialog = BottomSheetDialog(requireContext())
+
+            // inflate the layout file of bottom sheet
+            val view = layoutInflater.inflate(R.layout.bottom_sheet_dialog, null)
+            qrBtn = view.findViewById(R.id.addviaqr)
+            wifibtn = view.findViewById(R.id.addviawifi)
+            // initialize variable for dismiss button
+            //dismissButton = view.findViewById(R.id.dismissButton)
+            wifibtn.setOnClickListener{
+                val setupFragment = SetupWemosFragment()
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, setupFragment)
+                    .addToBackStack(null)
+                    .commit()
+                dialog.dismiss()
+            }
+
+//            qrBtn.setOnClickListener{
+//
+//            }
+            // on click event for dismiss button
+//            dismissButton.setOnClickListener {
+//                // call dismiss method to close the dialog
+//                dialog.dismiss()
+//            }
+            // set cancelable to avoid closing of dialog box when clicking on the screen.
+            dialog.setCancelable(true)
+            // set content view to our view.
+            dialog.setContentView(view)
+            // call a show method to display a dialog
+            dialog.show()
         }
 
         return view
     }
 
-    private fun loadData(onFinished: (() -> Unit)? = null) {
-        shimmerLayout.visibility = View.VISIBLE
+    private fun showShimmer() {
         shimmerLayout.startShimmer()
+        shimmerLayout.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
         tvNoDevices.visibility = View.GONE
+    }
 
-        Handler(Looper.getMainLooper()).postDelayed({
+    private fun hideShimmer() {
+        shimmerLayout.stopShimmer()
+        shimmerLayout.visibility = View.GONE
+        recyclerView.visibility = View.VISIBLE
+    }
+
+
+    private fun loadData(onFinished: (() -> Unit)? = null) {
+
+//        recyclerView.visibility = View.GONE
+//        tvNoDevices.visibility = View.GONE
+
+        CoroutineScope(Dispatchers.IO).launch {
+            recyclerView.visibility = View.GONE
+            tvNoDevices.visibility = View.GONE
+            shimmerLayout.visibility = View.VISIBLE
+            shimmerLayout.startShimmer()
             val userEmail = email
+            val ownedDevices = async { fetchDevicesSuspend(userEmail) }
+            val sharedDevices = async { fetchSharedDevicesSuspend(userEmail) }
+            val combinedDevices = (ownedDevices.await() + sharedDevices.await())
+                .distinctBy { it.id + it.isShared.toString() }
 
-            // Fetch owned devices dulu
-            fetchDevices(userEmail) {
-                // Lanjut ke fetch shared devices setelah selesai
-                fetchSharedDevices(userEmail)
-            }
-
-            // Observasi perubahan data dari ViewModel
-            deviceViewModel.getDeviceList().observe(viewLifecycleOwner) { devices ->
-
-                // Hentikan shimmer
+            allDevices = combinedDevices // biar filter category tetap jalan
+            withContext(Dispatchers.Main) {
+                // Simpan ke ViewModel supaya adapter dapat
+                deviceViewModel.updateDeviceList(combinedDevices)
+                filterDevicesByCategory(categorySpinner.selectedItem.toString())
                 shimmerLayout.stopShimmer()
                 shimmerLayout.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE
-
-                // Set layout manager dan adapter hanya sekali
-                if (recyclerView.adapter == null) {
-                    recyclerView.layoutManager = LinearLayoutManager(requireContext())
-                    recyclerView.adapter = deviceAdapter
+                deviceViewModel.getDeviceList().observe(viewLifecycleOwner) { list ->
+                    deviceAdapter.updateData(list)
+                    updateUI()
                 }
-
-                // ⛔️ Jangan manipulasi deviceList langsung!
-                // ✅ Langsung update ke adapter
-                deviceAdapter.updateData(devices)
-
-                // Refresh MQTT publish satu per satu berdasarkan ID
-                devices.forEach { device ->
-                    deviceAdapter.publish("sending_order_${device.id}", device.id, "refresh")
-                }
-
-                updateUI()
+//                updateUI()
                 onFinished?.invoke()
             }
-        }, 2000)
+        }
     }
 
+
+    private suspend fun fetchDevicesSuspend(userEmail: String): List<DeviceModel> = withContext(Dispatchers.IO) {
+        val url = "https://www.indodevstudio.my.id/api/arduino/get_devices.php?owner_email=$userEmail"
+        val request = Request.Builder().url(url).get().build()
+
+        return@withContext try {
+            val response = OkHttpClient().newCall(request).execute()
+            val jsonString = response.body?.string().orEmpty()
+
+            Logger.log("fetchDevicesSuspend", "Response: $jsonString")
+            Log.d("fetchDevicesSuspend", "Response: $jsonString")
+
+            if (jsonString.isNotEmpty() && jsonString != "[]") {
+                val parsedDevices = parseDevicesJson(jsonString)
+
+                val ownedDevices = parsedDevices.map { device ->
+                    val safeCategory = device.category?.takeIf { it.isNotBlank() } ?: "Unknown"
+                    device.copy(
+                        isShared = false, // 💡 dipastikan milik sendiri
+                        category = if (device.isShared) safeCategory else (device.category ?: "Unknown")
+                    )
+                }
+
+                ownedDevices
+            } else {
+                emptyList()
+            }
+        } catch (e: IOException) {
+            Log.e("fetchDevicesSuspend", "Gagal fetch: ${e.message}")
+            emptyList()
+        }
+    }
+
+
+    private suspend fun fetchSharedDevicesSuspend(userEmail: String): List<DeviceModel> = withContext(Dispatchers.IO) {
+        val url = "https://www.indodevstudio.my.id/api/arduino/get_shared_devices.php?shared_email=$userEmail"
+        val request = Request.Builder().url(url).build()
+
+        return@withContext try {
+            val response = OkHttpClient().newCall(request).execute()
+            val jsonString = response.body?.string().orEmpty()
+
+            Log.d("fetchSharedDevicesSuspend", "Shared devices JSON: $jsonString")
+            Logger.log("fetchSharedDevicesSuspend", "Shared devices JSON: $jsonString")
+
+            if (jsonString.isEmpty() || jsonString == "[]") {
+                emptyList()
+            } else {
+                val sharedDevices = parseDevicesJson(jsonString).map { device ->
+                    val safeCategory = device.category?.takeIf { it.isNotBlank() } ?: "Unknown"
+                    device.copy(
+                        isShared = true,
+                        category = safeCategory
+                    )
+                }
+                sharedDevices
+            }
+        } catch (e: IOException) {
+            Log.e("fetchSharedDevicesSuspend", "Gagal fetch: ${e.message}")
+            emptyList()
+        }
+    }
 
 
 
@@ -253,7 +403,7 @@ class DeviceListFragment : Fragment() {
 
     private fun fetchSharedDevices(userEmail: String) {
         val request = Request.Builder()
-            .url("https://ahi.abeazka.my.id/api/arduino/get_shared_devices.php?shared_email=$userEmail")
+            .url("https://www.indodevstudio.my.id/api/arduino/get_shared_devices.php?shared_email=$userEmail")
             .build()
 
         OkHttpClient().newCall(request).enqueue(object : Callback {
@@ -270,22 +420,23 @@ class DeviceListFragment : Fragment() {
 
                     if (jsonString.isNullOrEmpty() || jsonString == "[]") {
                         requireActivity().runOnUiThread {
-                            //fetchDevices(userEmail)
                             Toast.makeText(requireContext(), "Tidak ada perangkat yang dibagikan", Toast.LENGTH_SHORT).show()
                         }
                         return
                     }
 
                     val sharedDevices = parseDevicesJson(jsonString).map { device ->
-                        device.copy(isShared = true) // 🔹 Tandai sebagai perangkat shared
-
+                        val safeCategory = device.category?.takeIf { it.isNotBlank() } ?: "Unknown"
+                        device.copy(
+                            isShared = true,
+                            category = safeCategory // 🔹 Pastikan kategori dari shared device digunakan
+                        )
                     }
 
                     requireActivity().runOnUiThread {
-                        val uniqueDevices = (sharedDevices + deviceList).distinctBy { it.id  }
-//                        deviceList.clear()
-//                        deviceList.addAll(uniqueDevices)
-//                        deviceViewModel.updateDeviceList(uniqueDevices)
+                        val uniqueDevices = (sharedDevices + deviceList)
+                            .distinctBy { it.id + it.isShared.toString() } // 🔹 Supaya tidak bentrok antara milik sendiri dan shared
+
                         deviceViewModel.updateDeviceList(uniqueDevices)
                         updateUI()
                     }
@@ -294,11 +445,9 @@ class DeviceListFragment : Fragment() {
         })
     }
 
+
     private fun fetchDevices(userEmail: String, onComplete: () -> Unit) {
-        val url = "https://ahi.abeazka.my.id/api/arduino/get_devices.php?owner_email=$userEmail"
-        val requestBody = FormBody.Builder()
-            .add("owner_email", userEmail)
-            .build()
+        val url = "https://www.indodevstudio.my.id/api/arduino/get_devices.php?owner_email=$userEmail"
         val request = Request.Builder()
             .url(url)
             .get()
@@ -309,39 +458,60 @@ class DeviceListFragment : Fragment() {
                 requireActivity().runOnUiThread {
                     Toast.makeText(requireContext(), "Gagal mengambil daftar perangkat", Toast.LENGTH_SHORT).show()
                 }
-                onComplete() // Lanjutkan ke fetchSharedDevices meskipun gagal
+                onComplete()
             }
 
             override fun onResponse(call: Call, response: Response) {
                 response.body?.string()?.let { jsonString ->
-                    Logger.log("fetchDevices", "Response: $jsonString") // Tambahkan log ini
-                    Log.d("fetchDevices", "Response: $jsonString") // Tambahkan log ini
-                    if (!jsonString.isNullOrEmpty() && jsonString != "[]") {
-                        val ownedDevices = parseDevicesJson(jsonString).map { device ->
-                            if (device.isShared) {
-                                device.copy(isShared = true) // 🔹 Jika perangkat dibagikan
-                            } else {
-                                device.copy(isShared = false) // 🔹 Jika perangkat milik user sendiri
-                            }
+                    Logger.log("fetchDevices", "Response: $jsonString")
+                    Log.d("fetchDevices", "Response: $jsonString")
+
+                    if (jsonString.isNotEmpty() && jsonString != "[]") {
+                        val parsedDevices = parseDevicesJson(jsonString)
+
+                        val ownedDevices = parsedDevices.map { device ->
+                            val safeCategory = device.category?.takeIf { it.isNotBlank() } ?: "Unknown"
+                            device.copy(
+                                category = if (device.isShared) safeCategory else (device.category ?: "Unknown")
+                            )
                         }
 
-                        //val ownedDevices = parseDevicesJson(jsonString)
                         requireActivity().runOnUiThread {
-
                             val normalDevices = deviceList.map { it.copy(isShared = false) }
 
-                            val uniqueDevices = (normalDevices + ownedDevices).distinctBy {it.id + it.isShared.toString() }
-//                            deviceList.clear()
-//                            deviceList.addAll(uniqueDevices)
-//                            deviceViewModel.updateDeviceList(uniqueDevices)
-                            deviceViewModel.updateDeviceList(uniqueDevices)
+                            val uniqueDevices = (normalDevices + ownedDevices)
+                                .distinctBy { it.id + it.isShared.toString() }
+
+                            allDevices = uniqueDevices
+                            filterDevicesByCategory(categorySpinner.selectedItem.toString())
                             updateUI()
                         }
                     }
                 }
-                onComplete() // Lanjutkan ke fetchSharedDevices setelah fetchDevices selesai
+                onComplete()
             }
         })
+    }
+
+
+    private fun filterDevicesByCategory(category: String) {
+        showShimmer() // Tampilkan shimmer sebelum memulai filter
+
+        CoroutineScope(Dispatchers.Main).launch {
+            val filtered = withContext(Dispatchers.Default) {
+                if (category == "All") {
+                    allDevices
+                } else {
+                    allDevices.filter {
+                        it.category.equals(category, ignoreCase = true)
+                    }
+                }
+            }
+
+            deviceViewModel.updateDeviceList(filtered)
+            updateUI()
+            hideShimmer() // Sembunyikan shimmer setelah selesai
+        }
     }
 
 
@@ -376,8 +546,13 @@ class DeviceListFragment : Fragment() {
                 val deviceId = obj.optString("device_id", "")
                 val deviceName = obj.optString("device_name", "")
                 val deviceIp = getSavedDeviceIP(requireContext(), deviceId)
+                val category = obj.optString("category", "Unknown")
+                val newDevice = DeviceModel(deviceId, deviceName, deviceIp,category)
 
-                val newDevice = DeviceModel(deviceId, deviceName, deviceIp)
+                val sharedPrefs = requireContext().getSharedPreferences("device_category", AppCompatActivity.MODE_PRIVATE)
+
+                selectedCategory = sharedPrefs.edit().putString("device_selected_category", "Custom").toString()
+
                 devices.add(newDevice)
             }
         } catch (e: JSONException) {
@@ -446,7 +621,7 @@ class DeviceListFragment : Fragment() {
     }
 
     // Rename device
-    private fun renameDevice( device: DeviceModel, position: Int) {
+    fun renameDevice( device: DeviceModel, position: Int) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Rename Device")
 
@@ -485,7 +660,7 @@ class DeviceListFragment : Fragment() {
                     // 🔹 Simpan perubahan ke SharedPreferences/server
                     saveDeviceName(requireContext(), newName, device.id)
                     saveDeviceInfo(device.id, newName, getCurrentIpAddress())
-                    updateDev(deviceId, newName, ipAddress)
+                    updateDev(device.id, newName, ipAddress)
 
                     Toast.makeText(requireContext(), "Device renamed to $newName", Toast.LENGTH_SHORT).show()
                 } else {
@@ -511,7 +686,7 @@ class DeviceListFragment : Fragment() {
             .setPositiveButton("Yes") { _, _ ->
                 deviceViewModel.deleteDevice(device)
                 //resetDeviceWiFi(device) // 🔹 Reset WiFi setelah delete
-                email?.let { deleteDevices(device.id, it) }
+                email.let { deleteDevices(device, device.id, it) }
                 deviceAdapter.publish("sending_order_$deviceId", deviceId, "delete")
                 Toast.makeText(requireContext(), "Device deleted", Toast.LENGTH_SHORT).show()
             }
@@ -521,48 +696,68 @@ class DeviceListFragment : Fragment() {
             .show()
     }
 
-    private fun deleteDevices(deviceId: String, ownerEmail: String) {
+    private fun deleteDevices(device: DeviceModel, deviceId: String, ownerEmail: String) {
 //        val requestBody = FormBody.Builder()
 //            .add("device_id", deviceId)
 //            .add("owner_email", ownerEmail)
 //            .build()
-
-        val json = """
-        {
-            "device_id": "$deviceId",
-            "owner_email": "$ownerEmail"
-        }
-    """.trimIndent()
-
-        // Buat RequestBody dengan tipe JSON
-        val requestBody = json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-
-
-
-        val request = Request.Builder()
-            .url("https://ahi.abeazka.my.id/api/arduino/delete_device.php")
-            .delete(requestBody)
-            .build()
-
-        OkHttpClient().newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                requireActivity().runOnUiThread {
-                    Toast.makeText(requireContext(), "Gagal menghapus perangkat", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                response.body?.string()?.let { jsonString ->
-                    requireActivity().runOnUiThread {
-                        Toast.makeText(requireContext(), jsonString, Toast.LENGTH_SHORT).show()
-                        email?.let { fetchDevices(it){
-
-                        } } // 🔹 Refresh daftar perangkat setelah dihapus
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Delete device")
+            .setMessage("Are you sure you want to remove ${device.name}?")
+            .setPositiveButton("Yes") { _, _ ->
+                val json = """
+                    {
+                        "device_id": "$deviceId",
+                        "owner_email": "$ownerEmail"
                     }
-                }
+                """.trimIndent()
+
+                // Buat RequestBody dengan tipe JSON
+                val requestBody = json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+
+
+
+                val request = Request.Builder()
+                    .url("https://www.indodevstudio.my.id/api/arduino/delete_device.php")
+                    .delete(requestBody)
+                    .build()
+
+                OkHttpClient().newCall(request).enqueue(object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
+                        requireActivity().runOnUiThread {
+                            Toast.makeText(requireContext(), "Gagal menghapus perangkat", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onResponse(call: Call, response: Response) {
+                        response.body?.string()?.let { jsonString ->
+                            requireActivity().runOnUiThread {
+                                Toast.makeText(requireContext(), jsonString, Toast.LENGTH_SHORT).show()
+                                email?.let { fetchDevices(it){
+
+                                } } // 🔹 Refresh daftar perangkat setelah dihapus
+                            }
+                        }
+                    }
+                })
+
+
+                deviceViewModel.deleteDevice(device)
+                //resetDeviceWiFi(device) // 🔹 Reset WiFi setelah delete
+                deviceAdapter.publish("sending_order_$deviceId", deviceId, "delete")
+                Toast.makeText(requireContext(), "Device deleted", Toast.LENGTH_SHORT).show()
             }
-        })
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+
+
+
+
     }
+
+
 
     private fun updateDev(deviceId: String, deviceName: String, deviceIP: String) {
         val userEmail = email// 🔹 Ambil email pengguna saat ini
@@ -588,7 +783,7 @@ class DeviceListFragment : Fragment() {
 
 
         val request = Request.Builder()
-            .url("https://ahi.abeazka.my.id/api/arduino/update_devices.php")
+            .url("https://www.indodevstudio.my.id/api/arduino/update_devices.php")
             .put(requestBody)
             .build()
 
@@ -711,23 +906,47 @@ class DeviceListFragment : Fragment() {
     }
 
 
-    private fun updateUI() {
-        if (deviceAdapter.itemCount == 0) {
+/*    private fun updateUI() {
+        val currentList = deviceViewModel.getDeviceList().value.orEmpty()
+
+        if (currentList.isEmpty()) {
             tvNoDevices.visibility = View.VISIBLE
             recyclerView.visibility = View.GONE
             tvListDvc.text = "Total Devices: 0"
-
         } else {
             tvNoDevices.visibility = View.GONE
             recyclerView.visibility = View.VISIBLE
-            tvListDvc.text = "Total Devices: ${deviceList.size}"
+            tvListDvc.text = "Total Devices: ${currentList.size}"
 
-            // 🔄 Publish refresh ke masing-masing device ID (BUKAN deviceId global)
-            deviceViewModel.getDeviceList().value?.forEach { device ->
+            // ✅ Update ke adapter
+            deviceAdapter.updateData(currentList)
+
+
+        }
+    }*/
+
+    private fun updateUI() {
+        val currentList = deviceViewModel.getDeviceList().value.orEmpty()
+
+        if (currentList.isEmpty()) {
+            tvNoDevices.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
+            tvListDvc.text = "Total Devices: 0"
+        } else {
+            tvNoDevices.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
+            tvListDvc.text = "Total Devices: ${currentList.size}"
+            deviceAdapter.updateData(currentList)
+            // 🔁 Refresh ke tiap device
+            currentList.forEach { device ->
                 Log.d("MQTT", "🔁 Refresh untuk ${device.id}")
                 deviceAdapter.publish("sending_order_${device.id}", device.id, "refresh")
             }
         }
+
+        // Pastikan shimmer selalu disembunyikan saat update UI
+        hideShimmer()
     }
+
 
 }
