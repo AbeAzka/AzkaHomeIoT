@@ -25,6 +25,10 @@ import com.indodevstudio.azka_home_iot.databinding.ActivityMainBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import java.util.concurrent.TimeUnit
 
 class InboxActivity : AppCompatActivity() {
 
@@ -44,6 +48,13 @@ class InboxActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         val spinner: Spinner = findViewById(R.id.spinner_topic)
         setSupportActionBar(toolbar)
+        // Taruh di dalam onCreate(), misalnya di bawah setSupportActionBar(toolbar)
+        val workRequest = PeriodicWorkRequestBuilder<DataCheckWorker>(15, TimeUnit.MINUTES).build()
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            "DataCheckWork",
+            ExistingPeriodicWorkPolicy.KEEP, // KEEP agar tidak membuat job dobel jika activity dibuka ulang
+            workRequest
+        )
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
         supportActionBar?.setDisplayShowHomeEnabled(true);
         supportActionBar?.title = "Inbox"
@@ -56,7 +67,10 @@ class InboxActivity : AppCompatActivity() {
         var selectedTopic = ""
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?,
+                                        position: Int,
+                                        id: Long
+            ) {
                 selectedTopic = parent.getItemAtPosition(position).toString()
                 rvData.removeAllViewsInLayout()
                 shimmerFrame.startShimmer()

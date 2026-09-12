@@ -55,6 +55,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.privacysandbox.tools.core.model.Method
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
@@ -99,6 +102,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.indodevstudio.azka_home_iot.Model.EventViewModel
 
 import com.indodevstudio.azka_home_iot.utils.FirebaseUtils.firebaseUser
+import java.util.concurrent.TimeUnit
 
 
 class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelectedListener {
@@ -159,7 +163,12 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
 //        } else {
 //            // Tampilkan fragment default
 //        }
-
+        val workRequest = PeriodicWorkRequestBuilder<DataCheckWorker>(15, TimeUnit.MINUTES).build()
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            "DataCheckWork",
+            ExistingPeriodicWorkPolicy.KEEP, // KEEP agar tidak membuat job dobel jika activity dibuka ulang
+            workRequest
+        )
         auth = FirebaseAuth.getInstance()
         val mFirebaseUser = FirebaseAuth.getInstance().currentUser
         mFirebaseUser?.let { user ->
