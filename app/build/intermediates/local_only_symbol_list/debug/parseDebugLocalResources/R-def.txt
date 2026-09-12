@@ -243,6 +243,7 @@ drawable ids
 drawable idspct
 drawable indicator_off
 drawable indicator_on
+drawable indodevstudio
 drawable item_hover
 drawable level_tandon
 drawable login_btn_bg
@@ -409,6 +410,7 @@ id fragment_container
 id gSignInPct
 id galleryButton
 id graph_btn
+id graph_btn_bunda
 id greetings
 id gridMenu
 id harian
@@ -472,8 +474,6 @@ id namas
 id nav_about
 id nav_book
 id nav_grafik
-id nav_grafik_bunda
-id nav_grafik_uti
 id nav_head
 id nav_home
 id nav_listrik_bunda

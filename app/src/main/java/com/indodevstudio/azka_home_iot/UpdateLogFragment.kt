@@ -67,7 +67,7 @@ class UpdateLogFragment : Fragment() {
         progressBar.visibility = View.VISIBLE
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://abeazka.my.id/ahi/")
+            .baseUrl("https://www.indodevstudio.my.id/api/v2/ahi/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

@@ -15,13 +15,9 @@ android {
         applicationId = "com.indodevstudio.azka_home_iot"
         minSdk = 30
         targetSdk = 34
-<<<<<<< HEAD
         versionCode = 1
-        versionName = "2.7.1.2"//Last 2.4
-=======
         versionCode = 2
-        versionName = "2.15"//Last 2.45
->>>>>>> 979be08badf5648252b7756919ad6ae92ebe82af
+        versionName = "3.1"//Last 2.45
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

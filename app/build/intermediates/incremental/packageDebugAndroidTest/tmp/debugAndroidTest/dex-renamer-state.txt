@@ -1,4 +1,4 @@
-#Tue May 19 23:07:48 WIB 2026
+#Sat Sep 12 15:56:06 WIB 2026
 base.0=D\:\\PROJECT_KOTLIN\\AHI\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeExtDexDebugAndroidTest\\classes.dex
 base.1=D\:\\PROJECT_KOTLIN\\AHI\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\0\\classes.dex
 base.2=D\:\\PROJECT_KOTLIN\\AHI\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\10\\classes.dex

@@ -48,10 +48,6 @@
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-main-77:\\layout\\simple_spinner_item.xml"
     },
     {
-        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/activity_sign_in.xml",
-        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/activity_sign_in.xml"
-    },
-    {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:\\layout\\activity_taman.xml",
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-main-77:\\layout\\activity_taman.xml"
     },
@@ -122,6 +118,10 @@
     {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:\\layout\\bottom_sheet_dialog.xml",
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-main-77:\\layout\\bottom_sheet_dialog.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/layout/activity_splash.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-77:/layout/activity_splash.xml"
     },
     {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:\\layout\\fragment_about.xml",

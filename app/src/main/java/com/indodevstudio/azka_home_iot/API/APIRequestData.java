@@ -15,6 +15,7 @@ public interface APIRequestData {
     @GET("retrieve2.php")
     Call<ResponseModel> ardRetrieveData2(
             @Query("topic") String topic
+
     );
 
     @GET("retrieve_dht.php")

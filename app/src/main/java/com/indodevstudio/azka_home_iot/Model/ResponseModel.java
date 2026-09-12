@@ -19,4 +19,6 @@ public class ResponseModel {
     public String getKredit(){return kredit;}
     public String getDebdit(){return debit;}
     public String getKeterangan(){return keterangan;}
+
+
 }

@@ -35,7 +35,7 @@ public final class FragmentTandonBundaBinding implements ViewBinding {
    * </ul>
    */
   @Nullable
-  public final Button graphBtn;
+  public final Button graphBtnBunda;
 
   @NonNull
   public final ImageView imgStats;
@@ -55,11 +55,11 @@ public final class FragmentTandonBundaBinding implements ViewBinding {
   @NonNull
   public final TextView textView5;
 
-  private FragmentTandonBundaBinding(@NonNull View rootView, @Nullable Button graphBtn,
+  private FragmentTandonBundaBinding(@NonNull View rootView, @Nullable Button graphBtnBunda,
       @NonNull ImageView imgStats, @NonNull WebView myWeb, @NonNull Button statusBtn,
       @NonNull TextView statusText, @NonNull TextView textView4, @NonNull TextView textView5) {
     this.rootView = rootView;
-    this.graphBtn = graphBtn;
+    this.graphBtnBunda = graphBtnBunda;
     this.imgStats = imgStats;
     this.myWeb = myWeb;
     this.statusBtn = statusBtn;
@@ -95,8 +95,8 @@ public final class FragmentTandonBundaBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.graph_btn;
-      Button graphBtn = ViewBindings.findChildViewById(rootView, id);
+      id = R.id.graph_btn_bunda;
+      Button graphBtnBunda = ViewBindings.findChildViewById(rootView, id);
 
       id = R.id.imgStats;
       ImageView imgStats = ViewBindings.findChildViewById(rootView, id);
@@ -134,7 +134,7 @@ public final class FragmentTandonBundaBinding implements ViewBinding {
         break missingId;
       }
 
-      return new FragmentTandonBundaBinding(rootView, graphBtn, imgStats, myWeb, statusBtn,
+      return new FragmentTandonBundaBinding(rootView, graphBtnBunda, imgStats, myWeb, statusBtn,
           statusText, textView4, textView5);
     }
     String missingId = rootView.getResources().getResourceName(id);

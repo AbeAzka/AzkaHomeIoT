@@ -21,9 +21,9 @@
 
     <ImageView
         android:id="@+id/close"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="312dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="332dp"
         android:layout_marginTop="16dp"
         android:tooltipText="Close Popup"
         app:layout_constraintStart_toStartOf="parent"

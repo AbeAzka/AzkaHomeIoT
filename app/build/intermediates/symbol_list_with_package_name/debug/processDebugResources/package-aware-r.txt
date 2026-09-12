@@ -3494,6 +3494,7 @@ drawable idspct
 drawable indeterminate_static
 drawable indicator_off
 drawable indicator_on
+drawable indodevstudio
 drawable item_hover
 drawable level_tandon
 drawable login_btn_bg
@@ -3970,6 +3971,7 @@ id ghost_view_holder
 id gone
 id graph
 id graph_btn
+id graph_btn_bunda
 id graph_wrap
 id greetings
 id gridMenu
@@ -4159,8 +4161,6 @@ id namas
 id nav_about
 id nav_book
 id nav_grafik
-id nav_grafik_bunda
-id nav_grafik_uti
 id nav_head
 id nav_home
 id nav_listrik_bunda

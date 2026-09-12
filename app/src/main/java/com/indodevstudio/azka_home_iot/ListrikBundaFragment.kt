@@ -1,5 +1,6 @@
 package com.indodevstudio.azka_home_iot
 
+import androidx.fragment.app.Fragment
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -20,8 +21,7 @@ import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import androidx.fragment.app.Fragment
+import androidx.appcompat.content.res.AppCompatResources 
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -50,10 +50,7 @@ class ListrikBundaFragment : Fragment(), View.OnClickListener{
     lateinit var myWebView : WebView
     lateinit var Statustxt : TextView
     lateinit var button_graph : Button
-
-
     var click = false
-
     var image : Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -226,7 +223,7 @@ class ListrikBundaFragment : Fragment(), View.OnClickListener{
                                             imagee.setImageBitmap(image)
                                             //imagee.setRotation(90f)
                                             builder.setBackgroundDrawable(
-                                                getDrawable(
+                                                AppCompatResources.getDrawable(
                                                     requireContext(),
                                                     R.drawable.background
                                                 )

@@ -58,7 +58,7 @@
                     </Preference>
 
                     <Preference android:title="License"
-                        android:summary="Copyright © 2024 Azka - All Rights Reserved">
+                        android:summary="Copyright © 2024 Indodev Studio - All Rights Reserved">
                     </Preference>
                 </PreferenceCategory>
 
