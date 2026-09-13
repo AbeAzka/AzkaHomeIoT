@@ -27,10 +27,16 @@ public final class FragmentTrackerBinding implements ViewBinding {
   public final MaterialButton btnBukaPeta;
 
   @NonNull
+  public final MaterialButton btnBukaPetaSemua;
+
+  @NonNull
   public final MaterialButton btnMulai;
 
   @NonNull
   public final MaterialButton btnSalin;
+
+  @NonNull
+  public final MaterialButton btnSettings;
 
   @NonNull
   public final TextView tvKoordinat;
@@ -39,14 +45,17 @@ public final class FragmentTrackerBinding implements ViewBinding {
   public final TextView tvUserAktif;
 
   private FragmentTrackerBinding(@NonNull LinearLayout rootView, @NonNull MaterialButton btnBagikan,
-      @NonNull MaterialButton btnBukaPeta, @NonNull MaterialButton btnMulai,
-      @NonNull MaterialButton btnSalin, @NonNull TextView tvKoordinat,
+      @NonNull MaterialButton btnBukaPeta, @NonNull MaterialButton btnBukaPetaSemua,
+      @NonNull MaterialButton btnMulai, @NonNull MaterialButton btnSalin,
+      @NonNull MaterialButton btnSettings, @NonNull TextView tvKoordinat,
       @NonNull TextView tvUserAktif) {
     this.rootView = rootView;
     this.btnBagikan = btnBagikan;
     this.btnBukaPeta = btnBukaPeta;
+    this.btnBukaPetaSemua = btnBukaPetaSemua;
     this.btnMulai = btnMulai;
     this.btnSalin = btnSalin;
+    this.btnSettings = btnSettings;
     this.tvKoordinat = tvKoordinat;
     this.tvUserAktif = tvUserAktif;
   }
@@ -90,6 +99,12 @@ public final class FragmentTrackerBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.btnBukaPetaSemua;
+      MaterialButton btnBukaPetaSemua = ViewBindings.findChildViewById(rootView, id);
+      if (btnBukaPetaSemua == null) {
+        break missingId;
+      }
+
       id = R.id.btnMulai;
       MaterialButton btnMulai = ViewBindings.findChildViewById(rootView, id);
       if (btnMulai == null) {
@@ -99,6 +114,12 @@ public final class FragmentTrackerBinding implements ViewBinding {
       id = R.id.btnSalin;
       MaterialButton btnSalin = ViewBindings.findChildViewById(rootView, id);
       if (btnSalin == null) {
+        break missingId;
+      }
+
+      id = R.id.btnSettings;
+      MaterialButton btnSettings = ViewBindings.findChildViewById(rootView, id);
+      if (btnSettings == null) {
         break missingId;
       }
 
@@ -114,8 +135,8 @@ public final class FragmentTrackerBinding implements ViewBinding {
         break missingId;
       }
 
-      return new FragmentTrackerBinding((LinearLayout) rootView, btnBagikan, btnBukaPeta, btnMulai,
-          btnSalin, tvKoordinat, tvUserAktif);
+      return new FragmentTrackerBinding((LinearLayout) rootView, btnBagikan, btnBukaPeta,
+          btnBukaPetaSemua, btnMulai, btnSalin, btnSettings, tvKoordinat, tvUserAktif);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

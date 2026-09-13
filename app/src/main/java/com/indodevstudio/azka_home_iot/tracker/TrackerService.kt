@@ -2,6 +2,7 @@ package com.indodevstudio.azka_home_iot.tracker
 
 import android.annotation.SuppressLint
 import android.app.*
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
@@ -10,7 +11,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.*
 import com.google.firebase.auth.FirebaseAuth
-import com.indodevstudio.azka_home_iot.R // Sesuaikan jika resource R berbeda
+import com.indodevstudio.azka_home_iot.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,14 +29,31 @@ class TrackerService : Service() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         notificationManager = getSystemService(NotificationManager::class.java)
         createNotificationChannel()
-
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        // Buat notifikasi awal saat service pertama kali dinyalakan
-        val initialNotification = buildNotification("Menunggu sinyal GPS...")
+        // Cek apakah ada perintah pembaruan status notifikasi atau pengaturan dari SettingsBottomSheet
+        if (intent?.action == "ACTION_UPDATE_NOTIFICATION") {
+            val isNotifActive = intent.getBooleanExtra("notif_aktif", true)
 
-        // Memulai foreground service dengan notifikasi yang terkunci (ongoing)
+            val notification = buildNotification(if (isNotifActive) "GPS Tracker Aktif" else "Berjalan di background (Notifikasi disembunyikan)", isNotifActive)
+            startForeground(NOTIF_ID, notification)
+
+            return START_STICKY
+        }
+
+        // Cek jika ada perintah memperbarui interval GPS secara real-time
+        if (intent?.action == "ACTION_UPDATE_INTERVAL") {
+            // Restart request update lokasi dengan interval baru dari SharedPreferences
+            restartTracking()
+            return START_STICKY
+        }
+
+        // Cek status SharedPreferences saat service pertama kali dinyalakan
+        val sharedPrefs = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        val isNotifActive = sharedPrefs.getBoolean("notif_aktif", true)
+
+        val initialNotification = buildNotification("Menunggu sinyal GPS...", isNotifActive)
         startForeground(NOTIF_ID, initialNotification)
 
         startTracking()
@@ -44,8 +62,13 @@ class TrackerService : Service() {
 
     @SuppressLint("MissingPermission")
     private fun startTracking() {
-        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000)
-            .setMinUpdateIntervalMillis(2000)
+        // AMBIL PENGATURAN INTERVAL DARI SharedPreferences (Default 5000ms / 5 detik)
+        val sharedPrefs = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        val intervalMillis = sharedPrefs.getLong("interval_millis", 5000L)
+        val minIntervalMillis = intervalMillis / 2 // Set minimum setengah dari interval utama
+
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, intervalMillis)
+            .setMinUpdateIntervalMillis(minIntervalMillis)
             .build()
 
         fusedLocationClient.requestLocationUpdates(
@@ -53,6 +76,14 @@ class TrackerService : Service() {
             locationCallback,
             Looper.getMainLooper()
         )
+    }
+
+    // Fungsi untuk memperbarui interval GPS tanpa mematikan service
+    @SuppressLint("MissingPermission")
+    private fun restartTracking() {
+        fusedLocationClient.removeLocationUpdates(locationCallback)
+        startTracking()
+        Log.d(TAG, "Interval tracking GPS berhasil diperbarui sesuai pengaturan.")
     }
 
     private val locationCallback = object : LocationCallback() {
@@ -67,7 +98,6 @@ class TrackerService : Service() {
                     userId = userData["email"].toString()
                 }
 
-                // Masukkan user_id ke objek Koordinat
                 val koordinatBaru = Koordinat(userId.toString(), location.latitude, location.longitude)
 
                 // 1. Update ke Fragment secara real-time
@@ -95,26 +125,33 @@ class TrackerService : Service() {
         }
     }
 
-    /**
-     * Fungsi pembantu untuk merakit Builder Notifikasi (Dikunci agar tidak bisa di-swipe)
-     */
-    private fun buildNotification(contentText: String): Notification {
-        return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("GPS Tracker Aktif")
-            .setContentText(contentText) // Isi konten notifikasi yang bisa diubah-ubah
-            .setSmallIcon(R.drawable.azkahiot) // Bisa diganti ikon aplikasi kamu (misal: R.drawable.ic_notification)
-            .setOngoing(true) // <--- KUNCI UTAMA: Membuat notifikasi tidak bisa di-swipe/dihapus
-            .setPriority(NotificationCompat.PRIORITY_LOW) // Agar tenang (tidak bunyi/getar terus menerus)
+    private fun buildNotification(contentText: String, isActive: Boolean): Notification {
+        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("GPS Tracker")
+            .setContentText(contentText)
+            .setSmallIcon(R.drawable.azkahiot)
+            .setOngoing(true)
             .setAutoCancel(false)
-            .build()
+
+        if (!isActive) {
+            builder.setPriority(NotificationCompat.PRIORITY_MIN)
+                .setContentTitle("Tracker Berjalan")
+                .setContentText("Layanan aktif di latar belakang")
+        } else {
+            builder.setPriority(NotificationCompat.PRIORITY_LOW)
+        }
+
+        return builder.build()
     }
 
-    /**
-     * Fungsi untuk memperbarui tampilan isi notifikasi secara dinamis di status bar
-     */
     private fun updateNotificationContent(newText: String) {
-        val updatedNotification = buildNotification(newText)
-        notificationManager.notify(NOTIF_ID, updatedNotification)
+        val sharedPrefs = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        val isNotifActive = sharedPrefs.getBoolean("notif_aktif", true)
+
+        if (isNotifActive) {
+            val updatedNotification = buildNotification(newText, true)
+            notificationManager.notify(NOTIF_ID, updatedNotification)
+        }
     }
 
     override fun onDestroy() {

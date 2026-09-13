@@ -5,6 +5,7 @@ import android.app.ActivityManager
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
@@ -30,8 +31,11 @@ class TrackerFragment : Fragment() {
     private lateinit var tvUserAktif: TextView // <--- Label baru untuk info user
     private lateinit var btnMulai: Button
     private lateinit var btnBukaPeta: Button
+    private lateinit var btnBukaPetaSemua: Button
     private lateinit var btnSalin: Button
     private lateinit var btnBagikan: Button
+    private lateinit var btnSettings: Button
+
 
     private var currentLatitude: Double = 0.0
     private var currentLongitude: Double = 0.0
@@ -54,8 +58,10 @@ class TrackerFragment : Fragment() {
         tvUserAktif = view.findViewById(R.id.tvUserAktif) // Inisialisasi TextView User
         btnMulai = view.findViewById(R.id.btnMulai)
         btnBukaPeta = view.findViewById(R.id.btnBukaPeta)
+        btnBukaPetaSemua = view.findViewById(R.id.btnBukaPetaSemua)
         btnSalin = view.findViewById(R.id.btnSalin)
         btnBagikan = view.findViewById(R.id.btnBagikan)
+        btnSettings = view.findViewById(R.id.btnSettings)
 
         // Tampilkan User ID / Email yang sedang aktif
         displayActiveUser()
@@ -82,6 +88,33 @@ class TrackerFragment : Fragment() {
         }
 
         btnBukaPeta.setOnClickListener { bukaPetaBottomSheet() }
+
+        val userData = getUserData()
+        val firebaseUser = FirebaseAuth.getInstance().currentUser
+        var userId = ""
+        if(firebaseUser != null){
+            userId = firebaseUser.email.toString()
+        }else{
+            userId = userData["email"].toString()
+        }
+
+        if (userId == "azka.jsiswanto@gmail.com") {
+            // Tampilkan tombol menu Admin & Settings
+            btnBukaPetaSemua.visibility = View.VISIBLE
+        } else {
+            btnBukaPetaSemua.visibility = View.GONE
+        }
+
+        btnBukaPetaSemua.setOnClickListener {
+            val adminBottomSheet = AdminMapBottomSheet()
+            adminBottomSheet.show(parentFragmentManager, "AdminMapBottomSheetTag")
+        }
+
+        // Tombol Buka Settings Sheet
+        btnSettings.setOnClickListener {
+            val settingsSheet = SettingsBottomSheet()
+            settingsSheet.show(parentFragmentManager, "SettingsTag")
+        }
 
         btnSalin.setOnClickListener {
             val teksKoordinat = "$currentLatitude, $currentLongitude"
@@ -110,6 +143,14 @@ class TrackerFragment : Fragment() {
                 }
                 startActivity(Intent.createChooser(shareIntent, "Bagikan Lokasi Via"))
             }
+        }
+
+        // Cek apakah fitur auto-start aktif di SharedPreferences
+        val sharedPrefs = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        val isAutoStartEnabled = sharedPrefs.getBoolean("auto_start_tracker", false)
+
+        if (isAutoStartEnabled && !isTrackingActive) {
+            checkPermissionsAndStart()
         }
 
         return view
@@ -185,5 +226,16 @@ class TrackerFragment : Fragment() {
             }
         }
         return false
+    }
+
+    private fun getUserData(): Map<String, String?> {
+        val prefs = requireContext().getSharedPreferences("my_prefs", MODE_PRIVATE)
+        return mapOf(
+            "token" to prefs.getString("auth_token", null),
+            "username" to prefs.getString("username", null),
+            "email" to prefs.getString("email", null),
+            "avatar" to prefs.getString("avatar", null),
+            "isVerified" to prefs.getString("isVerified", null)
+        )
     }
 }

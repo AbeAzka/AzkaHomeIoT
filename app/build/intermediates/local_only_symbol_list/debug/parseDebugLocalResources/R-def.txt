@@ -300,6 +300,7 @@ id bottomButtons
 id btnBack
 id btnBagikan
 id btnBukaPeta
+id btnBukaPetaSemua
 id btnCheck
 id btnDelete
 id btnForward
@@ -313,12 +314,18 @@ id btnReload
 id btnRename
 id btnResetPW
 id btnSalin
+id btnSalinKoordinatAdmin
 id btnSatellite
+id btnSatelliteAdmin
 id btnSendInvite
+id btnSettings
 id btnStandard
+id btnStandardAdmin
 id btnSubmit
 id btnZoomIn
+id btnZoomInAdmin
 id btnZoomOut
+id btnZoomOutAdmin
 id bulanan
 id bulanan_Txt
 id button
@@ -346,6 +353,7 @@ id cards_info6
 id categorySpinner
 id close
 id componentPanel
+id containerCheckbox
 id contentText
 id copy
 id creditInput
@@ -471,6 +479,7 @@ id logTextView
 id loginText
 id logo_p
 id mainContent
+id mapAdminView
 id mapView
 id mbuh
 id menu_hotlist
@@ -525,6 +534,7 @@ id shimmerRecycler
 id shimmer_layout
 id showTable
 id spinnerCategory
+id spinnerInterval
 id spinnerText
 id spinner_topic
 id splash_logo
@@ -555,8 +565,10 @@ id submitDebitTest
 id swipeRefreshLayout
 id switch1Layout
 id switch2Layout
+id switchAutoStart
 id switchContainer
 id switchLayout
+id switchNotifikasi
 id switchScrollView
 id sx
 id takePhoto
@@ -611,6 +623,7 @@ id tvDeviceId
 id tvEventDesc
 id tvEventTime
 id tvEventTitle
+id tvInfoUserAdmin
 id tvInviteTitle
 id tvKeterangan
 id tvKoordinat
@@ -678,6 +691,7 @@ layout dialog_invite
 layout dialog_map
 layout dropdown_menu_popup_item
 layout fragment_about
+layout fragment_admin_map_bottom_sheet
 layout fragment_arduino
 layout fragment_camera
 layout fragment_device_list
@@ -694,6 +708,7 @@ layout fragment_listrik_uti_fregment
 layout fragment_manual_book_fragment
 layout fragment_masjid
 layout fragment_ringtone_picker
+layout fragment_settings_bottom_sheet
 layout fragment_setup_wemos
 layout fragment_setup_wifi
 layout fragment_sholat

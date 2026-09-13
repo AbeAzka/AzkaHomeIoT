@@ -4,6 +4,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface TrackerApi {
@@ -11,6 +12,10 @@ interface TrackerApi {
     suspend fun kirimLokasi(
         @Body data: Koordinat
     ): Response<Unit> // Menggunakan Response<Unit> karena PHP hanya bertugas menyimpan data
+
+    // Tambahan untuk Admin memantau semua user
+    @GET("ambil_semua_lokasi.php")
+    suspend fun ambilSemuaLokasi(): Response<AllUserResponse>
 }
 
 object TrackerApiClient {

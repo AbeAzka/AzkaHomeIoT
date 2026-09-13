@@ -3764,6 +3764,7 @@ id browser_actions_menu_view
 id btnBack
 id btnBagikan
 id btnBukaPeta
+id btnBukaPetaSemua
 id btnCheck
 id btnDelete
 id btnForward
@@ -3777,12 +3778,18 @@ id btnReload
 id btnRename
 id btnResetPW
 id btnSalin
+id btnSalinKoordinatAdmin
 id btnSatellite
+id btnSatelliteAdmin
 id btnSendInvite
+id btnSettings
 id btnStandard
+id btnStandardAdmin
 id btnSubmit
 id btnZoomIn
+id btnZoomInAdmin
 id btnZoomOut
+id btnZoomOutAdmin
 id bubble_description
 id bubble_image
 id bubble_moreinfo
@@ -3844,6 +3851,7 @@ id compress
 id confirm_button
 id constraint
 id container
+id containerCheckbox
 id content
 id contentPanel
 id contentText
@@ -4114,6 +4122,7 @@ id lottie_layer_name
 id ltr
 id m3_side_sheet
 id mainContent
+id mapAdminView
 id mapView
 id marquee
 id masked
@@ -4370,6 +4379,7 @@ id spacer
 id special_effects_controller_view_tag
 id spinner
 id spinnerCategory
+id spinnerInterval
 id spinnerText
 id spinner_topic
 id splash_logo
@@ -4424,8 +4434,10 @@ id supportScrollUp
 id swipeRefreshLayout
 id switch1Layout
 id switch2Layout
+id switchAutoStart
 id switchContainer
 id switchLayout
+id switchNotifikasi
 id switchScrollView
 id switchWidget
 id sx
@@ -4532,6 +4544,7 @@ id tvDeviceId
 id tvEventDesc
 id tvEventTime
 id tvEventTitle
+id tvInfoUserAdmin
 id tvInviteTitle
 id tvKeterangan
 id tvKoordinat
@@ -4768,6 +4781,7 @@ layout dropdown_menu_popup_item
 layout expand_button
 layout fingerprint_dialog_layout
 layout fragment_about
+layout fragment_admin_map_bottom_sheet
 layout fragment_arduino
 layout fragment_both_logs
 layout fragment_camera
@@ -4786,6 +4800,7 @@ layout fragment_log
 layout fragment_manual_book_fragment
 layout fragment_masjid
 layout fragment_ringtone_picker
+layout fragment_settings_bottom_sheet
 layout fragment_setup_wemos
 layout fragment_setup_wifi
 layout fragment_sholat
