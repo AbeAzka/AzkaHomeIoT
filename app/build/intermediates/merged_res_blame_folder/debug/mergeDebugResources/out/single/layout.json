@@ -8,12 +8,12 @@
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-main-78:\\layout\\item_event.xml"
     },
     {
-        "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-mergeDebugResources-75:\\layout\\item_device_grid.xml",
-        "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-main-78:\\layout\\item_device_grid.xml"
-    },
-    {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-mergeDebugResources-75:\\layout\\fragment_listrik_uti_fregment.xml",
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-main-78:\\layout\\fragment_listrik_uti_fregment.xml"
+    },
+    {
+        "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-mergeDebugResources-75:\\layout\\item_device_grid.xml",
+        "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-main-78:\\layout\\item_device_grid.xml"
     },
     {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-mergeDebugResources-75:\\layout\\layout_cardview_bukti.xml",
@@ -66,6 +66,10 @@
     {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-mergeDebugResources-75:\\layout\\simple_spinner_item.xml",
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-main-78:\\layout\\simple_spinner_item.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-75:/layout/dialog_map.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-78:/layout/dialog_map.xml"
     },
     {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-mergeDebugResources-75:\\layout\\popup_grafik2.xml",

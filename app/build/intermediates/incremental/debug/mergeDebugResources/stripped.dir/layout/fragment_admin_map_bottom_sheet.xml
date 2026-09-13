@@ -14,15 +14,16 @@
         android:layout_marginTop="12dp"
         android:layout_marginBottom="8dp"/>
 
+    <!-- Judul Header -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Peta Pantau Semua User (Admin)"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="?attr/textContent"
         android:layout_gravity="center"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="8dp"/>
 
     <!-- Peta Osmdroid Full Screen -->
     <org.osmdroid.views.MapView
@@ -31,13 +32,14 @@
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <!-- Panel Kontrol & Informasi User yang Dipilih -->
+    <!-- Panel Kontrol & Informasi User yang Dipilih (Compact Mode) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp"
-        android:background="@drawable/bg_card">
+        android:paddingHorizontal="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="16dp">
 
         <!-- Label Filter User -->
         <TextView
@@ -45,7 +47,7 @@
             android:layout_height="wrap_content"
             android:text="Filter User:"
             android:textStyle="bold"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:textColor="?attr/textContent"
             android:layout_marginBottom="4dp"/>
 
@@ -60,30 +62,37 @@
                 android:id="@+id/containerCheckbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"/>
         </HorizontalScrollView>
 
+        <!-- Kotak Informasi User Terpilih -->
         <TextView
             android:id="@+id/tvInfoUserAdmin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Pilih marker user di peta..."
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:textStyle="bold"
             android:textColor="?attr/textContent"
             android:layout_gravity="center"
             android:textAlignment="center"
             android:layout_marginBottom="8dp"/>
 
+        <!-- Tombol Utama: Salin Koordinat (Dibuat compact tinggi 38dp) -->
         <Button
             android:id="@+id/btnSalinKoordinatAdmin"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="38dp"
             android:text="Salin Koordinat User Ini"
+            android:textSize="12sp"
             android:backgroundTint="#FF9800"
             android:textColor="@android:color/white"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="6dp"
+            android:elevation="0dp"
+            android:paddingHorizontal="4dp"/>
 
+        <!-- Baris Tombol Kontrol (Keempat tombol digabung menjadi 1 baris agar sangat ringkas) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -92,41 +101,41 @@
             <Button
                 android:id="@+id/btnZoomInAdmin"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="38dp"
                 android:layout_weight="1"
                 android:text="Zoom +"
-                android:layout_marginEnd="4dp"/>
+                android:textSize="11sp"
+                android:layout_marginEnd="4dp"
+                android:paddingHorizontal="2dp"/>
 
             <Button
                 android:id="@+id/btnZoomOutAdmin"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="38dp"
                 android:layout_weight="1"
                 android:text="Zoom -"
-                android:layout_marginStart="4dp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="4dp">
+                android:textSize="11sp"
+                android:layout_marginEnd="4dp"
+                android:paddingHorizontal="2dp"/>
 
             <Button
                 android:id="@+id/btnStandardAdmin"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="38dp"
                 android:layout_weight="1"
-                android:text="Peta Normal"
-                android:layout_marginEnd="4dp"/>
+                android:text="Normal"
+                android:textSize="11sp"
+                android:layout_marginEnd="4dp"
+                android:paddingHorizontal="2dp"/>
 
             <Button
                 android:id="@+id/btnSatelliteAdmin"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="38dp"
                 android:layout_weight="1"
-                android:text="Peta Satelit"
-                android:layout_marginStart="4dp"/>
+                android:text="Satelit"
+                android:textSize="11sp"
+                android:paddingHorizontal="2dp"/>
         </LinearLayout>
 
     </LinearLayout>

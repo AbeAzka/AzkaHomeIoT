@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bottom_sheet_background">
+
+    <!-- Indikator garis kecil di atas modal -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:background="@drawable/drag_handle"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Peta Lokasi Realtime"
+        android:textColor="?attr/textContent"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Tampilan Peta Osmdroid (Mengisi sisa layar penuh) -->
+    <org.osmdroid.views.MapView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <!-- Panel Kontrol Compact -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="16dp"
+        android:background="@drawable/bg_card">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kontrol Peta"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:textColor="?attr/textContent"
+            android:layout_gravity="center"
+            android:layout_marginBottom="6dp"/>
+
+        <!-- Baris Tombol Zoom & Jenis Peta (Dijadikan 1 baris agar lebih compact dan hemat ruang) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnZoomIn"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_weight="1"
+                android:text="Zoom +"
+                android:textSize="12sp"
+                android:layout_marginEnd="4dp"
+                android:paddingHorizontal="4dp"/>
+
+            <Button
+                android:id="@+id/btnZoomOut"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_weight="1"
+                android:text="Zoom -"
+                android:textSize="12sp"
+                android:layout_marginEnd="4dp"
+                android:paddingHorizontal="4dp"/>
+
+            <Button
+                android:id="@+id/btnStandard"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_weight="1"
+                android:text="Normal"
+                android:textSize="12sp"
+                android:layout_marginEnd="4dp"
+                android:paddingHorizontal="4dp"/>
+
+            <Button
+                android:id="@+id/btnSatellite"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_weight="1"
+                android:text="Satelit"
+                android:textSize="12sp"
+                android:paddingHorizontal="4dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

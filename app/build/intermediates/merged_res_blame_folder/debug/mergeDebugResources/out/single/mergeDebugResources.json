@@ -116,6 +116,10 @@
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-main-78:\\layout\\fragment_masjid.xml"
     },
     {
+        "merged": "com.indodevstudio.azka_home_iot.app-debug-76:/layout_dialog_map.xml.flat",
+        "source": "com.indodevstudio.azka_home_iot.app-main-78:/layout/dialog_map.xml"
+    },
+    {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-debug-76:\\layout-land_fragment_taman.xml.flat",
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-main-78:\\layout-land\\fragment_taman.xml"
     },
