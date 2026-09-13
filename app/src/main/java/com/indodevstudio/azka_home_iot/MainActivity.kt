@@ -100,6 +100,7 @@ import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.indodevstudio.azka_home_iot.Model.EventViewModel
+import com.indodevstudio.azka_home_iot.tracker.TrackerFragment
 
 import com.indodevstudio.azka_home_iot.utils.FirebaseUtils.firebaseUser
 import java.util.concurrent.TimeUnit
@@ -169,6 +170,16 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
             ExistingPeriodicWorkPolicy.KEEP, // KEEP agar tidak membuat job dobel jika activity dibuka ulang
             workRequest
         )
+
+        FirebaseMessaging.getInstance().subscribeToTopic("all_devices")
+            .addOnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.e("FCM", "Gagal subscribe ke all_devices")
+                } else {
+                    Log.d("FCM", "Berhasil subscribe ke all_devices")
+                }
+            }
+
         auth = FirebaseAuth.getInstance()
         val mFirebaseUser = FirebaseAuth.getInstance().currentUser
         mFirebaseUser?.let { user ->
@@ -1053,6 +1064,14 @@ class MainActivity :  AppCompatActivity() , NavigationView.OnNavigationItemSelec
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, TamanFragment()).commit()
                 navigationView.setCheckedItem(R.id.nav_taman)
+            }
+
+            R.id.tracker -> {
+                val navigationView = findViewById<NavigationView>(R.id.nav_view)
+                navigationView.setNavigationItemSelectedListener(this)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, TrackerFragment()).commit()
+                navigationView.setCheckedItem(R.id.tracker)
             }
 
             R.id.nav_masjid -> {

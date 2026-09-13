@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-73:/values-is/values-is.xml",
+            "outputFile": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-74:/values-is/values-is.xml",
             "map": [
                 {
                     "source": "C:\\Users\\azkaj\\.gradle\\caches\\8.12\\transforms\\bf18d664525ac0d98d0050f86362a3ab\\transformed\\jetified-play-services-base-18.5.0\\res\\values-is\\values.xml",

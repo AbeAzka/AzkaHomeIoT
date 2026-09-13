@@ -49,6 +49,23 @@
             </group>
         </menu>
     </item>
+    <item
+        android:title="Utilities"
+        android:id="@+id/Utilities"
+
+        >
+        <menu>
+            <group
+                android:checkableBehavior="single"
+                >
+                <item
+                    android:id="@+id/tracker"
+                    android:icon="@drawable/tracker_black"
+                    android:title="Tracker [NEW]"/>
+
+            </group>
+        </menu>
+    </item>
 <!--    <item-->
 <!--        android:title="ARDUINO"-->
 <!--        android:id="@+id/ard"-->

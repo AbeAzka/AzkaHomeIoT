@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:2:1-173:12
-INJECTED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:2:1-173:12
-INJECTED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:2:1-173:12
-INJECTED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:2:1-173:12
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:2:1-184:12
+INJECTED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:2:1-184:12
+INJECTED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:2:1-184:12
+INJECTED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:2:1-184:12
 MERGED from [androidx.databinding:viewbinding:8.6.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\86a48ec845ffdbd626fa6b4b5821f0b0\transformed\jetified-viewbinding-8.6.0\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.camera:camera-video:1.3.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\91a7a442790830f597e89a973ae50d12\transformed\jetified-camera-video-1.3.0\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.camera:camera-view:1.3.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\b2ba58445632f82eb6a5104f72daee91\transformed\jetified-camera-view-1.3.0\AndroidManifest.xml:2:1-7:12
@@ -36,6 +36,7 @@ MERGED from [androidx.fragment:fragment-ktx:1.3.6] C:\Users\azkaj\.gradle\caches
 MERGED from [androidx.legacy:legacy-support-v4:1.0.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\08893a9fe4f26464d1d3c3323be60296\transformed\legacy-support-v4-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\75467c228eee9a8901f51a367734eb96\transformed\jetified-viewpager2-1.0.0\AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.android.gms:play-services-auth:21.1.1] C:\Users\azkaj\.gradle\caches\8.12\transforms\ff2232f0f998c37a506e094effa9a9f2\transformed\jetified-play-services-auth-21.1.1\AndroidManifest.xml:17:1-40:12
+MERGED from [com.google.android.gms:play-services-location:21.0.1] C:\Users\azkaj\.gradle\caches\8.12\transforms\fa917a0d7fca5dcdb9dae9324fffffb3\transformed\jetified-play-services-location-21.0.1\AndroidManifest.xml:2:1-9:12
 MERGED from [androidx.core:core-google-shortcuts:1.1.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\52c07d04aab56dc7628a0350091e2416\transformed\jetified-core-google-shortcuts-1.1.0\AndroidManifest.xml:17:1-41:12
 MERGED from [com.google.android.gms:play-services-appindex:16.1.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\1b150081e48d08a42b23eb4660630c44\transformed\jetified-play-services-appindex-16.1.0\AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.gms:play-services-auth-api-phone:18.0.2] C:\Users\azkaj\.gradle\caches\8.12\transforms\f37c22180d6dcd6843e6a601b4c8053e\transformed\jetified-play-services-auth-api-phone-18.0.2\AndroidManifest.xml:2:1-7:12
@@ -127,6 +128,7 @@ MERGED from [androidx.tracing:tracing:1.2.0] C:\Users\azkaj\.gradle\caches\8.12\
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\azkaj\.gradle\caches\8.12\transforms\b82a8f8b510de74dc6d0271fd11a0adc\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:17:1-27:12
 MERGED from [androidx.sqlite:sqlite:2.3.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\238e5807a33b3bc84e94c980a5e2017d\transformed\sqlite-2.3.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.arch.core:core-runtime:2.2.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\ecc694e2be730ee4241a92a8f09b9c86\transformed\core-runtime-2.2.0\AndroidManifest.xml:17:1-22:12
+MERGED from [org.osmdroid:osmdroid-android:6.1.18] C:\Users\azkaj\.gradle\caches\8.12\transforms\1fd0ac2e52944c194365a8347d22a950\transformed\jetified-osmdroid-android-6.1.18\AndroidManifest.xml:2:1-27:12
 MERGED from [com.jakewharton.threetenabp:threetenabp:1.4.4] C:\Users\azkaj\.gradle\caches\8.12\transforms\5575e8732f09714f02edba658ee6b95c\transformed\jetified-threetenabp-1.4.4\AndroidManifest.xml:2:1-9:12
 MERGED from [io.grpc:grpc-android:1.57.2] C:\Users\azkaj\.gradle\caches\8.12\transforms\30d883932f0135ab1a057ee785900e4c\transformed\jetified-grpc-android-1.57.2\AndroidManifest.xml:2:1-9:12
 MERGED from [com.android.volley:volley:1.2.1] C:\Users\azkaj\.gradle\caches\8.12\transforms\1785bf5a78eda9bbc1107747a39d66ce\transformed\jetified-volley-1.2.1\AndroidManifest.xml:2:1-7:12
@@ -149,10 +151,14 @@ ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:5:5-7:35
 		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:6:9-47
 uses-feature#android.hardware.wifi
 ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:8:5-58
+MERGED from [org.osmdroid:osmdroid-android:6.1.18] C:\Users\azkaj\.gradle\caches\8.12\transforms\1fd0ac2e52944c194365a8347d22a950\transformed\jetified-osmdroid-android-6.1.18\AndroidManifest.xml:23:5-25:36
+MERGED from [org.osmdroid:osmdroid-android:6.1.18] C:\Users\azkaj\.gradle\caches\8.12\transforms\1fd0ac2e52944c194365a8347d22a950\transformed\jetified-osmdroid-android-6.1.18\AndroidManifest.xml:23:5-25:36
 	android:name
 		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:8:19-55
 uses-feature#android.hardware.location.gps
 ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:9:5-66
+MERGED from [org.osmdroid:osmdroid-android:6.1.18] C:\Users\azkaj\.gradle\caches\8.12\transforms\1fd0ac2e52944c194365a8347d22a950\transformed\jetified-osmdroid-android-6.1.18\AndroidManifest.xml:17:5-19:36
+MERGED from [org.osmdroid:osmdroid-android:6.1.18] C:\Users\azkaj\.gradle\caches\8.12\transforms\1fd0ac2e52944c194365a8347d22a950\transformed\jetified-osmdroid-android-6.1.18\AndroidManifest.xml:17:5-19:36
 	android:name
 		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:9:19-63
 uses-permission#android.permission.INTERNET
@@ -268,19 +274,27 @@ ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:24:5-76
 	android:name
 		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:24:22-73
 uses-permission#android.permission.ACCESS_COARSE_LOCATION
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:25:5-81
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:26:5-81
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:25:22-78
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:26:22-78
 uses-permission#android.permission.ACCESS_FINE_LOCATION
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:26:5-79
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:27:5-79
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:26:22-76
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:27:22-76
+uses-permission#android.permission.FOREGROUND_SERVICE_LOCATION
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:28:5-86
+	android:name
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:28:22-83
+uses-permission#android.permission.ACCESS_BACKGROUND_LOCATION
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:29:5-85
+	android:name
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:29:22-82
 uses-permission#com.android.launcher.permission.INSTALL_SHORTCUT
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:27:5-88
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:31:5-88
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:27:22-85
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:31:22-85
 application
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:28:5-171:19
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:32:5-182:19
 MERGED from [androidx.camera:camera-camera2:1.3.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\bd1edcbbd70842212c6d878793592e8c\transformed\jetified-camera-camera2-1.3.0\AndroidManifest.xml:23:5-34:19
 MERGED from [androidx.camera:camera-camera2:1.3.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\bd1edcbbd70842212c6d878793592e8c\transformed\jetified-camera-camera2-1.3.0\AndroidManifest.xml:23:5-34:19
 MERGED from [androidx.camera:camera-core:1.3.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\7ee1afa1fb8407c41232c5c77e5ce9a3\transformed\jetified-camera-core-1.3.0\AndroidManifest.xml:23:5-34:19
@@ -311,6 +325,8 @@ MERGED from [com.google.firebase:firebase-messaging:24.0.0] C:\Users\azkaj\.grad
 MERGED from [com.google.firebase:firebase-messaging:24.0.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\a81684b9ce3d1414fe5b5a53eea6fbbe\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:28:5-64:19
 MERGED from [com.google.android.gms:play-services-auth:21.1.1] C:\Users\azkaj\.gradle\caches\8.12\transforms\ff2232f0f998c37a506e094effa9a9f2\transformed\jetified-play-services-auth-21.1.1\AndroidManifest.xml:22:5-38:19
 MERGED from [com.google.android.gms:play-services-auth:21.1.1] C:\Users\azkaj\.gradle\caches\8.12\transforms\ff2232f0f998c37a506e094effa9a9f2\transformed\jetified-play-services-auth-21.1.1\AndroidManifest.xml:22:5-38:19
+MERGED from [com.google.android.gms:play-services-location:21.0.1] C:\Users\azkaj\.gradle\caches\8.12\transforms\fa917a0d7fca5dcdb9dae9324fffffb3\transformed\jetified-play-services-location-21.0.1\AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-location:21.0.1] C:\Users\azkaj\.gradle\caches\8.12\transforms\fa917a0d7fca5dcdb9dae9324fffffb3\transformed\jetified-play-services-location-21.0.1\AndroidManifest.xml:7:5-20
 MERGED from [androidx.core:core-google-shortcuts:1.1.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\52c07d04aab56dc7628a0350091e2416\transformed\jetified-core-google-shortcuts-1.1.0\AndroidManifest.xml:25:5-39:19
 MERGED from [androidx.core:core-google-shortcuts:1.1.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\52c07d04aab56dc7628a0350091e2416\transformed\jetified-core-google-shortcuts-1.1.0\AndroidManifest.xml:25:5-39:19
 MERGED from [com.google.firebase:firebase-appcheck-interop:17.1.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\7a7fd4c189fee5d4d43bd00d97413b07\transformed\jetified-firebase-appcheck-interop-17.1.0\AndroidManifest.xml:21:5-20
@@ -372,114 +388,114 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\az
 MERGED from [com.jakewharton.threetenabp:threetenabp:1.4.4] C:\Users\azkaj\.gradle\caches\8.12\transforms\5575e8732f09714f02edba658ee6b95c\transformed\jetified-threetenabp-1.4.4\AndroidManifest.xml:7:5-20
 MERGED from [com.jakewharton.threetenabp:threetenabp:1.4.4] C:\Users\azkaj\.gradle\caches\8.12\transforms\5575e8732f09714f02edba658ee6b95c\transformed\jetified-threetenabp-1.4.4\AndroidManifest.xml:7:5-20
 	android:extractNativeLibs
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:39:9-41
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:43:9-41
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.15.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\72c2c23a9bf1437fa73f831712adbc37\transformed\core-1.15.0\AndroidManifest.xml:28:18-86
 	android:supportsRtl
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:36:9-35
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:40:9-35
 	android:label
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:34:9-41
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:38:9-41
 	android:fullBackupContent
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:32:9-54
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:36:9-54
 	android:roundIcon
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:35:9-50
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:39:9-50
 	tools:targetApi
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:40:9-29
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:44:9-29
 	android:icon
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:33:9-38
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:37:9-38
 	android:allowBackup
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:30:9-35
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:34:9-35
 	android:theme
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:37:9-50
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:41:9-50
 	android:dataExtractionRules
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:31:9-65
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:35:9-65
 	android:usesCleartextTraffic
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:38:9-44
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:42:9-44
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:29:9-30
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:33:9-30
 activity#com.indodevstudio.azka_home_iot.InviteActivity
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:41:9-43:40
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:46:9-48:40
 	android:exported
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:43:13-37
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:48:13-37
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:42:13-43
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:47:13-43
 activity#com.indodevstudio.azka_home_iot.DeviceControlActivity
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:44:9-47:52
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:50:9-53:52
 	android:screenOrientation
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:47:13-49
-	android:exported
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:46:13-37
-	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:45:13-50
-activity#com.indodevstudio.azka_home_iot.LoginSuccessActivity
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:52:9-65:20
-	android:exported
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:54:13-36
-	android:name
 		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:53:13-49
+	android:exported
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:52:13-37
+	android:name
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:51:13-50
+activity#com.indodevstudio.azka_home_iot.LoginSuccessActivity
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:55:9-68:20
+	android:exported
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:57:13-36
+	android:name
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:56:13-49
 intent-filter#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+category:name:android.intent.category.DEFAULT+data:host:link_success+data:scheme:myapp
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:55:13-64:29
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:58:13-67:29
 action#android.intent.action.VIEW
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:56:17-69
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:59:17-69
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:56:25-66
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:59:25-66
 category#android.intent.category.DEFAULT
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:58:17-76
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:61:17-76
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:58:27-73
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:61:27-73
 category#android.intent.category.BROWSABLE
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:59:17-78
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:62:17-78
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:59:27-75
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:62:27-75
 data
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:61:17-63:46
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:64:17-66:46
 	android:host
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:62:21-48
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:65:21-48
 	android:scheme
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:63:21-43
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:66:21-43
 provider#androidx.core.content.FileProvider
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:67:9-76:20
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:70:9-79:20
 MERGED from [com.github.AppDevNext.Logcat:LogcatCoreLib:2.9.5] C:\Users\azkaj\.gradle\caches\8.12\transforms\1e54f49a281ca6249322540b565c8fe1\transformed\jetified-LogcatCoreLib-2.9.5\AndroidManifest.xml:21:9-29:20
 MERGED from [com.github.AppDevNext.Logcat:LogcatCoreLib:2.9.5] C:\Users\azkaj\.gradle\caches\8.12\transforms\1e54f49a281ca6249322540b565c8fe1\transformed\jetified-LogcatCoreLib-2.9.5\AndroidManifest.xml:21:9-29:20
 	android:grantUriPermissions
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:71:13-47
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:74:13-47
 	android:authorities
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:69:13-75
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:72:13-75
 	android:exported
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:70:13-37
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:73:13-37
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:68:13-62
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:71:13-62
 meta-data#android.support.FILE_PROVIDER_PATHS
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:72:13-75:52
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:75:13-78:52
 MERGED from [com.github.AppDevNext.Logcat:LogcatCoreLib:2.9.5] C:\Users\azkaj\.gradle\caches\8.12\transforms\1e54f49a281ca6249322540b565c8fe1\transformed\jetified-LogcatCoreLib-2.9.5\AndroidManifest.xml:26:13-28:58
 MERGED from [com.github.AppDevNext.Logcat:LogcatCoreLib:2.9.5] C:\Users\azkaj\.gradle\caches\8.12\transforms\1e54f49a281ca6249322540b565c8fe1\transformed\jetified-LogcatCoreLib-2.9.5\AndroidManifest.xml:26:13-28:58
 	android:resource
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:74:17-51
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:77:17-51
 		REJECTED from [com.github.AppDevNext.Logcat:LogcatCoreLib:2.9.5] C:\Users\azkaj\.gradle\caches\8.12\transforms\1e54f49a281ca6249322540b565c8fe1\transformed\jetified-LogcatCoreLib-2.9.5\AndroidManifest.xml:28:17-55
 	tools:replace
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:75:17-49
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:78:17-49
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:73:17-67
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:76:17-67
 activity#com.indodevstudio.azka_home_iot.SplashActivity
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:82:9-92:20
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:81:9-91:20
 	android:screenOrientation
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:85:13-49
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:84:13-49
 	android:exported
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:84:13-36
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:83:13-36
 	android:theme
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:86:13-54
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:85:13-54
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:83:13-43
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:82:13-43
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:87:13-91:29
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:86:13-90:29
 action#android.intent.action.MAIN
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:88:17-69
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:87:17-69
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:88:25-66
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:87:25-66
 category#android.intent.category.LAUNCHER
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:90:17-77
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:89:17-77
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:90:27-74
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:89:27-74
 activity#com.indodevstudio.azka_home_iot.InboxActivity
 ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:93:9-96:52
 	android:screenOrientation
@@ -489,115 +505,123 @@ ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:93:9-96:52
 	android:name
 		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:94:13-42
 activity#com.indodevstudio.azka_home_iot.SettingsActivity
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:97:9-101:52
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:98:9-102:52
 	android:screenOrientation
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:101:13-49
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:102:13-49
 	android:parentActivityName
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:100:13-55
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:101:13-55
 	android:exported
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:99:13-37
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:100:13-37
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:98:13-45
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:99:13-45
 activity#com.indodevstudio.azka_home_iot.DetailActivity
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:102:9-106:57
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:104:9-108:57
 	android:screenOrientation
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:105:13-49
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:107:13-49
 	android:exported
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:104:13-37
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:106:13-37
 	android:theme
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:106:13-54
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:108:13-54
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:103:13-43
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:105:13-43
 meta-data#com.google.firebase.messaging.default_notification_icon
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:108:9-110:56
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:110:9-112:53
 	android:resource
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:110:13-53
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:112:13-50
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:109:13-83
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:111:13-83
 meta-data#com.google.firebase.messaging.default_notification_color
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:112:9-114:53
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:114:9-116:53
 	android:resource
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:114:13-50
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:116:13-50
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:113:13-84
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:115:13-84
 activity#com.indodevstudio.azka_home_iot.ResetPwActivity
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:116:9-119:52
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:118:9-121:52
 	android:screenOrientation
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:119:13-49
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:121:13-49
 	android:exported
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:118:13-37
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:120:13-37
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:117:13-44
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:119:13-44
 activity#com.indodevstudio.azka_home_iot.SignUpActivity
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:120:9-123:52
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:123:9-126:52
 	android:screenOrientation
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:123:13-49
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:126:13-49
 	android:exported
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:122:13-37
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:125:13-37
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:121:13-43
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:124:13-43
 activity#com.indodevstudio.azka_home_iot.SignInActivity
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:124:9-130:20
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:128:9-133:20
 	android:screenOrientation
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:127:13-49
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:131:13-49
 	android:exported
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:126:13-36
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:130:13-36
 	android:theme
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:128:13-54
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:132:13-54
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:125:13-43
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:129:13-43
 activity#com.indodevstudio.azka_home_iot.TamanActivity
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:131:9-135:57
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:135:9-139:57
 	android:screenOrientation
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:134:13-49
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:138:13-49
 	android:exported
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:133:13-36
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:137:13-36
 	android:theme
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:135:13-54
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:139:13-54
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:132:13-42
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:136:13-42
 activity#com.indodevstudio.azka_home_iot.MainActivity
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:136:9-148:20
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:141:9-153:20
 	android:screenOrientation
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:139:13-49
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:144:13-49
 	android:exported
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:138:13-36
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:143:13-36
 	android:theme
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:140:13-54
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:145:13-54
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:137:13-41
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:142:13-41
 intent-filter#action:name:android.intent.action.VIEW+category:name:android.intent.category.DEFAULT
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:141:13-144:29
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:146:13-149:29
 meta-data#android.app.lib_name
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:145:13-147:36
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:150:13-152:36
 	android:value
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:147:17-33
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:152:17-33
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:146:17-52
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:151:17-52
 service#com.indodevstudio.azka_home_iot.MyFirebaseMessagingService
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:149:9-155:19
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:155:9-161:19
 	android:exported
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:151:13-37
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:157:13-37
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:150:13-55
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:156:13-55
 intent-filter#action:name:com.google.firebase.MESSAGING_EVENT
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:152:13-154:29
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:158:13-160:29
 action#com.google.firebase.MESSAGING_EVENT
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:153:17-78
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:159:17-78
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:153:25-75
-receiver#com.indodevstudio.azka_home_iot.NotificationActionReceiver
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:157:9-64
-	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:157:19-61
-service#com.indodevstudio.azka_home_iot.MQTT_Service
-ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:167:9-170:56
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:159:25-75
+service#com.indodevstudio.azka_home_iot.tracker.TrackerService
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:163:9-166:40
 	android:exported
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:169:13-37
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:166:13-37
 	android:foregroundServiceType
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:170:13-53
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:165:13-53
 	android:name
-		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:168:13-41
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:164:13-51
+receiver#com.indodevstudio.azka_home_iot.NotificationActionReceiver
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:168:9-64
+	android:name
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:168:19-61
+service#com.indodevstudio.azka_home_iot.MQTT_Service
+ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:178:9-181:56
+	android:exported
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:180:13-37
+	android:foregroundServiceType
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:181:13-53
+	android:name
+		ADDED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml:179:13-41
 uses-sdk
 INJECTED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from D:\PROJECT_KOTLIN\AHI\app\src\main\AndroidManifest.xml
@@ -666,6 +690,8 @@ MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\azkaj\.gradle\caches
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\75467c228eee9a8901f51a367734eb96\transformed\jetified-viewpager2-1.0.0\AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.android.gms:play-services-auth:21.1.1] C:\Users\azkaj\.gradle\caches\8.12\transforms\ff2232f0f998c37a506e094effa9a9f2\transformed\jetified-play-services-auth-21.1.1\AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-auth:21.1.1] C:\Users\azkaj\.gradle\caches\8.12\transforms\ff2232f0f998c37a506e094effa9a9f2\transformed\jetified-play-services-auth-21.1.1\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-location:21.0.1] C:\Users\azkaj\.gradle\caches\8.12\transforms\fa917a0d7fca5dcdb9dae9324fffffb3\transformed\jetified-play-services-location-21.0.1\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-location:21.0.1] C:\Users\azkaj\.gradle\caches\8.12\transforms\fa917a0d7fca5dcdb9dae9324fffffb3\transformed\jetified-play-services-location-21.0.1\AndroidManifest.xml:5:5-44
 MERGED from [androidx.core:core-google-shortcuts:1.1.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\52c07d04aab56dc7628a0350091e2416\transformed\jetified-core-google-shortcuts-1.1.0\AndroidManifest.xml:21:5-23:61
 MERGED from [androidx.core:core-google-shortcuts:1.1.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\52c07d04aab56dc7628a0350091e2416\transformed\jetified-core-google-shortcuts-1.1.0\AndroidManifest.xml:21:5-23:61
 MERGED from [com.google.android.gms:play-services-appindex:16.1.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\1b150081e48d08a42b23eb4660630c44\transformed\jetified-play-services-appindex-16.1.0\AndroidManifest.xml:5:5-44
@@ -848,6 +874,8 @@ MERGED from [androidx.sqlite:sqlite:2.3.0] C:\Users\azkaj\.gradle\caches\8.12\tr
 MERGED from [androidx.sqlite:sqlite:2.3.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\238e5807a33b3bc84e94c980a5e2017d\transformed\sqlite-2.3.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.arch.core:core-runtime:2.2.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\ecc694e2be730ee4241a92a8f09b9c86\transformed\core-runtime-2.2.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.arch.core:core-runtime:2.2.0] C:\Users\azkaj\.gradle\caches\8.12\transforms\ecc694e2be730ee4241a92a8f09b9c86\transformed\core-runtime-2.2.0\AndroidManifest.xml:20:5-44
+MERGED from [org.osmdroid:osmdroid-android:6.1.18] C:\Users\azkaj\.gradle\caches\8.12\transforms\1fd0ac2e52944c194365a8347d22a950\transformed\jetified-osmdroid-android-6.1.18\AndroidManifest.xml:5:5-7:41
+MERGED from [org.osmdroid:osmdroid-android:6.1.18] C:\Users\azkaj\.gradle\caches\8.12\transforms\1fd0ac2e52944c194365a8347d22a950\transformed\jetified-osmdroid-android-6.1.18\AndroidManifest.xml:5:5-7:41
 MERGED from [com.jakewharton.threetenabp:threetenabp:1.4.4] C:\Users\azkaj\.gradle\caches\8.12\transforms\5575e8732f09714f02edba658ee6b95c\transformed\jetified-threetenabp-1.4.4\AndroidManifest.xml:5:5-44
 MERGED from [com.jakewharton.threetenabp:threetenabp:1.4.4] C:\Users\azkaj\.gradle\caches\8.12\transforms\5575e8732f09714f02edba658ee6b95c\transformed\jetified-threetenabp-1.4.4\AndroidManifest.xml:5:5-44
 MERGED from [io.grpc:grpc-android:1.57.2] C:\Users\azkaj\.gradle\caches\8.12\transforms\30d883932f0135ab1a057ee785900e4c\transformed\jetified-grpc-android-1.57.2\AndroidManifest.xml:5:5-44
@@ -1584,3 +1612,23 @@ ADDED from [com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\a
 		ADDED from [com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\azkaj\.gradle\caches\8.12\transforms\ac5d81cb338ed62bb566b39e9917ea93\transformed\jetified-transport-runtime-3.1.9\AndroidManifest.xml:34:13-37
 	android:name
 		ADDED from [com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\azkaj\.gradle\caches\8.12\transforms\ac5d81cb338ed62bb566b39e9917ea93\transformed\jetified-transport-runtime-3.1.9\AndroidManifest.xml:33:13-132
+supports-screens
+ADDED from [org.osmdroid:osmdroid-android:6.1.18] C:\Users\azkaj\.gradle\caches\8.12\transforms\1fd0ac2e52944c194365a8347d22a950\transformed\jetified-osmdroid-android-6.1.18\AndroidManifest.xml:9:5-12:40
+	android:largeScreens
+		ADDED from [org.osmdroid:osmdroid-android:6.1.18] C:\Users\azkaj\.gradle\caches\8.12\transforms\1fd0ac2e52944c194365a8347d22a950\transformed\jetified-osmdroid-android-6.1.18\AndroidManifest.xml:11:9-36
+	android:normalScreens
+		ADDED from [org.osmdroid:osmdroid-android:6.1.18] C:\Users\azkaj\.gradle\caches\8.12\transforms\1fd0ac2e52944c194365a8347d22a950\transformed\jetified-osmdroid-android-6.1.18\AndroidManifest.xml:12:9-37
+	android:anyDensity
+		ADDED from [org.osmdroid:osmdroid-android:6.1.18] C:\Users\azkaj\.gradle\caches\8.12\transforms\1fd0ac2e52944c194365a8347d22a950\transformed\jetified-osmdroid-android-6.1.18\AndroidManifest.xml:10:9-34
+uses-feature#android.hardware.location.network
+ADDED from [org.osmdroid:osmdroid-android:6.1.18] C:\Users\azkaj\.gradle\caches\8.12\transforms\1fd0ac2e52944c194365a8347d22a950\transformed\jetified-osmdroid-android-6.1.18\AndroidManifest.xml:14:5-16:36
+	android:required
+		ADDED from [org.osmdroid:osmdroid-android:6.1.18] C:\Users\azkaj\.gradle\caches\8.12\transforms\1fd0ac2e52944c194365a8347d22a950\transformed\jetified-osmdroid-android-6.1.18\AndroidManifest.xml:16:9-33
+	android:name
+		ADDED from [org.osmdroid:osmdroid-android:6.1.18] C:\Users\azkaj\.gradle\caches\8.12\transforms\1fd0ac2e52944c194365a8347d22a950\transformed\jetified-osmdroid-android-6.1.18\AndroidManifest.xml:15:9-57
+uses-feature#android.hardware.telephony
+ADDED from [org.osmdroid:osmdroid-android:6.1.18] C:\Users\azkaj\.gradle\caches\8.12\transforms\1fd0ac2e52944c194365a8347d22a950\transformed\jetified-osmdroid-android-6.1.18\AndroidManifest.xml:20:5-22:36
+	android:required
+		ADDED from [org.osmdroid:osmdroid-android:6.1.18] C:\Users\azkaj\.gradle\caches\8.12\transforms\1fd0ac2e52944c194365a8347d22a950\transformed\jetified-osmdroid-android-6.1.18\AndroidManifest.xml:22:9-33
+	android:name
+		ADDED from [org.osmdroid:osmdroid-android:6.1.18] C:\Users\azkaj\.gradle\caches\8.12\transforms\1fd0ac2e52944c194365a8347d22a950\transformed\jetified-osmdroid-android-6.1.18\AndroidManifest.xml:21:9-50

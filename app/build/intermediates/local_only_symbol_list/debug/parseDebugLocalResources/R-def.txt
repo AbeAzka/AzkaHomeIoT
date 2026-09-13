@@ -273,6 +273,8 @@ drawable signin_screen
 drawable signup_screen
 drawable spinner_background
 drawable text_splash
+drawable tracker_black
+drawable tracker_white
 drawable ui_login
 drawable ui_login_ldsp
 drawable unverified
@@ -283,6 +285,7 @@ font roboto_regular
 id Register
 id Scroll
 id Text
+id Utilities
 id actionDelete
 id actionEdit
 id actionInvite
@@ -295,6 +298,7 @@ id app_logo
 id back
 id bottomButtons
 id btnBack
+id btnBukaPeta
 id btnCheck
 id btnDelete
 id btnForward
@@ -302,6 +306,7 @@ id btnFullscreen
 id btnInvite
 id btnLogRegister
 id btnMenu
+id btnMulai
 id btnRefresh
 id btnReload
 id btnRename
@@ -460,6 +465,7 @@ id logTextView
 id loginText
 id logo_p
 id mainContent
+id mapView
 id mbuh
 id menu_hotlist
 id menu_more
@@ -591,6 +597,7 @@ id titles
 id toolbar
 id toolbarOverlay
 id toolbarSetup
+id tracker
 id tvAdded
 id tvCategory
 id tvDebit
@@ -600,6 +607,7 @@ id tvEventTime
 id tvEventTitle
 id tvInviteTitle
 id tvKeterangan
+id tvKoordinat
 id tvKredit
 id tvNo
 id tvNoDevices
@@ -660,6 +668,7 @@ layout card_item_finansial_shimmer
 layout card_item_shimmer
 layout dialog_edit_text
 layout dialog_invite
+layout dialog_map
 layout dropdown_menu_popup_item
 layout fragment_about
 layout fragment_arduino
@@ -686,6 +695,7 @@ layout fragment_taman
 layout fragment_taman_prod
 layout fragment_tandon_bunda
 layout fragment_tandon_uti
+layout fragment_tracker
 layout fragment_update_log
 layout fragment_web_view
 layout item_device

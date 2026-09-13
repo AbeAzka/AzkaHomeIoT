@@ -28,6 +28,7 @@ import retrofit2.Response
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.google.firebase.messaging.FirebaseMessaging
 import java.util.concurrent.TimeUnit
 
 class InboxActivity : AppCompatActivity() {
@@ -49,12 +50,21 @@ class InboxActivity : AppCompatActivity() {
         val spinner: Spinner = findViewById(R.id.spinner_topic)
         setSupportActionBar(toolbar)
         // Taruh di dalam onCreate(), misalnya di bawah setSupportActionBar(toolbar)
-        val workRequest = PeriodicWorkRequestBuilder<DataCheckWorker>(15, TimeUnit.MINUTES).build()
-        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-            "DataCheckWork",
-            ExistingPeriodicWorkPolicy.KEEP, // KEEP agar tidak membuat job dobel jika activity dibuka ulang
-            workRequest
-        )
+//        val workRequest = PeriodicWorkRequestBuilder<DataCheckWorker>(15, TimeUnit.MINUTES).build()
+//        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+//            "DataCheckWork",
+//            ExistingPeriodicWorkPolicy.KEEP, // KEEP agar tidak membuat job dobel jika activity dibuka ulang
+//            workRequest
+//        )
+//
+//        FirebaseMessaging.getInstance().subscribeToTopic("all_devices")
+//            .addOnCompleteListener { task ->
+//                if (!task.isSuccessful) {
+//                    Log.e("FCM", "Gagal subscribe ke all_devices")
+//                } else {
+//                    Log.d("FCM", "Berhasil subscribe ke all_devices")
+//                }
+//            }
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
         supportActionBar?.setDisplayShowHomeEnabled(true);
         supportActionBar?.title = "Inbox"

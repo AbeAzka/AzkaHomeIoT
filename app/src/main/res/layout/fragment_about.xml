@@ -35,8 +35,8 @@
         android:layout_marginTop="300dp"
         android:gravity="center"
         android:textColor="?attr/textContent"
-        android:text="Copyright © 2024 Azka \n All Rights Reserved"
-        android:textSize="32dp"
+        android:text="Copyright © 2024 Indodev Studio - All Rights Reserved"
+        android:textSize="30dp"
         />
 
 

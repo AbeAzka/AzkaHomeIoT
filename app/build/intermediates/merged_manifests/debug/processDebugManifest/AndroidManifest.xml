@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.indodevstudio.azka_home_iot"
     android:versionCode="2"
-    android:versionName="3.2" >
+    android:versionName="3.2.1" >
 
     <uses-sdk
         android:minSdkVersion="30"
@@ -30,6 +30,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" /> <!-- suppress DeprecatedClassUsageInspection -->
@@ -42,6 +44,18 @@
         android:protectionLevel="signature" />
 
     <uses-permission android:name="com.indodevstudio.azka_home_iot.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true" />
+
+    <uses-feature
+        android:name="android.hardware.location.network"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
 
     <application
         android:name="com.indodevstudio.azka_home_iot.MyApp"
@@ -64,10 +78,6 @@
             android:name="com.indodevstudio.azka_home_iot.DeviceControlActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
-
-        <!-- <meta-data -->
-        <!-- android:name="android.app.shortcuts" -->
-        <!-- android:resource="@xml/shortcuts" /> -->
         <activity
             android:name="com.indodevstudio.azka_home_iot.LoginSuccessActivity"
             android:exported="true" >
@@ -121,7 +131,7 @@
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/azkahomeiot" />
+            android:resource="@drawable/azkahiot" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
@@ -160,6 +170,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity> <!-- <org.eclipse.paho.android.service android:name="org.eclipse.paho.android.org.eclipse.paho.android.org.eclipse.paho.android.service.MqttService" /> -->
+
         <service
             android:name="com.indodevstudio.azka_home_iot.MyFirebaseMessagingService"
             android:exported="false" >
@@ -167,6 +178,10 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        <service
+            android:name="com.indodevstudio.azka_home_iot.tracker.TrackerService"
+            android:exported="false"
+            android:foregroundServiceType="location" />
 
         <receiver android:name="com.indodevstudio.azka_home_iot.NotificationActionReceiver" />
 

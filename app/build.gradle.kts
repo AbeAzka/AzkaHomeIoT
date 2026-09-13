@@ -17,7 +17,7 @@ android {
         targetSdk = 34
         versionCode = 1
         versionCode = 2
-        versionName = "3.2"//Last 2.45
+        versionName = "3.2.1"//Last 2.45
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -50,6 +50,8 @@ android {
 
 dependencies {
     // Untuk Executor bawaan Andro  zid (pengganti ListenableFuture)
+    implementation ("org.osmdroid:osmdroid-android:6.1.18")
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation ("com.google.android.material:material:1.11.0")
     implementation ("com.getkeepsafe.taptargetview:taptargetview:1.13.3")
@@ -84,8 +86,10 @@ dependencies {
     implementation("androidx.preference:preference-ktx:1.2.1")
     implementation ("androidx.legacy:legacy-support-v4:1.0.0")
     implementation ("com.github.hannesa2:paho.mqtt.android:3.3.5")
-    implementation("com.squareup.retrofit2:retrofit:2.5.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.5.0")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.activity:activity-ktx:1.9.0")
     implementation("com.android.volley:volley:1.2.1")

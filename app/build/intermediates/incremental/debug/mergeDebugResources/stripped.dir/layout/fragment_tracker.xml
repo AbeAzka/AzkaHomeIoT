@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/tvKoordinat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Lokasi belum tersedia"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="?attr/textContent"
+        android:gravity="center"
+        android:padding="16dp"
+        android:background="?attr/SPcardBG"
+        android:layout_marginBottom="32dp"/>
+
+    <!-- Tombol Toggle (Mulai / Matikan) -->
+    <Button
+        android:id="@+id/btnMulai"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mulai Tracker"
+        android:textColor="@android:color/white"
+        android:backgroundTint="#4CAF50"
+        android:padding="12dp"/>
+
+    <!-- Tombol Peta -->
+    <Button
+        android:id="@+id/btnBukaPeta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Buka Peta Lokasi"
+        android:textColor="@android:color/white"
+        android:backgroundTint="#2196F3"
+        android:layout_marginTop="8dp"
+        android:padding="12dp"/>
+
+</LinearLayout>
