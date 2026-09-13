@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.indodevstudio.azka_home_iot"
     android:versionCode="2"
-    android:versionName="3.2.4" >
+    android:versionName="3.3" >
 
     <uses-sdk
         android:minSdkVersion="30"

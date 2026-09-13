@@ -50,7 +50,7 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
         }
 
         // 3. Pengaturan Interval Kirim Lokasi (Dropdown/Spinner)
-        val options = arrayOf("Cepat (3 Detik)", "Normal (5 Detik)", "Hemat Baterai (15 Detik)")
+        val options = arrayOf("Cepat (3 Detik)", "Normal (5 Detik)", "Hemat Baterai (15 Detik)", "Ultra Hemat Baterai (5 Menit)")
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, options)
         spinnerInterval.adapter = adapter
 
@@ -64,6 +64,7 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
                     0 -> 3000L
                     1 -> 5000L
                     2 -> 15000L
+                    3 -> 300000L
                     else -> 5000L
                 }
                 sharedPrefs.edit().putLong("interval_millis", intervalMillis).apply()
