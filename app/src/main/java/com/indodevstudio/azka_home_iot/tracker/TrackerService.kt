@@ -120,7 +120,7 @@ class TrackerService : Service() {
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
                 description = "Channel untuk background tracker GPS"
-                setShowBadge(false)
+                setShowBadge(true)
             }
             notificationManager.createNotificationChannel(channel)
         }

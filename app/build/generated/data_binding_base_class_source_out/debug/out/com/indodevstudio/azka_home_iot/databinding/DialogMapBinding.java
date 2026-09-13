@@ -4,6 +4,7 @@ package com.indodevstudio.azka_home_iot.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,10 +21,28 @@ public final class DialogMapBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
+  public final Button btnSatellite;
+
+  @NonNull
+  public final Button btnStandard;
+
+  @NonNull
+  public final Button btnZoomIn;
+
+  @NonNull
+  public final Button btnZoomOut;
+
+  @NonNull
   public final MapView mapView;
 
-  private DialogMapBinding(@NonNull LinearLayout rootView, @NonNull MapView mapView) {
+  private DialogMapBinding(@NonNull LinearLayout rootView, @NonNull Button btnSatellite,
+      @NonNull Button btnStandard, @NonNull Button btnZoomIn, @NonNull Button btnZoomOut,
+      @NonNull MapView mapView) {
     this.rootView = rootView;
+    this.btnSatellite = btnSatellite;
+    this.btnStandard = btnStandard;
+    this.btnZoomIn = btnZoomIn;
+    this.btnZoomOut = btnZoomOut;
     this.mapView = mapView;
   }
 
@@ -54,13 +73,38 @@ public final class DialogMapBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.btnSatellite;
+      Button btnSatellite = ViewBindings.findChildViewById(rootView, id);
+      if (btnSatellite == null) {
+        break missingId;
+      }
+
+      id = R.id.btnStandard;
+      Button btnStandard = ViewBindings.findChildViewById(rootView, id);
+      if (btnStandard == null) {
+        break missingId;
+      }
+
+      id = R.id.btnZoomIn;
+      Button btnZoomIn = ViewBindings.findChildViewById(rootView, id);
+      if (btnZoomIn == null) {
+        break missingId;
+      }
+
+      id = R.id.btnZoomOut;
+      Button btnZoomOut = ViewBindings.findChildViewById(rootView, id);
+      if (btnZoomOut == null) {
+        break missingId;
+      }
+
       id = R.id.mapView;
       MapView mapView = ViewBindings.findChildViewById(rootView, id);
       if (mapView == null) {
         break missingId;
       }
 
-      return new DialogMapBinding((LinearLayout) rootView, mapView);
+      return new DialogMapBinding((LinearLayout) rootView, btnSatellite, btnStandard, btnZoomIn,
+          btnZoomOut, mapView);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

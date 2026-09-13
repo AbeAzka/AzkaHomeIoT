@@ -298,6 +298,7 @@ id app_logo
 id back
 id bottomButtons
 id btnBack
+id btnBagikan
 id btnBukaPeta
 id btnCheck
 id btnDelete
@@ -311,8 +312,13 @@ id btnRefresh
 id btnReload
 id btnRename
 id btnResetPW
+id btnSalin
+id btnSatellite
 id btnSendInvite
+id btnStandard
 id btnSubmit
+id btnZoomIn
+id btnZoomOut
 id bulanan
 id bulanan_Txt
 id button

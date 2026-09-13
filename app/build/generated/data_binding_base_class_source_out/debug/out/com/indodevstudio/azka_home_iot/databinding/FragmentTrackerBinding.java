@@ -4,13 +4,13 @@ package com.indodevstudio.azka_home_iot.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
+import com.google.android.material.button.MaterialButton;
 import com.indodevstudio.azka_home_iot.R;
 import java.lang.NullPointerException;
 import java.lang.Override;
@@ -21,19 +21,28 @@ public final class FragmentTrackerBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
-  public final Button btnBukaPeta;
+  public final MaterialButton btnBagikan;
 
   @NonNull
-  public final Button btnMulai;
+  public final MaterialButton btnBukaPeta;
+
+  @NonNull
+  public final MaterialButton btnMulai;
+
+  @NonNull
+  public final MaterialButton btnSalin;
 
   @NonNull
   public final TextView tvKoordinat;
 
-  private FragmentTrackerBinding(@NonNull LinearLayout rootView, @NonNull Button btnBukaPeta,
-      @NonNull Button btnMulai, @NonNull TextView tvKoordinat) {
+  private FragmentTrackerBinding(@NonNull LinearLayout rootView, @NonNull MaterialButton btnBagikan,
+      @NonNull MaterialButton btnBukaPeta, @NonNull MaterialButton btnMulai,
+      @NonNull MaterialButton btnSalin, @NonNull TextView tvKoordinat) {
     this.rootView = rootView;
+    this.btnBagikan = btnBagikan;
     this.btnBukaPeta = btnBukaPeta;
     this.btnMulai = btnMulai;
+    this.btnSalin = btnSalin;
     this.tvKoordinat = tvKoordinat;
   }
 
@@ -64,15 +73,27 @@ public final class FragmentTrackerBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.btnBagikan;
+      MaterialButton btnBagikan = ViewBindings.findChildViewById(rootView, id);
+      if (btnBagikan == null) {
+        break missingId;
+      }
+
       id = R.id.btnBukaPeta;
-      Button btnBukaPeta = ViewBindings.findChildViewById(rootView, id);
+      MaterialButton btnBukaPeta = ViewBindings.findChildViewById(rootView, id);
       if (btnBukaPeta == null) {
         break missingId;
       }
 
       id = R.id.btnMulai;
-      Button btnMulai = ViewBindings.findChildViewById(rootView, id);
+      MaterialButton btnMulai = ViewBindings.findChildViewById(rootView, id);
       if (btnMulai == null) {
+        break missingId;
+      }
+
+      id = R.id.btnSalin;
+      MaterialButton btnSalin = ViewBindings.findChildViewById(rootView, id);
+      if (btnSalin == null) {
         break missingId;
       }
 
@@ -82,8 +103,8 @@ public final class FragmentTrackerBinding implements ViewBinding {
         break missingId;
       }
 
-      return new FragmentTrackerBinding((LinearLayout) rootView, btnBukaPeta, btnMulai,
-          tvKoordinat);
+      return new FragmentTrackerBinding((LinearLayout) rootView, btnBagikan, btnBukaPeta, btnMulai,
+          btnSalin, tvKoordinat);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

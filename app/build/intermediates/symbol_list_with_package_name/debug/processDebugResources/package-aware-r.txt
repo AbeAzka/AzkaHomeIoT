@@ -3762,6 +3762,7 @@ id browser_actions_menu_item_text
 id browser_actions_menu_items
 id browser_actions_menu_view
 id btnBack
+id btnBagikan
 id btnBukaPeta
 id btnCheck
 id btnDelete
@@ -3775,8 +3776,13 @@ id btnRefresh
 id btnReload
 id btnRename
 id btnResetPW
+id btnSalin
+id btnSatellite
 id btnSendInvite
+id btnStandard
 id btnSubmit
+id btnZoomIn
+id btnZoomOut
 id bubble_description
 id bubble_image
 id bubble_moreinfo

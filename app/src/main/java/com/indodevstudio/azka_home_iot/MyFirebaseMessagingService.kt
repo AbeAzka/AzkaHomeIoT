@@ -51,7 +51,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         )
 
         val builder = NotificationCompat.Builder(this, iotChannelId)
-            .setSmallIcon(R.drawable.ic_launcher_foreground) // Ganti icon jika perlu
+            .setSmallIcon(R.drawable.azkahiot) // Ganti icon jika perlu
             .setContentTitle(topic)
             .setContentText(message)
             .setContentIntent(pendingIntent)
@@ -108,7 +108,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         )
 
         val builder = NotificationCompat.Builder(this, eventChannelId)
-            .setSmallIcon(R.drawable.ic_event) // Pastikan drawable ini ada
+            .setSmallIcon(R.drawable.azkahiot) // Pastikan drawable ini ada
             .setContentTitle(title)
             .setContentText(body)
             .setSound(ringtoneUri)
