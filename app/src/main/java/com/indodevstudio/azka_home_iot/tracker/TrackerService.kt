@@ -9,6 +9,7 @@ import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.*
+import com.google.firebase.auth.FirebaseAuth
 import com.indodevstudio.azka_home_iot.R // Sesuaikan jika resource R berbeda
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +28,7 @@ class TrackerService : Service() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         notificationManager = getSystemService(NotificationManager::class.java)
         createNotificationChannel()
+
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -56,7 +58,17 @@ class TrackerService : Service() {
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult) {
             for (location in result.locations) {
-                val koordinatBaru = Koordinat(location.latitude, location.longitude)
+                val userData = getUserData()
+                val firebaseUser = FirebaseAuth.getInstance().currentUser
+                var userId = ""
+                if(firebaseUser != null){
+                    userId = firebaseUser.email.toString()
+                }else{
+                    userId = userData["email"].toString()
+                }
+
+                // Masukkan user_id ke objek Koordinat
+                val koordinatBaru = Koordinat(userId.toString(), location.latitude, location.longitude)
 
                 // 1. Update ke Fragment secara real-time
                 LocationData.locationLiveData.postValue(koordinatBaru)
@@ -124,5 +136,16 @@ class TrackerService : Service() {
             }
             notificationManager.createNotificationChannel(channel)
         }
+    }
+
+    private fun getUserData(): Map<String, String?> {
+        val prefs = getSharedPreferences("my_prefs", MODE_PRIVATE)
+        return mapOf(
+            "token" to prefs.getString("auth_token", null),
+            "username" to prefs.getString("username", null),
+            "email" to prefs.getString("email", null),
+            "avatar" to prefs.getString("avatar", null),
+            "isVerified" to prefs.getString("isVerified", null)
+        )
     }
 }

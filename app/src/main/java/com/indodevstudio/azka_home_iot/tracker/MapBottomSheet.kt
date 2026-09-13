@@ -17,10 +17,11 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
 
 class MapBottomSheet(
-    private val latitude: Double,
-    private val longitude: Double
+    private var latitude: Double,
+    private var longitude: Double
 ) : BottomSheetDialogFragment() {
 
     private lateinit var mapView: MapView
@@ -28,6 +29,8 @@ class MapBottomSheet(
     private lateinit var btnZoomOut: Button
     private lateinit var btnSatellite: Button
     private lateinit var btnStandard: Button
+
+    private var currentMarker: Marker? = null // Variabel untuk menampung marker aktif
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
@@ -65,12 +68,12 @@ class MapBottomSheet(
 
         setupMap()
         setupActions()
+        observeRealtimeLocation() // <--- FITUR UTAMA: Mendengarkan data baru secara live
 
         return view
     }
 
     private fun setupMap() {
-        // Set User Agent agar Osmdroid diizinkan mengunduh gambar peta
         Configuration.getInstance().setUserAgentValue(requireContext().packageName)
 
         mapView.setTileSource(TileSourceFactory.MAPNIK)
@@ -79,27 +82,48 @@ class MapBottomSheet(
         val mapController = mapView.controller
         mapController.setZoom(18.0)
 
-        // Titik koordinat target
         val startPoint = GeoPoint(latitude, longitude)
         mapController.setCenter(startPoint)
 
-        // ==========================================
-        // MENAMBAHKAN PIN / MARKER DI TITIK LOKASI
-        // ==========================================
-        val marker = org.osmdroid.views.overlay.Marker(mapView)
-        marker.position = startPoint
-        marker.setAnchor(org.osmdroid.views.overlay.Marker.ANCHOR_CENTER, org.osmdroid.views.overlay.Marker.ANCHOR_BOTTOM)
-        marker.title = "Lokasi Tracker Saat Ini"
-        marker.snippet = "Lat: $latitude, Lon: $longitude"
+        // Buat dan simpan marker pertama
+        currentMarker = Marker(mapView).apply {
+            position = startPoint
+            setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+            title = "Lokasi Tracker Saat Ini"
+            snippet = "Lat: $latitude, Lon: $longitude"
+        }
 
-        // Masukkan marker ke dalam peta
-        mapView.overlays.add(marker)
-        mapView.invalidate() // Refresh peta agar marker langsung muncul
+        mapView.overlays.add(currentMarker)
+        mapView.invalidate()
 
-        // Mencegah BottomSheet ikut terseret saat peta digeser
-        mapView.setOnTouchListener { v, event ->
+        mapView.setOnTouchListener { v, _ ->
             v.parent.requestDisallowInterceptTouchEvent(true)
             false
+        }
+    }
+
+    /**
+     * Mengamati perubahan data koordinat baru secara real-time saat service mengirim data
+     */
+    private fun observeRealtimeLocation() {
+        LocationData.locationLiveData.observe(viewLifecycleOwner) { koordinat ->
+            latitude = koordinat.latitude
+            longitude = koordinat.longitude
+
+            val newPoint = GeoPoint(latitude, longitude)
+
+            // 1. Geser kamera peta secara otomatis ke posisi baru
+            mapView.controller.animateTo(newPoint)
+
+            // 2. Perbarui posisi marker yang ada di peta
+            currentMarker?.let { marker ->
+                marker.position = newPoint
+                marker.snippet = "Lat: $latitude, Lon: $longitude"
+                marker.subDescription = "Diperbarui secara real-time"
+            }
+
+            // 3. Render ulang tampilan peta
+            mapView.invalidate()
         }
     }
 

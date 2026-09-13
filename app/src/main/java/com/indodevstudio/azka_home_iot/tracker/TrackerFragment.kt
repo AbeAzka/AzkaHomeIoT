@@ -21,15 +21,17 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
 import com.indodevstudio.azka_home_iot.R
 
 class TrackerFragment : Fragment() {
 
     private lateinit var tvKoordinat: TextView
+    private lateinit var tvUserAktif: TextView // <--- Label baru untuk info user
     private lateinit var btnMulai: Button
     private lateinit var btnBukaPeta: Button
-    private lateinit var btnSalin: Button      // <--- Tombol baru
-    private lateinit var btnBagikan: Button    // <--- Tombol baru
+    private lateinit var btnSalin: Button
+    private lateinit var btnBagikan: Button
 
     private var currentLatitude: Double = 0.0
     private var currentLongitude: Double = 0.0
@@ -49,10 +51,14 @@ class TrackerFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_tracker, container, false)
         tvKoordinat = view.findViewById(R.id.tvKoordinat)
+        tvUserAktif = view.findViewById(R.id.tvUserAktif) // Inisialisasi TextView User
         btnMulai = view.findViewById(R.id.btnMulai)
         btnBukaPeta = view.findViewById(R.id.btnBukaPeta)
-        btnSalin = view.findViewById(R.id.btnSalin)       // Inisialisasi
-        btnBagikan = view.findViewById(R.id.btnBagikan)   // Inisialisasi
+        btnSalin = view.findViewById(R.id.btnSalin)
+        btnBagikan = view.findViewById(R.id.btnBagikan)
+
+        // Tampilkan User ID / Email yang sedang aktif
+        displayActiveUser()
 
         isTrackingActive = isServiceRunning(TrackerService::class.java)
         updateTrackerUIState(isTrackingActive)
@@ -77,7 +83,6 @@ class TrackerFragment : Fragment() {
 
         btnBukaPeta.setOnClickListener { bukaPetaBottomSheet() }
 
-        // Fitur Tambahan 1: Salin Koordinat ke Clipboard
         btnSalin.setOnClickListener {
             val teksKoordinat = "$currentLatitude, $currentLongitude"
             val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -86,21 +91,18 @@ class TrackerFragment : Fragment() {
             Toast.makeText(requireContext(), "Koordinat berhasil disalin!", Toast.LENGTH_SHORT).show()
         }
 
-        // Fitur Tambahan 2: Bagikan Lokasi via WhatsApp / Intent
         btnBagikan.setOnClickListener {
             if (currentLatitude == 0.0 && currentLongitude == 0.0) {
-                //Toast.(requireContext(), "Lokasi belum didapatkan!", Toast.LENGTH_SHORT).show() // Perbaiki toast jika perlu
                 Toast.makeText(requireContext(), "Lokasi belum didapatkan!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             val gmmIntentUri = Uri.parse("geo:$currentLatitude,$currentLongitude?q=$currentLatitude,$currentLongitude(Lokasi Saya)")
             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-            mapIntent.setPackage("com.whatsapp") // Opsional: arahkan langsung ke WhatsApp atau biarkan umum
+            mapIntent.setPackage("com.whatsapp")
 
             try {
                 startActivity(mapIntent)
             } catch (e: Exception) {
-                // Jika WhatsApp tidak terinstal, buka opsi bagikan biasa
                 val shareIntent = Intent().apply {
                     action = Intent.ACTION_SEND
                     putExtra(Intent.EXTRA_TEXT, "Halo, ini posisi terkini saya: https://maps.google.com/?q=$currentLatitude,$currentLongitude")
@@ -111,6 +113,18 @@ class TrackerFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun displayActiveUser() {
+        val firebaseUser = FirebaseAuth.getInstance().currentUser
+        val prefs = requireContext().getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
+
+        val userId = when {
+            firebaseUser != null -> firebaseUser.email ?: firebaseUser.uid
+            else -> prefs.getString("email", null) ?: prefs.getString("username", "Guest User")
+        }
+
+        tvUserAktif.text = "Login sebagai: $userId"
     }
 
     private fun bukaPetaBottomSheet() {

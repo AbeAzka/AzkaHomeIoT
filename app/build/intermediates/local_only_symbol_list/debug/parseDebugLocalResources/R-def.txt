@@ -622,6 +622,7 @@ id tvStats
 id tvTimelineTitle
 id tvTitle
 id tvTotalDevice
+id tvUserAktif
 id tv_filter_status
 id tx
 id tx1

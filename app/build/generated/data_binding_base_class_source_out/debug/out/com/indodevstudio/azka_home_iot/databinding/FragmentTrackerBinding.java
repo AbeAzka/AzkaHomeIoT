@@ -35,15 +35,20 @@ public final class FragmentTrackerBinding implements ViewBinding {
   @NonNull
   public final TextView tvKoordinat;
 
+  @NonNull
+  public final TextView tvUserAktif;
+
   private FragmentTrackerBinding(@NonNull LinearLayout rootView, @NonNull MaterialButton btnBagikan,
       @NonNull MaterialButton btnBukaPeta, @NonNull MaterialButton btnMulai,
-      @NonNull MaterialButton btnSalin, @NonNull TextView tvKoordinat) {
+      @NonNull MaterialButton btnSalin, @NonNull TextView tvKoordinat,
+      @NonNull TextView tvUserAktif) {
     this.rootView = rootView;
     this.btnBagikan = btnBagikan;
     this.btnBukaPeta = btnBukaPeta;
     this.btnMulai = btnMulai;
     this.btnSalin = btnSalin;
     this.tvKoordinat = tvKoordinat;
+    this.tvUserAktif = tvUserAktif;
   }
 
   @Override
@@ -103,8 +108,14 @@ public final class FragmentTrackerBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.tvUserAktif;
+      TextView tvUserAktif = ViewBindings.findChildViewById(rootView, id);
+      if (tvUserAktif == null) {
+        break missingId;
+      }
+
       return new FragmentTrackerBinding((LinearLayout) rootView, btnBagikan, btnBukaPeta, btnMulai,
-          btnSalin, tvKoordinat);
+          btnSalin, tvKoordinat, tvUserAktif);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));
