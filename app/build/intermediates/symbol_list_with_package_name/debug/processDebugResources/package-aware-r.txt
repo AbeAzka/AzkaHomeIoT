@@ -3653,7 +3653,6 @@ id Scroll
 id TOP_END
 id TOP_START
 id Text
-id Utilities
 id accelerate
 id accessibility_action_clickable_span
 id accessibility_custom_action_0
@@ -3991,7 +3990,7 @@ id fillStart
 id fill_horizontal
 id fill_vertical
 id filled
-id finansial
+id finance
 id finansial_plan
 id fingerprint_description
 id fingerprint_error
@@ -4044,7 +4043,6 @@ id horizontal
 id horizontal_only
 id hotlist_bell
 id humidity_txt
-id ibadah
 id icon
 id icon_frame
 id icon_group
@@ -4289,6 +4287,7 @@ id performance
 id pin
 id position
 id postLayout
+id prayer
 id preferences_detail
 id preferences_header
 id preferences_sliding_pane_layout
@@ -4573,6 +4572,7 @@ id unlabeled
 id up
 id useLogo
 id usernameET
+id utilities
 id v_date
 id v_id
 id v_message

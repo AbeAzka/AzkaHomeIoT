@@ -23,7 +23,7 @@
         android:textStyle="bold"
         android:textColor="?attr/textContent"
         android:layout_gravity="center"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="20dp"/>
 
     <!-- Peta Osmdroid Full Screen -->
     <org.osmdroid.views.MapView

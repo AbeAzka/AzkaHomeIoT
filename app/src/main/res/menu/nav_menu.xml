@@ -33,8 +33,8 @@
 
     </group>
     <item
-        android:title="FINANSIAL"
-        android:id="@+id/finansial"
+        android:title="FINANCE"
+        android:id="@+id/finance"
 
         >
         <menu>
@@ -50,8 +50,8 @@
         </menu>
     </item>
     <item
-        android:title="Utilities"
-        android:id="@+id/Utilities"
+        android:title="UTILITIES"
+        android:id="@+id/utilities"
 
         >
         <menu>
@@ -84,8 +84,8 @@
 <!--    </item>-->
 
     <item
-        android:title="IBADAH"
-        android:id="@+id/ibadah"
+        android:title="PRAYER"
+        android:id="@+id/prayer"
 
         >
         <menu>
@@ -102,7 +102,7 @@
     </item>
 
     <item
-        android:title="ACARA/AGENDA"
+        android:title="EVENTS"
         android:id="@+id/events"
 
         >
@@ -120,7 +120,7 @@
     </item>
 
     <item
-        android:title="OTOMATISASI RUMAH">
+        android:title="HOME AUTOMATION">
 
         <menu>
             <group
@@ -142,7 +142,7 @@
     </item>
 
     <item
-        android:title="SENSOR RUMAH"
+        android:title="HOME SENSOR"
         >
 
         <menu>
@@ -171,7 +171,7 @@
     </item>
 
     <item
-        android:title="SENSOR MASJID">
+        android:title="MOSQUE SENSOR">
         <menu>
             <group
                 android:checkableBehavior="single"

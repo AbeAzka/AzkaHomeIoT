@@ -4,63 +4,72 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SettingsActivity">
-    <PreferenceCategory></PreferenceCategory>
-    <PreferenceCategory></PreferenceCategory>
-    <!--<PreferenceCategory app:title="Notification">
-        <SwitchPreferenceCompat
-            app:defaultValue="false"
-            app:key="notif"
-            app:title="Notification"
 
-            app:summaryOff="You will not receive any notifications in background."
-            app:summaryOn="You will receive any notifications in background."/>
+    <!-- Tambahkan tag kosong ini sebagai spasi agar tidak tertutup Toolbar -->
+    <PreferenceCategory />
+    <PreferenceCategory />
 
-
-    </PreferenceCategory>-->
-    <PreferenceCategory app:title="Basic">
-<!--        <SwitchPreferenceCompat-->
-<!--        app:defaultValue="false"-->
-<!--        app:key="night"-->
-<!--        app:title="Dark Mode"-->
-
-<!--        app:summaryOff="Light mode set to your app."-->
-<!--        app:summaryOn="Dark mode set to your app."/>-->
-
-        <ListPreference app:title="Theme"
+    <PreferenceCategory app:title="General">
+        <ListPreference
+            app:title="Theme"
             app:key="dark_mode"
             app:useSimpleSummaryProvider="true"
             app:defaultValue="0"
-
             app:entries="@array/dark_mode_entries"
             app:entryValues="@array/dark_mode_entries_values"/>
+
+        <Preference
+            app:key="clear_cache"
+            app:title="Clear Cache"
+            android:summary="Kosongkan cache untuk menghemat ruang penyimpanan" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Notifications">
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="notification_toggle"
+            app:title="Push Notifications"
+            app:summaryOff="Notifikasi dimatikan."
+            app:summaryOn="Anda akan menerima notifikasi latar belakang." />
+
         <Preference
             android:key="notification_ringtone"
             android:title="Notification Ringtone"
-            android:summary="Select notification ringtone"
+            android:summary="Pilih nada dering notifikasi"
             android:fragment="com.indodevstudio.azka_home_iot.RingtonePickerFragment" />
+    </PreferenceCategory>
 
-        <!--<SwitchPreferenceCompat
-            app:defaultValue="true"
-            app:key="notification"
-            app:title="Notification"
-            app:summaryOff="You will not receive any notifications."
-            app:summaryOn="You will receive any notifications."
-            ></SwitchPreferenceCompat>-->
+    <PreferenceCategory app:title="About &amp; Advanced">
+        <Preference
+            android:title="Website"
+            app:key="link"
+            android:summary="Buka situs web resmi">
+            <intent android:action="android.intent.action.VIEW"
+                android:data="https://www.indodevstudio.my.id"/>
+        </Preference>
 
-                </PreferenceCategory>
-                <PreferenceCategory app:title="Advanced">
-                    <Preference android:title="Website"
-                        app:key="link"
-                        android:summary="Open website!">
-                        <intent android:action="android.intent.action.VIEW"
-                            android:data="https://www.indodevstudio.my.id"/>
+        <Preference
+            app:key="privacy_policy"
+            android:title="Privacy Policy"
+            android:summary="Baca kebijakan privasi kami">
+            <intent android:action="android.intent.action.VIEW"
+                android:data="https://www.indodevstudio.my.id/privacy-policy"/>
+        </Preference>
 
-                    </Preference>
+        <Preference
+            app:key="contact_support"
+            android:title="Contact Support"
+            android:summary="Pusat bantuan dan pelaporan bug" />
 
-                    <Preference android:title="License"
-                        android:summary="Copyright © 2024 Indodev Studio - All Rights Reserved">
-                    </Preference>
-                </PreferenceCategory>
+        <Preference
+            android:title="License"
+            android:summary="Copyright © 2024 Indodev Studio - All Rights Reserved" />
 
+        <Preference
+            app:key="app_version"
+            android:title="App Version"
+            android:summary="1.0.0" />
+    </PreferenceCategory>
 
-            </PreferenceScreen>
+    <PreferenceCategory />
+</PreferenceScreen>

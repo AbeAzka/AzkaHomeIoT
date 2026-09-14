@@ -4,7 +4,6 @@ package com.indodevstudio.azka_home_iot.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,7 +16,7 @@ import java.lang.String;
 
 public final class FragmentAboutBinding implements ViewBinding {
   @NonNull
-  private final FrameLayout rootView;
+  private final View rootView;
 
   @NonNull
   public final TextView copy;
@@ -28,7 +27,7 @@ public final class FragmentAboutBinding implements ViewBinding {
   @NonNull
   public final TextView version;
 
-  private FragmentAboutBinding(@NonNull FrameLayout rootView, @NonNull TextView copy,
+  private FragmentAboutBinding(@NonNull View rootView, @NonNull TextView copy,
       @NonNull TextView textView6, @NonNull TextView version) {
     this.rootView = rootView;
     this.copy = copy;
@@ -38,7 +37,7 @@ public final class FragmentAboutBinding implements ViewBinding {
 
   @Override
   @NonNull
-  public FrameLayout getRoot() {
+  public View getRoot() {
     return rootView;
   }
 
@@ -81,7 +80,7 @@ public final class FragmentAboutBinding implements ViewBinding {
         break missingId;
       }
 
-      return new FragmentAboutBinding((FrameLayout) rootView, copy, textView6, version);
+      return new FragmentAboutBinding(rootView, copy, textView6, version);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

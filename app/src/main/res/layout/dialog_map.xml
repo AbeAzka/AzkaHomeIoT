@@ -22,7 +22,7 @@
         android:textSize="16sp"
         android:textStyle="bold"
         android:layout_gravity="center"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="20dp"/>
 
     <!-- Tampilan Peta Osmdroid (Mengisi sisa layar penuh) -->
     <org.osmdroid.views.MapView

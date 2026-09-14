@@ -285,7 +285,6 @@ font roboto_regular
 id Register
 id Scroll
 id Text
-id Utilities
 id actionDelete
 id actionEdit
 id actionInvite
@@ -421,7 +420,7 @@ id executeUrlButton5
 id executeUrlButton6
 id executeUrlButton7
 id fabAddDevice
-id finansial
+id finance
 id finansial_plan
 id flashButton
 id focusOverlay
@@ -438,7 +437,6 @@ id headerLayout
 id headerText
 id hotlist_bell
 id humidity_txt
-id ibadah
 id idsLogin
 id idsss
 id idxxs
@@ -515,6 +513,7 @@ id passET
 id pb_data
 id peforma_sholat
 id pembatas
+id prayer
 id previewView
 id progressBar
 id recyclerView
@@ -647,6 +646,7 @@ id tx15
 id tx16
 id txTest
 id usernameET
+id utilities
 id v_date
 id v_id
 id v_message

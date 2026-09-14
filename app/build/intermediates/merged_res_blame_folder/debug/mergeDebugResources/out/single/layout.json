@@ -68,10 +68,6 @@
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-main-78:\\layout\\simple_spinner_item.xml"
     },
     {
-        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-75:/layout/dialog_map.xml",
-        "source": "com.indodevstudio.azka_home_iot.app-main-78:/layout/dialog_map.xml"
-    },
-    {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-mergeDebugResources-75:\\layout\\popup_grafik2.xml",
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-main-78:\\layout\\popup_grafik2.xml"
     },
@@ -164,10 +160,6 @@
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-main-78:\\layout\\dialog_map.xml"
     },
     {
-        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-75:/layout/fragment_admin_map_bottom_sheet.xml",
-        "source": "com.indodevstudio.azka_home_iot.app-main-78:/layout/fragment_admin_map_bottom_sheet.xml"
-    },
-    {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-mergeDebugResources-75:\\layout\\dialog_invite.xml",
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-main-78:\\layout\\dialog_invite.xml"
     },
@@ -254,6 +246,10 @@
     {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-mergeDebugResources-75:\\layout\\fragment_about.xml",
         "source": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-main-78:\\layout\\fragment_about.xml"
+    },
+    {
+        "merged": "com.indodevstudio.azka_home_iot.app-mergeDebugResources-75:/layout/fragment_about.xml",
+        "source": "com.indodevstudio.azka_home_iot.app-main-78:/layout/fragment_about.xml"
     },
     {
         "merged": "C:\\Users\\azkaj\\.gradle\\daemon\\8.12\\com.indodevstudio.azka_home_iot.app-mergeDebugResources-75:\\layout\\simple_spinner_dropdown_item.xml",
